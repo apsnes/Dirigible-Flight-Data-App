@@ -1,4 +1,5 @@
 using FlightApp.Database;
+using FlightApp.Mapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<FlightAppDbContext>();
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 
 var app = builder.Build();
