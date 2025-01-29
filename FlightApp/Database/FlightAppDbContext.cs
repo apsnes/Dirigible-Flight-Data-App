@@ -1,9 +1,10 @@
 ﻿using FlightApp.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlightApp.Database
 {
-    public class FlightAppDbContext : DbContext
+    public class FlightAppDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Note> Notes { get; set; }
