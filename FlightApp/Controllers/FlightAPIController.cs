@@ -12,10 +12,10 @@ namespace FlightApp.Controllers
         {
             _flightApiService = flightApiService;
         }
-        [HttpGet("{iata")]
+
+        [HttpGet("{iata}")]
         public IActionResult GetFlightByIata(string iata)
         {
-            string test = "sdfS";
             var result = _flightApiService.GetFlightByIata(iata);
             return result == null ? NotFound() : Ok(result);
         }

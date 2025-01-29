@@ -1,10 +1,11 @@
-﻿using FlightApp.Repository;
+﻿using FlightApp.Models.Response;
+using FlightApp.Repository;
 
 namespace FlightApp.Service
 {
     public interface IFlightApiService
     {
-        FlightResponse? GetFlightByIata(string iata);
+        FlightResponseWrapper? GetFlightByIata(string iata);
     }
 
     public class FlightApiService : IFlightApiService
@@ -14,9 +15,9 @@ namespace FlightApp.Service
         {
             _flightApiRepository = flightApiRepository;
         }
-        public FlightResponse? GetFlightByIata(string iata)
+        public FlightResponseWrapper? GetFlightByIata(string iata)
         {
-            return _flightApiRepository.GetFlightByIata(iata);
+            return  _flightApiRepository.GetFlightByIata(iata).Result;
         }
     }
 }
