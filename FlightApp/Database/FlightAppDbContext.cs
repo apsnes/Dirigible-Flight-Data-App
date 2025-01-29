@@ -14,7 +14,7 @@ namespace FlightApp.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer();
+            
         }
     }
 }
