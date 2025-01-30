@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightAppFrontend.Web", "Fl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightAppTests", "FlightAppTests\FlightAppTests.csproj", "{BAC1AAD2-3D79-4104-A0E4-07735D036CEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightAppLibrary", "FlightAppLibrary\FlightAppLibrary.csproj", "{41FF212D-99D7-47C1-8E0A-8663D95C78DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{BAC1AAD2-3D79-4104-A0E4-07735D036CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC1AAD2-3D79-4104-A0E4-07735D036CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAC1AAD2-3D79-4104-A0E4-07735D036CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41FF212D-99D7-47C1-8E0A-8663D95C78DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41FF212D-99D7-47C1-8E0A-8663D95C78DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41FF212D-99D7-47C1-8E0A-8663D95C78DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41FF212D-99D7-47C1-8E0A-8663D95C78DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

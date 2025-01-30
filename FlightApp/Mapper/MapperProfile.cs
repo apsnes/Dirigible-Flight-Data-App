@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using FlightApp.Dtos;
-using FlightApp.Models;
+using FlightAppLibrary.Models.Dtos;
+using FlightApp.Entities;
 
 namespace FlightApp.Mapper
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace FlightApp.Models.Response
+namespace FlightAppLibrary.Models.Response
 {
     public class FlightResponseWrapper
     {

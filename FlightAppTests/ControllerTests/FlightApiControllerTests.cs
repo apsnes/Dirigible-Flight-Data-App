@@ -1,5 +1,5 @@
 ﻿using FlightApp.Controllers;
-using FlightApp.Models.Response;
+using FlightAppLibrary.Models.Response;
 using FlightApp.Service;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

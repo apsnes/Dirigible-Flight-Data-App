@@ -2,7 +2,7 @@
 
 namespace FlightApp.Models
 {
-    public class ApplicationUser:IdentityUser
+    public class ApplicationUser : IdentityUser
     {
     }
 }

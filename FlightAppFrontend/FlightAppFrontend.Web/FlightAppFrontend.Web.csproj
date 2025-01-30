@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\FlightAppLibrary\FlightAppLibrary.csproj" />
     <ProjectReference Include="..\FlightAppFrontend.Shared\FlightAppFrontend.Shared.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using FlightApp.Models.Response;
+﻿using FlightAppLibrary.Models.Response;
 using FlightApp.Repository;
 
 namespace FlightApp.Service

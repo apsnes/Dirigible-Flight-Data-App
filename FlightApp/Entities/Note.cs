@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FlightApp.Models
+namespace FlightApp.Entities
 {
     public class Note
     {

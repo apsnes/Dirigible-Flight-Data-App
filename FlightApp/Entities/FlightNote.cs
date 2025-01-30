@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FlightApp.Models
+namespace FlightApp.Entities
 {
     [PrimaryKey("FlightId", "NoteId")]
     public class FlightNote

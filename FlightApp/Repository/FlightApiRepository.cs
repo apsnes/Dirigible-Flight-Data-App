@@ -1,5 +1,5 @@
 ﻿using FlightApp.Database;
-using FlightApp.Models.Response;
+using FlightAppLibrary.Models.Response;
 using System.Text.Json;
 
 namespace FlightApp.Repository

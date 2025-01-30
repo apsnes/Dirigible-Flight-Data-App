@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace FlightApp.Models.Response
+namespace FlightAppLibrary.Models.Response
 {
     public class Live
     {

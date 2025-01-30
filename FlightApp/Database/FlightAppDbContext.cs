@@ -1,4 +1,5 @@
 ﻿using FlightApp.Models;
+using FlightApp.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
