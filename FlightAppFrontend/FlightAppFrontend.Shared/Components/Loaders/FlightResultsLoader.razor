@@ -37,7 +37,7 @@ else
 
             var test = client.BaseAddress;
 
-            var response = await client.GetValueAsync<List<FlightResponse>>($"api/FlightApi/route/{DepartureIATA}/{ArrivalIATA}");
+            var response = await client.GetValueAsync<List<FlightResponse>>($"api/FlightApi/results?departures={DepartureIATA}&arrivals={ArrivalIATA}");
 
             FlightResponses = response.Value;
             ErrorMessage = response.ErrorMessage;

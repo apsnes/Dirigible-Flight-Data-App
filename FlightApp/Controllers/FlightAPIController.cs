@@ -47,5 +47,35 @@ namespace FlightApp.Controllers
             var result = _flightApiService.GetFlightsByDepartureAirportActive(dep_iata);
             return result == null ? BadRequest() : Ok(result);
         }
+
+        [HttpGet("results")]
+        public IActionResult GetResults()
+        {
+            string? arrivals = Request.Query.ContainsKey("arrivals") ? Request.Query["arrivals"] : string.Empty;
+            string? departures = Request.Query.ContainsKey("departures") ? Request.Query["departures"] : string.Empty;
+            string? flightIata = Request.Query.ContainsKey("flighT_iata") ? Request.Query["flight_iata"] : string.Empty;
+
+            if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
+            {
+                var result = _flightApiService.GetFlightsByRoute(departures, arrivals);
+                return result == null ? BadRequest("No flights found") : Ok(result);
+            }
+            else if (!string.IsNullOrEmpty(arrivals))
+            {
+                var result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
+                return result == null ? BadRequest("No flights found") : Ok(result);
+            }
+            else if (!string.IsNullOrEmpty(departures))
+            {
+                var result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
+                return result == null ? BadRequest("No flights found") : Ok(result);
+            }
+            else if (!string.IsNullOrEmpty(flightIata))
+            {
+                var result = _flightApiService.GetFlightByIata(flightIata);
+                return result == null ? BadRequest("No flight found") : Ok(result);
+            }
+            return BadRequest("No valid query parameters found.");
+        }
     }
 }
