@@ -1,16 +1,27 @@
 @using FlightAppLibrary.Models.Response
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppFrontend.Shared.Pages
+@using System.Text.Json
 @inject IHttpClientFactory ClientFactory
-@page "/FlightSummary/{IATA}"
 
-<FlightSummaryPage IATA="IATA"/>
+@if(ErrorMessage != null)
+{
+    <p>@ErrorMessage</p>
+}
+else if(@FlightResponse == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <FlightSummary FlightResponse="@FlightResponse"/>
+}
 
 @code{
     [Parameter]
-    public int IATA { get; set; }
+    public string? IATA { get; set; }
 
-    protected FlightResponseWrapper? FlightResponse { get; set; }
+    protected FlightResponse? FlightResponse { get; set; }
 
     protected string? ErrorMessage;
 
@@ -20,10 +31,11 @@
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
 
-            var response = await client.GetValueAsync<FlightResponseWrapper>($"FlightApi/{IATA}");
+            var test = client.BaseAddress;
+
+            var response = await client.GetValueAsync<FlightResponse>($"api/FlightApi/{IATA}");
 
             FlightResponse = response.Value;
-
             ErrorMessage = response.ErrorMessage;
         }
         catch(Exception ex)

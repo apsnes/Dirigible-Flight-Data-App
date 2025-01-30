@@ -17,7 +17,7 @@ namespace FlightApp.Controllers
         public IActionResult GetFlightByIata(string iata)
         {
             var result = _flightApiService.GetFlightByIata(iata);
-            return result == null ? BadRequest() : Ok(result);
+            return result == null ? BadRequest("Could not find flight.") : Ok(result);
         }
 
         [HttpGet("arrivals/{arr_iata}")]

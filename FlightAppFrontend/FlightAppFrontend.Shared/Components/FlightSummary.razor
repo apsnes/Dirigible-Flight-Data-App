@@ -1,0 +1,10 @@
+@using FlightAppLibrary.Models.Response
+
+<h1>@FlightResponse!.Departure.Airport to @FlightResponse!.Arrival.Airport</h1>
+<h1>@FlightResponse!.FlightDate</h1>
+<h1>@FlightResponse!.FlightStatus</h1>
+
+@code{
+    [Parameter]
+    public FlightResponse? FlightResponse { get; set; }
+}
