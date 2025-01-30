@@ -49,5 +49,27 @@ namespace FlightAppTests.ServiceTests
             //Assert
             _mockRepository.Verify(x => x.GetIncidentFlights(), Times.Once);
         }
+
+        [Test]
+        public void GetFlightsByRoute_InvokesOnce()
+        {
+            //Arrange
+            //Act
+            _service.GetFlightsByRoute("test", "test");
+
+            //Assert
+            _mockRepository.Verify(x => x.GetFlightsByRoute("test", "test"), Times.Once);
+        }
+
+        [Test]
+        public void GetFlightsByDepartureAirportActive_InvokesOnce()
+        {
+            //Arrange
+            //Act
+            _service.GetFlightsByDepartureAirportActive("test");
+
+            //Assert
+            _mockRepository.Verify(x => x.GetFlightsByDepartureAirportActive("test"), Times.Once);
+        }
     }
 }

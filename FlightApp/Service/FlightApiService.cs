@@ -8,6 +8,8 @@ namespace FlightApp.Service
         FlightResponseWrapper? GetFlightByIata(string iata);
         List<FlightResponse> GetFlightsByArrivalIataActive(string arr_iata);
         List<FlightResponse> GetIncidentFlights();
+        List<FlightResponse> GetFlightsByRoute(string dep_iata, string arr_iata);
+        List<FlightResponse> GetFlightsByDepartureAirportActive(string dep_iata);
     }
 
     public class FlightApiService : IFlightApiService
@@ -30,6 +32,16 @@ namespace FlightApp.Service
         public List<FlightResponse> GetIncidentFlights()
         {
             return _flightApiRepository.GetIncidentFlights().Result;
+        }
+
+        public List<FlightResponse> GetFlightsByRoute(string dep_iata, string arr_iata)
+        {
+            return _flightApiRepository.GetFlightsByRoute(dep_iata, arr_iata).Result;
+        }
+
+        public List<FlightResponse> GetFlightsByDepartureAirportActive(string dep_iata)
+        {
+            return _flightApiRepository.GetFlightsByDepartureAirportActive(dep_iata).Result;
         }
     }
 }

@@ -129,5 +129,81 @@ namespace FlightAppTests.ControllerTests
             //Assert
             _mockService.Verify(x => x.GetIncidentFlights(), Times.Once);
         }
+
+        [Test]
+        public void GetFlightsByRoute_InvokesOnce()
+        {
+            //Arrange
+            //Act
+            _controller.GetFlightsByRoute("test", "test");
+
+            //Assert
+            _mockService.Verify(x => x.GetFlightsByRoute("test", "test"), Times.Once);
+        }
+
+        [Test]
+        public void GetFlightsByDepartureAirportActive_InvokesOnce()
+        {
+            //Arrange
+            //Act
+            _controller.GetFlightsByDepartureAirportActive("test");
+
+            //Assert
+            _mockService.Verify(x => x.GetFlightsByDepartureAirportActive("test"), Times.Once);
+        }
+
+        [Test]
+        public void GetFlightsByRoute_ValidResponse_ReturnsOK()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetFlightsByRoute("test", "test")).Returns(new List<FlightResponse>());
+
+            //Act
+            var result = _controller.GetFlightsByRoute("test", "test");
+
+            //Assert
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetFlightsByRoute_InvalidResponse_Returns_BadRequest()
+        {
+            //Arrange
+            List<FlightResponse> List = null;
+            _mockService.Setup(x => x.GetFlightsByRoute("test", "test")).Returns(List);
+
+            //Act
+            var result = _controller.GetFlightsByRoute("test", "test");
+
+            //Assert
+            Assert.That(result, Is.TypeOf<BadRequestResult>());
+        }
+
+        [Test]
+        public void GetFlightsByDepartureAirportActive_ValidResponse_ReturnsOK()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetFlightsByDepartureAirportActive("test")).Returns(new List<FlightResponse>());
+
+            //Act
+            var result = _controller.GetFlightsByDepartureAirportActive("test");
+
+            //Assert
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetFlightsByDepartureAirportActive_InvalidResponse_Returns_BadRequest()
+        {
+            //Arrange
+            List<FlightResponse> List = null;
+            _mockService.Setup(x => x.GetFlightsByDepartureAirportActive("test")).Returns(List);
+
+            //Act
+            var result = _controller.GetFlightsByDepartureAirportActive("test");
+
+            //Assert
+            Assert.That(result, Is.TypeOf<BadRequestResult>());
+        }
     }
 }

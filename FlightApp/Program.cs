@@ -1,15 +1,9 @@
 using FlightApp.Repository;
 using FlightApp.Database;
-
 using FlightApp.Models;
 using Microsoft.AspNetCore.Identity;
-
-
 using FlightApp.Service;
-
 using FlightApp.Mapper;
-
-
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
