@@ -8,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddHttpClient("DirigibleApi", client =>
+    client.BaseAddress = new Uri(builder.Configuration["LocalHost"]!));
+
 // Add device-specific services used by the FlightAppFrontend.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 

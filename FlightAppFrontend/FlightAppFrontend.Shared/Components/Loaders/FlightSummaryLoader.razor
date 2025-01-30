@@ -1,0 +1,35 @@
+@using FlightApp.Models.Response
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Pages
+@inject IHttpClientFactory ClientFactory
+@page "/FlightSummary/{IATA}"
+
+<FlightSummaryPage IATA="IATA"/>
+
+@code{
+    [Parameter]
+    public int IATA { get; set; }
+
+    protected FlightResponseWrapper? FlightResponse { get; set; }
+
+    protected string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+
+            var response = await client.GetValueAsync<FlightResponseWrapper>($"FlightApi/{IATA}");
+
+            FlightResponse = response.Value;
+
+            ErrorMessage = response.ErrorMessage;
+        }
+        catch(Exception ex)
+        {
+
+            ErrorMessage = $"An error occured: {ex.Message}";
+        }
+    }
+}
