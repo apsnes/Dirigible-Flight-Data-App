@@ -1,0 +1,14 @@
+@using FlightAppLibrary.Models.Response
+
+<div>
+    @foreach(var response in FlightResponses!)
+    {
+        <FlightSummary FlightResponse="response"/>
+    }
+</div>
+
+
+@code{
+    [Parameter]
+    public List<FlightResponse>? FlightResponses { get; set;}
+}

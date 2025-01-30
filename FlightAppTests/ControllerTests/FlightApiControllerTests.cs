@@ -21,7 +21,7 @@ namespace FlightAppTests.ControllerTests
         public void GetFlightByIata_ValidResponse_Returns_OK()
         {
             //Arrange
-            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(new FlightResponseWrapper());
+            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(new FlightResponse());
 
             //Act
             var result = _controller.GetFlightByIata("test");
@@ -33,8 +33,8 @@ namespace FlightAppTests.ControllerTests
         public void GetFlightByIata_InvalidResponse_Returns_BadRequest()
         {
             //Arrange
-            FlightResponseWrapper wrapper = null;
-            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(wrapper);
+            FlightResponse? response = null;
+            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(response);
 
             //Act
             var result = _controller.GetFlightByIata("test");

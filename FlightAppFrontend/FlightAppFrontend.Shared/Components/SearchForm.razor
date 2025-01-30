@@ -1,0 +1,40 @@
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using FlightAppLibrary.Models
+
+<div class="container">
+    <div class="row offset-lg-3 mt-5">
+        <div class="col-sm-3  justify-content-center">
+            <h3>Search</h3>
+            <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Search Form">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div>
+                    <label for="departure" class="form-label">Departure IATA</label>
+                    <InputText id="departure" class="form-control" @bind-Value="SearchModel!.DepartureIATA" placeholder="DepartureIATA" />
+                </div>
+
+                <div>
+                    <label for="arrival" class="form-label">Arrival IATA</label>
+                    <InputText id="arrival" class="form-control" @bind-Value="SearchModel!.ArrivalIATA" placeholder="ArrivalIATA" />
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code{
+    public SearchModel SearchModel = new();
+
+
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("OnInvalidSubmit");
+    }
+
+    protected void HandleValidSubmit()
+    {
+        NavigationManager.NavigateTo($"Results?departure={SearchModel!.DepartureIATA}&arrival={SearchModel!.ArrivalIATA}");
+    }
+}

@@ -6,7 +6,7 @@ namespace FlightApp.Repository
 {
     public interface IFlightApiRepository
     {
-        Task<FlightResponseWrapper?> GetFlightByIata(string iata);
+        Task<FlightResponse?> GetFlightByIata(string iata);
         Task<List<FlightResponse>> GetFlightByArrivalAirportActive(string arr_iata);
         Task<List<FlightResponse>> GetIncidentFlights();
         Task<List<FlightResponse>> GetFlightsByRoute(string dep_iata, string arr_iata);
@@ -15,7 +15,7 @@ namespace FlightApp.Repository
 
     public class FlightApiRepository : IFlightApiRepository
     {
-        public async Task<FlightResponseWrapper?> GetFlightByIata(string iata)
+        public async Task<FlightResponse?> GetFlightByIata(string iata)
         {
             using (var client = new HttpClient())
             {
@@ -25,7 +25,7 @@ namespace FlightApp.Repository
                     using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&flight_iata={iata}");
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody);
+                    return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody)!.Data.FirstOrDefault();
                 }
                 catch (HttpRequestException e)
                 {

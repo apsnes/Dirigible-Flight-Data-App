@@ -1,10 +1,9 @@
+@page "/FlightSummary/{IATA}"
+@using FlightAppFrontend.Shared.Components.Loaders
 
-
-
-
-
+<FlightSummaryLoader IATA="@IATA"/>
 
 @code {
     [Parameter]
-    public int IATA { get; set; }
+    public string? IATA { get; set; }
 }
