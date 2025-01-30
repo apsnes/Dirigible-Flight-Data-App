@@ -33,14 +33,14 @@ namespace FlightAppTests.ControllerTests
         public void GetFlightByIata_InvalidResponse_Returns_BadRequest()
         {
             //Arrange
-            //_mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(null);
-            throw new NotImplementedException("Implement this test");
+            FlightResponseWrapper wrapper = null;
+            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(wrapper);
 
             //Act
             var result = _controller.GetFlightByIata("test");
 
             //Assert
-            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+            Assert.That(result, Is.TypeOf<BadRequestResult>());
         }
     }
 }
