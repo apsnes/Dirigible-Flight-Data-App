@@ -1,0 +1,50 @@
+﻿@using System.ComponentModel.DataAnnotations
+<div class="container">
+    <div class="row offset-lg-3 mt-5">
+        <div class="col-sm-3  justify-content-center">
+            <h3>Login</h3>
+            <EditForm FormName="loginForm" Model="userLoginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Login Form">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div>
+                    <label for="email" class="form-label">Email</label>
+                    <InputText id="email" class="form-control" @bind-Value="userLoginModel.Email" placeholder="Email" />
+                </div>
+                <div>
+                    <label for="password" class="form-label">Password</label>
+                    <InputText type="password" id="password" class="form-control" @bind-Value="userLoginModel.Password" placeholder="Password" />
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                </EditForm>
+            <div>
+                <a class="" href="#">Register</a>
+            </div>
+
+            </div>
+            
+    </div>
+</div>
+
+
+@code {
+    private string? Email { get; set; }
+    private string? Password { get; set; }
+    private UserLoginModel userLoginModel = new UserLoginModel();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("OnValidSubmit");
+    }
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("OnInvalidSubmit");
+    }
+    public class UserLoginModel
+    {
+        [Required(ErrorMessage ="Please enter username")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Please enter password")]
+        public string Password { get; set; }
+    }
+
+}
