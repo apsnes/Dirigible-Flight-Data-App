@@ -19,5 +19,21 @@ namespace FlightApp.Controllers
             var result = _flightApiService.GetFlightByIata(iata);
             return result == null ? BadRequest() : Ok(result);
         }
+
+        [HttpGet("arrivals/{arr_iata}")]
+
+        public IActionResult GetFlightsByArrivalIataActive(string arr_iata)
+        {
+            var result = _flightApiService.GetFlightsByArrivalIataActive(arr_iata);
+            return result == null ? BadRequest() : Ok(result);
+        }
+
+        [HttpGet("incident")]
+
+        public IActionResult GetIncidentFlights()
+        {
+            var result = _flightApiService.GetIncidentFlights();
+            return result == null ? BadRequest() : Ok(result);
+        }
     }
 }
