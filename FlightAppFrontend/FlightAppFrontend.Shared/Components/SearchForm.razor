@@ -3,33 +3,32 @@
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppLibrary.Models
 
-
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
 
-            <Title Text="Search For a Flight"/>
+            <Title Text="Search Flights"/>
 
             <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Search Form">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
                 <div class="field">
-                    <label for="iata" class="form-label">Flight Number</label>
+                    <label for="iata" class="label">Flight Number</label>
                     <div class="control mt-2">
                         <InputText id="iata" class="input is-warning" @bind-Value="SearchModel!.FlightIATA" placeholder="Flight Number" />
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="departure" class="form-label">Departure IATA</label>
+                    <label for="departure" class="label">Departure IATA</label>
                     <div class="control mt-2">
                         <InputText id="departure" class="input is-warning" @bind-Value="SearchModel!.DepartureIATA" placeholder="Departure IATA" />
                     </div>
                 </div>
 
-                <div>
-                    <label for="arrival" class="form-label">Arrival IATA</label>
+                <div class="field">
+                    <label for="arrival" class="label">Arrival IATA</label>
                     <div class="control mt-2">
                         <InputText id="arrival" class="input is-warning" @bind-Value="SearchModel!.ArrivalIATA" placeholder="Arrival IATA" />
                     </div>
