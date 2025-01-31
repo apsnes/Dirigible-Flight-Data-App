@@ -1,19 +1,21 @@
-﻿@inherits LayoutComponentBase
+﻿@using FlightAppFrontend.Shared.Components
+@inherits LayoutComponentBase
 
 <div>
-    
-        <header>
-            <NavMenu />
-        </header>
+    <header>
+        <NavMenu />
+    </header>
         
-    
-    <main>
+    <div class="container hero is-fullheight pl-6 pr-6">
 
+        <main class="body">
             @Body
-    </main>
-    <footer>
-        <p>&#169 dirigible 2025</p>
-    </footer>
+        </main>
+
+        <footer class="mt-auto is-flex-align-items-flex-end">
+            <p>&#169 dirigible 2025</p>
+        </footer>
+    </div>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>
