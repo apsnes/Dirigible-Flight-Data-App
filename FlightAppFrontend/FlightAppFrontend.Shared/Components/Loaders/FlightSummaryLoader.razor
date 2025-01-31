@@ -34,14 +34,13 @@ else
 
             var test = client.BaseAddress;
 
-            var response = await client.GetValueAsync<FlightResponse>($"api/FlightApi/{IATA}");
+            var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
 
             FlightResponse = response.Value;
             ErrorMessage = response.ErrorMessage;
         }
         catch(Exception ex)
         {
-
             ErrorMessage = $"An error occured: {ex.Message}";
         }
     }

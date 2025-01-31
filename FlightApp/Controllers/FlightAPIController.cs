@@ -1,4 +1,5 @@
 ﻿using FlightApp.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightApp.Controllers
@@ -7,13 +8,14 @@ namespace FlightApp.Controllers
     [Route("api/[controller]")]
     public class FlightApiController : ControllerBase
     {
-        private readonly IFlightApiService _flightApiService;
-        public FlightApiController(IFlightApiService flightApiService)
+        private readonly IFlightService _flightApiService;
+        public FlightApiController(IFlightService flightApiService)
         {
             _flightApiService = flightApiService;
         }
 
         [HttpGet("{iata}")]
+        //[Authorize(Roles = "Customer")]
         public IActionResult GetFlightByIata(string iata)
         {
             var result = _flightApiService.GetFlightByIata(iata);
@@ -53,7 +55,7 @@ namespace FlightApp.Controllers
         {
             string? arrivals = Request.Query.ContainsKey("arrivals") ? Request.Query["arrivals"] : string.Empty;
             string? departures = Request.Query.ContainsKey("departures") ? Request.Query["departures"] : string.Empty;
-            string? flightIata = Request.Query.ContainsKey("flighT_iata") ? Request.Query["flight_iata"] : string.Empty;
+            string? flightIata = Request.Query.ContainsKey("flight_iata") ? Request.Query["flight_iata"] : string.Empty;
 
             if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
             {

@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string FlightNumber { get; set; }
-        //public List<FlightNote> FlightNotes { get; set; }
+        public List<FlightNoteDto> FlightNotes { get; set; }
     }
 }

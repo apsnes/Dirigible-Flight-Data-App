@@ -8,12 +8,12 @@ namespace FlightAppTests.ControllerTests
 {
     public class FlightApiServiceTests
     {
-        private Mock<IFlightApiService> _mockService;
+        private Mock<IFlightService> _mockService;
         private FlightApiController _controller;
         [SetUp]
         public void Setup()
         {
-            _mockService = new Mock<IFlightApiService>();
+            _mockService = new Mock<IFlightService>();
             _controller = new FlightApiController(_mockService.Object);
         }
 
@@ -40,7 +40,7 @@ namespace FlightAppTests.ControllerTests
             var result = _controller.GetFlightByIata("test");
 
             //Assert
-            Assert.That(result, Is.TypeOf<BadRequestResult>());
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]

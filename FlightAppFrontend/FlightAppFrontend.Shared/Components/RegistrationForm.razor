@@ -1,0 +1,96 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Services
+@using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory DirigibleApi
+@inject IJsInteropService JsInteropService
+
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-one-third is-offset-one-third">
+
+            <Title Text="Register"/>
+
+            <EditForm FormName="loginForm" Model="RegistrationModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Registration Form">
+                <DataAnnotationsValidator />
+                <div class="field">
+                    <label for="firstname" class="label">First Name</label>
+                    <div class="control mt-2">
+                        <InputText id="firstname" class="input is-warning" @bind-Value="RegistrationModel.FirstName" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.FirstName)" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="lastname" class="label">Last Name</label>
+                    <div class="control mt-2">
+                        <InputText id="lastname" class="input is-warning" @bind-Value="RegistrationModel.LastName" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.LastName)" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="phonenumber" class="label">Phone Number</label>
+                    <div class="control mt-2">
+                        <InputText id="phonenumber" class="input is-warning" @bind-Value="RegistrationModel.PhoneNumber" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.PhoneNumber)" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="email" class="label">Email</label>
+                    <div class="control mt-2">
+                        <InputText id="email" class="input is-warning" @bind-Value="RegistrationModel.Email" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.Email)" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password" class="label">Password</label>
+                    <div class="control mt-2">
+                        <InputText type="password" id="password" class="input is-warning" @bind-Value="RegistrationModel.Password" placeholder="Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Password)" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="confirmPassword" class="label">Confirm Password</label>
+                    <div class="control mt-2">
+                        <InputText type="password" id="confirmPassword" class="input is-warning" @bind-Value="RegistrationModel.ConfirmPassword" placeholder="Confirm Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.ConfirmPassword)" />
+                    </div>
+                </div>
+
+                <button type="submit" class="button is-warning mt-2">Register</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private string? Username { get; set; }
+    private string? Email { get; set; }
+    private string? Password { get; set; }
+    private string? ConfirmPassword { get; set; }
+    private SignUpRequestDTO RegistrationModel = new();
+
+    private async Task HandleValidSubmit()
+    {
+        var client = DirigibleApi.CreateClient("DirigibleApi");
+        var content = new StringContent(JsonSerializer.Serialize(RegistrationModel), Encoding.UTF8, "application/json");
+        var result = await client.PostAsync("Account/SignUp", content);
+        if (result.IsSuccessStatusCode)
+        {
+            JsInteropService.CreateAlert("Account created");
+        }
+        else
+        {
+            JsInteropService.CreateAlert("Failed to create account. Please try again");
+        }
+    }
+    private void HandleInvalidSubmit()
+    {
+        JsInteropService.CreateAlert("Invalid data. Please correct and submit again");
+    }
+    
+}

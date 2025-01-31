@@ -15,14 +15,15 @@ namespace FlightApp.Repository
 
     public class FlightApiRepository : IFlightApiRepository
     {
+        string key = "49ffed4f5a793e3538024995ddb26f0e";
+
         public async Task<FlightResponse?> GetFlightByIata(string iata)
         {
             using (var client = new HttpClient())
             {
-                //client.DefaultRequestHeaders.Add("flight_iata", iata);
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&flight_iata={iata}");
+                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&flight_iata={iata}");
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody)!.Data.FirstOrDefault();
@@ -42,7 +43,7 @@ namespace FlightApp.Repository
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&arr_iata={arr_iata}&flight_status=active");
+                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&arr_iata={arr_iata}&flight_status=active");
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
@@ -62,7 +63,7 @@ namespace FlightApp.Repository
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&flight_status=incident");
+                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&flight_status=incident");
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
@@ -82,7 +83,7 @@ namespace FlightApp.Repository
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&dep_iata={dep_iata}&arr_iata={arr_iata}");
+                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&dep_iata={dep_iata}&arr_iata={arr_iata}");
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
@@ -101,7 +102,7 @@ namespace FlightApp.Repository
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&dep_iata={dep_iata}&flight_status=active");
+                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&dep_iata={dep_iata}&flight_status=active");
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();

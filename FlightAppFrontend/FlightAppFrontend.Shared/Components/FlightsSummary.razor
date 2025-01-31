@@ -1,12 +1,17 @@
+@using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppLibrary.Models.Response
 
-<div>
-    @foreach(var response in FlightResponses!)
-    {
-        <FlightSummary FlightResponse="response"/>
-    }
+<div class="mt-6">
+    <Title Text="Results:"/>
+    <div class="columns">
+        <div class="column is-half">
+            @foreach (var response in @FlightResponses!)
+            {
+                <FlightResultCard FlightResponse="response" />
+            }
+        </div>
+    </div>
 </div>
-
 
 @code{
     [Parameter]
