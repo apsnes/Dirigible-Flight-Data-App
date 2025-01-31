@@ -1,24 +1,41 @@
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
+@using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppLibrary.Models
 
+
 <div class="container">
-    <div class="row offset-lg-3 mt-5">
-        <div class="col-sm-3  justify-content-center">
-            <h3>Search</h3>
+    <div class="columns is-centered">
+        <div class="column is-one-third is-offset-one-third">
+
+            <Title Text="Search For a Flight"/>
+
             <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Search Form">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <div>
+
+                <div class="field">
+                    <label for="iata" class="form-label">Flight Number</label>
+                    <div class="control mt-2">
+                        <InputText id="iata" class="input is-warning" @bind-Value="SearchModel!.FlightIATA" placeholder="Flight Number" />
+                    </div>
+                </div>
+
+                <div class="field">
                     <label for="departure" class="form-label">Departure IATA</label>
-                    <InputText id="departure" class="form-control" @bind-Value="SearchModel!.DepartureIATA" placeholder="DepartureIATA" />
+                    <div class="control mt-2">
+                        <InputText id="departure" class="input is-warning" @bind-Value="SearchModel!.DepartureIATA" placeholder="Departure IATA" />
+                    </div>
                 </div>
 
                 <div>
                     <label for="arrival" class="form-label">Arrival IATA</label>
-                    <InputText id="arrival" class="form-control" @bind-Value="SearchModel!.ArrivalIATA" placeholder="ArrivalIATA" />
+                    <div class="control mt-2">
+                        <InputText id="arrival" class="input is-warning" @bind-Value="SearchModel!.ArrivalIATA" placeholder="Arrival IATA" />
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Search</button>
+
+                <MainButton Text="Submit"/>
             </EditForm>
         </div>
     </div>

@@ -8,8 +8,8 @@ namespace FlightAppLibrary.Models
 {
     public class SearchModel
     {
+        public string? FlightIATA { get; set; }
         public string? DepartureIATA { get; set; }
-
         public string? ArrivalIATA { get; set; }
     }
 }
