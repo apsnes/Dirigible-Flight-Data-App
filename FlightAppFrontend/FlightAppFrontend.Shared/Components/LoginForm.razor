@@ -1,27 +1,37 @@
 ﻿@using System.ComponentModel.DataAnnotations
-<div class="container">
-    <div class="row offset-lg-3 mt-5">
-        <div class="col-sm-3  justify-content-center">
-            <h3>Login</h3>
-            <EditForm FormName="loginForm" Model="userLoginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Login Form">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <div>
-                    <label for="email" class="form-label">Email</label>
-                    <InputText id="email" class="form-control" @bind-Value="userLoginModel.Email" placeholder="Email" />
-                </div>
-                <div>
-                    <label for="password" class="form-label">Password</label>
-                    <InputText type="password" id="password" class="form-control" @bind-Value="userLoginModel.Password" placeholder="Password" />
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-                </EditForm>
-            <div>
-                <a class="" href="#">Register</a>
-            </div>
+@using FlightAppFrontend.Shared.Components.Utility
 
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-one-third is-offset-one-third">
+
+            ﻿ <Title Text="Login"/>
+
+            <EditForm FormName="loginForm" Model="LoginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Login Form">
+                <DataAnnotationsValidator />
+
+                <div class="field">
+                    <label for="email" class="label">Email</label>
+                    <div class="control mt-2">
+                        <InputText id="email" class="input is-warning" @bind-Value="LoginModel.Email" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => LoginModel!.Email)" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password" class="label">Password</label>
+                    <div class="control mt-2">
+                        <InputText type="password" id="password" class="input is-warning" @bind-Value="LoginModel.Password" placeholder="Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => LoginModel!.Password)" />
+                    </div>
+                </div>
+
+                <button type="submit" class="button is-warning mt-2">Login</button>
+            </EditForm>
+            <div class="mt-2">
+                <a class="has-text-white is-underlined" href="/Registration">Register</a>
             </div>
-            
+        </div>
     </div>
 </div>
 
@@ -29,7 +39,7 @@
 @code {
     private string? Email { get; set; }
     private string? Password { get; set; }
-    private UserLoginModel userLoginModel = new UserLoginModel();
+    private UserLoginModel LoginModel = new UserLoginModel();
 
     private void HandleValidSubmit()
     {
@@ -41,9 +51,10 @@
     }
     public class UserLoginModel
     {
-        [Required(ErrorMessage ="Please enter username")]
+        [Required(ErrorMessage = "Please enter an email")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Please enter password")]
+
+        [Required(ErrorMessage = "Please enter a password")]
         public string Password { get; set; }
     }
 

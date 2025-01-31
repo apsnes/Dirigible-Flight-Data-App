@@ -1,0 +1,81 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using FlightAppFrontend.Shared.Components.Utility
+
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-one-third is-offset-one-third">
+
+            <Title Text="Register"/>
+
+            <EditForm FormName="loginForm" Model="RegistrationModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Registration Form">
+                <DataAnnotationsValidator />
+
+                <div class="field">
+                    <label for="username" class="label">Username</label>
+                    <div class="control mt-2">
+                        <InputText id="username" class="input is-warning" @bind-Value="RegistrationModel.Username" placeholder="Choose a Username" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Username)" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="email" class="label">Email</label>
+                    <div class="control mt-2">
+                        <InputText id="email" class="input is-warning" @bind-Value="RegistrationModel.Email" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Email)" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password" class="label">Password</label>
+                    <div class="control mt-2">
+                        <InputText type="password" id="password" class="input is-warning" @bind-Value="RegistrationModel.Password" placeholder="Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Password)" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="confirmPassword" class="label">Confirm Password</label>
+                    <div class="control mt-2">
+                        <InputText type="password" id="confirmPassword" class="input is-warning" @bind-Value="RegistrationModel.ConfirmPassword" placeholder="Confirm Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.ConfirmPassword)" />
+                    </div>
+                </div>
+
+                <button type="submit" class="button is-warning mt-2">Register</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private string? Username { get; set; }
+    private string? Email { get; set; }
+    private string? Password { get; set; }
+    private string? ConfirmPassword { get; set; }
+    private UserRegistrationModel RegistrationModel = new UserRegistrationModel();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("OnValidSubmit");
+    }
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("OnInvalidSubmit");
+    }
+    public class UserRegistrationModel
+    {
+        [Required(ErrorMessage = "Please enter a username")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Please enter an email")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Please enter a password")]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "Please confirm password")]
+        public string ConfirmPassword { get; set; }
+    }
+}

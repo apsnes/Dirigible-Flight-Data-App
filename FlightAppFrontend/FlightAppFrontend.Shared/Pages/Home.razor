@@ -4,7 +4,9 @@
 @inject IFormFactor FormFactor
 
 <PageTitle>Home</PageTitle>
-<LoginForm/>
+<div class="mt-6">
+    <LoginForm />
+</div>
 
 @code {
     private string factor => FormFactor.GetFormFactor();
