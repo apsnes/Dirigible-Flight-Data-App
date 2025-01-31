@@ -3,10 +3,9 @@
 <div>
     @foreach(var response in @FlightResponses!)
     {
-        <FlightSummary FlightResponse="response"/>
+        <FlightResultCard FlightResponse="response"/>
     }
 </div>
-
 
 @code{
     [Parameter]
