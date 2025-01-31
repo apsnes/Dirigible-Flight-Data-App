@@ -1,10 +1,11 @@
 ﻿@using System.ComponentModel.DataAnnotations
+@using FlightAppFrontend.Shared.Components.Utility
 
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
 
-            ﻿<h1 class="title is-size-2 mt-3 mb-5">Register</h1>
+            <Title Text="Register"/>
 
             <EditForm FormName="loginForm" Model="RegistrationModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Registration Form">
                 <DataAnnotationsValidator />
