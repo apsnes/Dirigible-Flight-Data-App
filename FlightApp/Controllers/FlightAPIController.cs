@@ -1,4 +1,5 @@
 ﻿using FlightApp.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightApp.Controllers
@@ -14,6 +15,7 @@ namespace FlightApp.Controllers
         }
 
         [HttpGet("{iata}")]
+        [Authorize(Roles = "Customer")]
         public IActionResult GetFlightByIata(string iata)
         {
             var result = _flightApiService.GetFlightByIata(iata);
