@@ -51,9 +51,10 @@
     }
     public class UserLoginModel
     {
-        [Required(ErrorMessage = "Please enter username")]
+        [Required(ErrorMessage = "Please enter an email")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Please enter password")]
+
+        [Required(ErrorMessage = "Please enter a password")]
         public string Password { get; set; }
     }
 

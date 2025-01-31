@@ -11,6 +11,14 @@
                 <DataAnnotationsValidator />
 
                 <div class="field">
+                    <label for="username" class="label">Username</label>
+                    <div class="control mt-2">
+                        <InputText id="username" class="input is-warning" @bind-Value="RegistrationModel.Username" placeholder="Choose a Username" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Username)" />
+                    </div>
+                </div>
+
+                <div class="field">
                     <label for="email" class="label">Email</label>
                     <div class="control mt-2">
                         <InputText id="email" class="input is-warning" @bind-Value="RegistrationModel.Email" placeholder="Email" />
@@ -29,8 +37,8 @@
                 <div class="field">
                     <label for="confirmPassword" class="label">Confirm Password</label>
                     <div class="control mt-2">
-                        <InputText type="confirmPassword" id="password" class="input is-warning" @bind-Value="RegistrationModel.ConfirmPassword" placeholder="Confirm Password" />
-                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Password)" />
+                        <InputText type="password" id="confirmPassword" class="input is-warning" @bind-Value="RegistrationModel.ConfirmPassword" placeholder="Confirm Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.ConfirmPassword)" />
                     </div>
                 </div>
 
@@ -42,6 +50,7 @@
 
 
 @code {
+    private string? Username { get; set; }
     private string? Email { get; set; }
     private string? Password { get; set; }
     private string? ConfirmPassword { get; set; }
@@ -57,14 +66,16 @@
     }
     public class UserRegistrationModel
     {
-        [Required(ErrorMessage = "Please enter username")]
+        [Required(ErrorMessage = "Please enter a username")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Please enter an email")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Please enter password")]
+        [Required(ErrorMessage = "Please enter a password")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Please confirm password")]
         public string ConfirmPassword { get; set; }
     }
-
 }
