@@ -4,18 +4,18 @@
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
 
-@if(ErrorMessage != null)
-{
-    <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
-}
-else if(@FlightResponses == null)
-{
-    <Loading/>
-}
-else
-{
-    <FlightsSummary FlightResponses="@FlightResponses"/>
-}
+ @if(ErrorMessage != null) 
+ { 
+     <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/> 
+ } 
+ else if(@FlightResponses == null) 
+ { 
+     <Loading/> 
+ } 
+ else 
+ { 
+     <FlightsSummary FlightResponses="@FlightResponses"/> 
+ } 
 
 @code {
     [Parameter]
