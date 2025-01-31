@@ -58,9 +58,9 @@
     {
         HashSet<string> parameters = [];
 
-        if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"departure={SearchModel!.FlightIATA}");
-        if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departure={SearchModel!.DepartureIATA}");
-        if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"departure={SearchModel!.ArrivalIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"flight_iata={SearchModel!.FlightIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departures={SearchModel!.DepartureIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
 
         return String.Join("&", parameters);
     }
