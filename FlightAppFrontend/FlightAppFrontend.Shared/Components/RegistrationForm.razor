@@ -25,11 +25,16 @@
                     </div>
                 </div>
 
-                <button type="submit" class="button is-warning mt-2">Login</button>
+                <div class="field">
+                    <label for="confirmPassword" class="label">Confirm Password</label>
+                    <div class="control mt-2">
+                        <InputText type="confirmPassword" id="password" class="input is-warning" @bind-Value="RegistrationModel.ConfirmPassword" placeholder="Confirm Password" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Password)" />
+                    </div>
+                </div>
+
+                <button type="submit" class="button is-warning mt-2">Register</button>
             </EditForm>
-            <div class="mt-2">
-                <a class="has-text-white is-underlined" href="/Registration">Register</a>
-            </div>
         </div>
     </div>
 </div>
@@ -38,6 +43,7 @@
 @code {
     private string? Email { get; set; }
     private string? Password { get; set; }
+    private string? ConfirmPassword { get; set; }
     private UserRegistrationModel RegistrationModel = new UserRegistrationModel();
 
     private void HandleValidSubmit()
@@ -55,6 +61,9 @@
 
         [Required(ErrorMessage = "Please enter password")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "Please confirm password")]
+        public string ConfirmPassword { get; set; }
     }
 
 }
