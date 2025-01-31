@@ -19,7 +19,6 @@ namespace FlightApp.Repository
         {
             using (var client = new HttpClient())
             {
-                //client.DefaultRequestHeaders.Add("flight_iata", iata);
                 try
                 {
                     using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key=7f8e9351d9959f9b49acd565d06a3571&flight_iata={iata}");

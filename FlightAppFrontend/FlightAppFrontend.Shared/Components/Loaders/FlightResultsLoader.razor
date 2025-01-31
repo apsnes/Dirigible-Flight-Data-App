@@ -24,21 +24,16 @@ else
     [Parameter]
     public string? DepartureIATA { get; set; }
 
-
-    protected List<FlightResponse>? FlightResponses { get; set; }
+    public List<FlightResponse>? FlightResponses { get; set; }
 
     protected string? ErrorMessage;
 
     protected override async Task OnInitializedAsync()
     {
         try
-        {
+        {      
             var client = ClientFactory.CreateClient("DirigibleApi");
-
-            var test = client.BaseAddress;
-
             var response = await client.GetValueAsync<List<FlightResponse>>($"api/FlightApi/results?departures={DepartureIATA}&arrivals={ArrivalIATA}");
-
             FlightResponses = response.Value;
             ErrorMessage = response.ErrorMessage;
         }

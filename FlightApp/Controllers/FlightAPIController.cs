@@ -53,7 +53,7 @@ namespace FlightApp.Controllers
         {
             string? arrivals = Request.Query.ContainsKey("arrivals") ? Request.Query["arrivals"] : string.Empty;
             string? departures = Request.Query.ContainsKey("departures") ? Request.Query["departures"] : string.Empty;
-            string? flightIata = Request.Query.ContainsKey("flighT_iata") ? Request.Query["flight_iata"] : string.Empty;
+            string? flightIata = Request.Query.ContainsKey("flight_iata") ? Request.Query["flight_iata"] : string.Empty;
 
             if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
             {
