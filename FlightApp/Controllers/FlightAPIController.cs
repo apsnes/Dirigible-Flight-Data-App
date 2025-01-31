@@ -1,4 +1,5 @@
 ﻿using FlightApp.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightApp.Controllers
