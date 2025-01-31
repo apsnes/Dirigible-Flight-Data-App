@@ -1,10 +1,11 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
 @inject IHttpClientFactory DirigibleApi
-
+@inject IJsInteropService JsInteropService
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
@@ -41,9 +42,7 @@
 
 
 @code {
-    private string? Email { get; set; }
-    private string? Password { get; set; }
-    //private UserLoginModel LoginModel = new UserLoginModel();
+
     private SignInRequestDTO LoginModel = new SignInRequestDTO();
 
     private async Task HandleValidSubmit()
@@ -53,23 +52,26 @@
         var result = await client.PostAsync("Account/SignIn", content);
         if(result.IsSuccessStatusCode){
             Console.WriteLine("Login successful");
+            var data = await result.Content.ReadAsStringAsync();
+            var deserializedData = JsonSerializer.Deserialize<SignInResponseDTO>(data);
+            var token = deserializedData?.Token;
+            if(token!=null){
+                await JsInteropService.SetItem("token", token);
+                JsInteropService.CreateAlert("Login successful");
+            }
+            else{
+                JsInteropService.CreateAlert("Login failed");
+            }
+            
         }
         else{
-            Console.WriteLine("Login failed");
+            JsInteropService.CreateAlert("Login failed");
         }
 
     }
     private void HandleInvalidSubmit()
     {
         Console.WriteLine("OnInvalidSubmit");
-    }
-    public class UserLoginModel
-    {
-        [Required(ErrorMessage = "Please enter an email")]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "Please enter a password")]
-        public string Password { get; set; }
     }
 
 }

@@ -72,4 +72,10 @@
     <ProjectReference Include="..\FlightAppFrontend.Shared\FlightAppFrontend.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\scripts\LocalStorage.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

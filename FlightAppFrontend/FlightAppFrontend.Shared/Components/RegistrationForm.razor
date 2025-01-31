@@ -1,5 +1,11 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Services
+@using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory DirigibleApi
+@inject IJsInteropService JsInteropService
 
 <div class="container">
     <div class="columns is-centered">
@@ -9,20 +15,32 @@
 
             <EditForm FormName="loginForm" Model="RegistrationModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Registration Form">
                 <DataAnnotationsValidator />
-
                 <div class="field">
-                    <label for="username" class="label">Username</label>
+                    <label for="firstname" class="label">First Name</label>
                     <div class="control mt-2">
-                        <InputText id="username" class="input is-warning" @bind-Value="RegistrationModel.Username" placeholder="Choose a Username" />
-                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Username)" />
+                        <InputText id="firstname" class="input is-warning" @bind-Value="RegistrationModel.FirstName" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.FirstName)" />
                     </div>
                 </div>
-
+                <div class="field">
+                    <label for="lastname" class="label">Last Name</label>
+                    <div class="control mt-2">
+                        <InputText id="lastname" class="input is-warning" @bind-Value="RegistrationModel.LastName" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.LastName)" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="phonenumber" class="label">Phone Number</label>
+                    <div class="control mt-2">
+                        <InputText id="phonenumber" class="input is-warning" @bind-Value="RegistrationModel.PhoneNumber" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.PhoneNumber)" />
+                    </div>
+                </div>
                 <div class="field">
                     <label for="email" class="label">Email</label>
                     <div class="control mt-2">
                         <InputText id="email" class="input is-warning" @bind-Value="RegistrationModel.Email" placeholder="Email" />
-                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Email)" />
+                        <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.Email)" />
                     </div>
                 </div>
 
@@ -54,28 +72,25 @@
     private string? Email { get; set; }
     private string? Password { get; set; }
     private string? ConfirmPassword { get; set; }
-    private UserRegistrationModel RegistrationModel = new UserRegistrationModel();
+    private SignUpRequestDTO RegistrationModel = new();
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        Console.WriteLine("OnValidSubmit");
+        var client = DirigibleApi.CreateClient("DirigibleApi");
+        var content = new StringContent(JsonSerializer.Serialize(RegistrationModel), Encoding.UTF8, "application/json");
+        var result = await client.PostAsync("Account/SignUp", content);
+        if (result.IsSuccessStatusCode)
+        {
+            JsInteropService.CreateAlert("Account created");
+        }
+        else
+        {
+            JsInteropService.CreateAlert("Failed to create account. Please try again");
+        }
     }
     private void HandleInvalidSubmit()
     {
-        Console.WriteLine("OnInvalidSubmit");
+        JsInteropService.CreateAlert("Invalid data. Please correct and submit again");
     }
-    public class UserRegistrationModel
-    {
-        [Required(ErrorMessage = "Please enter a username")]
-        public string Username { get; set; }
-
-        [Required(ErrorMessage = "Please enter an email")]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "Please enter a password")]
-        public string Password { get; set; }
-
-        [Required(ErrorMessage = "Please confirm password")]
-        public string ConfirmPassword { get; set; }
-    }
+    
 }

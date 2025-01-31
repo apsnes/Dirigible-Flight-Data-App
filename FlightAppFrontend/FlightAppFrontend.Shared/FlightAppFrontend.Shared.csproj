@@ -25,4 +25,10 @@
     <Folder Include="Components\Utility\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\scripts\LocalStorage.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
