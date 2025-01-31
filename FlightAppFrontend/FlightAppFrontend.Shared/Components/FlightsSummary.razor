@@ -1,6 +1,9 @@
+@using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppLibrary.Models.Response
 
-<div>
+<div class="mt-6">
+    <Title Text="Results:"/>
+
     @foreach(var response in @FlightResponses!)
     {
         <FlightResultCard FlightResponse="response"/>
