@@ -49,12 +49,18 @@ builder.Services.AddAuthentication(opt =>
 });
 
 builder.Services.AddDbContext<FlightAppDbContext>();
+
 builder.Services.AddScoped<IFlightApiRepository, FlightApiRepository>();
 builder.Services.AddScoped<IFlightApiService, FlightApiService>();
+builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
+builder.Services.AddScoped<INotesRepository, NotesRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IFlightsService, FlightsService>();
+builder.Services.AddScoped<INotesService, NotesService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
+
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddScoped<IAccountService, AccountService>();
-
-
 
 var app = builder.Build();
 

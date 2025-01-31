@@ -1,7 +1,7 @@
 @using FlightAppLibrary.Models.Response
 
 <div>
-    @foreach(var response in FlightResponses!)
+    @foreach(var response in @FlightResponses!)
     {
         <FlightSummary FlightResponse="response"/>
     }
