@@ -22,7 +22,6 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest("Unable to find any notes") : Ok(result);
         }
 
-
         //-----POST REQUESTS-----
         [HttpPost]
         public IActionResult AddNote([FromBody] Note note)

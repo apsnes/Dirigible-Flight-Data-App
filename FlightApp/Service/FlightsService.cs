@@ -7,6 +7,7 @@ namespace FlightApp.Service
     {
         List<Flight> GetFlights();
         Flight AddFlight(Flight flight);
+        Flight GetFlightByIata(string iata);
     }
 
     public class FlightsService : IFlightsService
@@ -21,6 +22,11 @@ namespace FlightApp.Service
         public List<Flight> GetFlights()
         {
             return _flightsRepository.GetFlights();
+        }
+
+        public Flight GetFlightByIata(string iata)
+        {
+            return _flightsRepository.GetFlightByIata(iata);
         }
 
         //-----------POST REQUESTS-----------

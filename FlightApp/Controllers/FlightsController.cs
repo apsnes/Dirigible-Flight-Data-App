@@ -21,6 +21,13 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest("Unable to find any flights") : Ok(result);
         }
 
+        [HttpGet("{iata}")]
+        public IActionResult GetFlightByIata(string iata)
+        {
+            var result = _flightsService.GetFlightByIata(iata);
+            return result == null ? BadRequest($"Could not find flight {iata}.") : Ok(result);
+        }
+
         //-----POST REQUESTS-----
         [HttpPost]
         public IActionResult AddFlight([FromBody] Flight flight)

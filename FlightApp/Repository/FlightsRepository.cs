@@ -1,5 +1,6 @@
 ﻿using FlightApp.Database;
 using FlightApp.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlightApp.Repository
 {
@@ -7,6 +8,7 @@ namespace FlightApp.Repository
     {
         List<Flight> GetFlights();
         Flight AddFlight(Flight flight);
+        Flight GetFlightByIata(string iata);
     }
 
     public class FlightsRepository : IFlightsRepository
@@ -22,7 +24,20 @@ namespace FlightApp.Repository
         {
             try
             {
-                return db.Flights.ToList();
+                return db.Flights.Include(x => x.FlightNotes).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
+        public Flight GetFlightByIata(string iata)
+        {
+            try
+            {
+                return db.Flights.Include(x => x.FlightNotes).FirstOrDefault(x => x.FlightNumber == iata);
             }
             catch (Exception e)
             {
