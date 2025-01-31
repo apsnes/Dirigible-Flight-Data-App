@@ -1,6 +1,6 @@
 ﻿﻿@if (!string.IsNullOrEmpty(Message))
 {
-    <div class="notification is-danger mt-5">
+    <div class="notification is-danger mt-5" aria-label="Error Message">
         <button class="delete" @onclick="()=>DeleteNotification()"></button>
         @Message
     </div>

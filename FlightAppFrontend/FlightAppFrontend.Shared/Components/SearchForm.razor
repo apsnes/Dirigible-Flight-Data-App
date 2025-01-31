@@ -4,8 +4,12 @@
 @using FlightAppLibrary.Models
 
 <div class="container">
+
+
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
+
+            <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
             <Title Text="Search Flights"/>
 
@@ -43,14 +47,19 @@
 @code{
     public SearchModel SearchModel = new();
 
+    public string? ErrorMessage;
 
     private void HandleInvalidSubmit()
     {
-        Console.WriteLine("OnInvalidSubmit");
+
     }
 
     protected void HandleValidSubmit()
     {
+        if (String.IsNullOrEmpty(SearchModel.FlightIATA) &&
+                String.IsNullOrEmpty(SearchModel.DepartureIATA) &&
+                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Search must have at least one search term"; return; }
+
         NavigationManager.NavigateTo($"Results?{CreateQueryString()}");
     }
 
@@ -63,5 +72,10 @@
         if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
 
         return String.Join("&", parameters);
+    }
+
+    protected void ResetError()
+    {
+        ErrorMessage = "";
     }
 }

@@ -37,6 +37,7 @@ else
         {      
             var client = ClientFactory.CreateClient("DirigibleApi");
             var response = await client.GetValueAsync<List<FlightResponse>>($"api/FlightApi/results?{CreateQueryString()}");
+
             FlightResponses = response.Value;
             ErrorMessage = response.ErrorMessage;
         }
