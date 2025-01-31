@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FlightApp.Controllers
 {
     [ApiController]
-    [Route("Api/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class AccountController : ControllerBase
     {
         private IAccountService _accountService;

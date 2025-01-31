@@ -1,5 +1,9 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory DirigibleApi
 
 <div class="container">
     <div class="columns is-centered">
@@ -13,8 +17,8 @@
                 <div class="field">
                     <label for="email" class="label">Email</label>
                     <div class="control mt-2">
-                        <InputText id="email" class="input is-warning" @bind-Value="LoginModel.Email" placeholder="Email" />
-                        <ValidationMessage class="help is-danger" For="@(() => LoginModel!.Email)" />
+                        <InputText id="email" class="input is-warning" @bind-Value="LoginModel.UserName" placeholder="Email" />
+                        <ValidationMessage class="help is-danger" For="@(() => LoginModel.UserName)" />
                     </div>
                 </div>
 
@@ -39,11 +43,21 @@
 @code {
     private string? Email { get; set; }
     private string? Password { get; set; }
-    private UserLoginModel LoginModel = new UserLoginModel();
+    //private UserLoginModel LoginModel = new UserLoginModel();
+    private SignInRequestDTO LoginModel = new SignInRequestDTO();
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        Console.WriteLine("OnValidSubmit");
+        var client = DirigibleApi.CreateClient("DirigibleApi");
+        var content = new StringContent(JsonSerializer.Serialize(LoginModel), Encoding.UTF8, "application/json");
+        var result = await client.PostAsync("Account/SignIn", content);
+        if(result.IsSuccessStatusCode){
+            Console.WriteLine("Login successful");
+        }
+        else{
+            Console.WriteLine("Login failed");
+        }
+
     }
     private void HandleInvalidSubmit()
     {
