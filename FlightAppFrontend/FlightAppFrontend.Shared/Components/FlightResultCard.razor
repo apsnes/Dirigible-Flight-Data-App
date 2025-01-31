@@ -13,7 +13,7 @@
                 <div class="media-content">
                     <p class="title is-4">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
                     <p class="subtitle is-6">@FlightResponse!.Departure.Airport (@FlightResponse!.Departure.Iata) to @FlightResponse!.Arrival.Airport (@FlightResponse!.Arrival.Iata)</p>
-                    <p class="subtitle is-6">@FlightResponse.Departure.Scheduled</p>
+                    <p class="subtitle is-6">@ParseFlightDateTime(@FlightResponse.Departure.Scheduled)</p>
                 </div>
             </div>
         </div>
@@ -29,5 +29,17 @@
     protected override void OnInitialized()
     {
         Path = $"/FlightSummary/{FlightResponse!.Flight.Iata}";
+    }
+
+    protected string ParseFlightDateTime(DateTime? dateTime)
+    {
+        if (dateTime == null) return "";
+
+        var dateTimeArray = dateTime.ToString()!.Split(' ');
+        string date = dateTimeArray[0];
+        var timeArray = dateTimeArray[1].Split(':');
+        string time = timeArray[0] + ":" + timeArray[1];
+
+        return $"{time} - {date}";
     }
 }

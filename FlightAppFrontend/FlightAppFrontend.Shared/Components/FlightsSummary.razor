@@ -3,11 +3,14 @@
 
 <div class="mt-6">
     <Title Text="Results:"/>
-
-    @foreach(var response in @FlightResponses!)
-    {
-        <FlightResultCard FlightResponse="response"/>
-    }
+    <div class="columns">
+        <div class="column is-half">
+            @foreach (var response in @FlightResponses!)
+            {
+                <FlightResultCard FlightResponse="response" />
+            }
+        </div>
+    </div>
 </div>
 
 @code{

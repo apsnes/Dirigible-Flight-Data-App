@@ -1,0 +1,83 @@
+﻿@page "/health"
+@inject IHttpClientFactory ClientFactory
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+
+<div class="container health-check-container">
+    @if (healthChecks == null)
+    {
+        <Loading />
+    }
+    else
+    {
+        <div class="table-container m-5">
+            <table class="table is-bordered is-striped is-fullwidth mt-5">
+                <thead>
+                    <tr>
+                        <th>Health Check</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var check in healthChecks)
+                    {
+                        @if (check.Status == "Healthy")
+                        {
+                            <tr>
+                                <td><strong>@check.Name</strong></td>
+                                <td class="has-text-success">@check.Status</td>
+                                <td>@check.Description</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td><strong>@check.Name</strong></td>
+                                <td class="has-text-danger">@check.Status</td>
+                                <td>@check.Description</td>
+                            </tr>
+                        }                        
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code
+{
+    private List<HealthCheckResultDto> healthChecks;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+
+            var response = await client.GetFromJsonAsync<HealthCheckResponseDto>("health");
+
+            if (response != null) healthChecks = response.Checks;
+        }
+        catch (Exception ex)
+        {
+
+            errorMessage = $"Failed to retrieve health status. Error: {ex}";
+        }
+    }
+
+    private class HealthCheckResponseDto
+    {
+        public string Status { get; set; }
+        public List<HealthCheckResultDto> Checks { get; set; }
+        public TimeSpan TotalDuration { get; set; }
+    }
+
+    private class HealthCheckResultDto
+    {
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
+    }
+}
