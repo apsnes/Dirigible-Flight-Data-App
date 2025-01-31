@@ -51,7 +51,7 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddDbContext<FlightAppDbContext>();
 
 builder.Services.AddScoped<IFlightApiRepository, FlightApiRepository>();
-builder.Services.AddScoped<IFlightApiService, FlightApiService>();
+builder.Services.AddScoped<IFlightService, FlightApiService>();
 builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();

@@ -1,0 +1,33 @@
+﻿@using FlightAppLibrary.Models.Response
+
+﻿<a href="@Path">
+    <div class="card mb-5 pb-4">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <figure class="image is-96x96 is-square">
+                        <img src="https://yt3.googleusercontent.com/iPJIxKeh-2RWWl8Y4dXPN_L5cFRfR35akUxAG-8hUkfmrHGbcU-1FUHHdSlI7y4kR2335lEAFg=s900-c-k-c0x00ffffff-no-rj"
+                             alt="Placeholder image" />
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class="title is-4">@FlightResponse!.FlightDate</p>
+                    <p class="subtitle is-6">@FlightResponse.FlightStatus</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+
+@code{
+    [Parameter]
+    public FlightResponse? FlightResponse { get; set; }
+
+    protected string? Path { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+}

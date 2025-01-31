@@ -3,33 +3,36 @@
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppLibrary.Models
 
-
 <div class="container">
+
+
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
 
-            <Title Text="Search For a Flight"/>
+            <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
+
+            <Title Text="Search Flights"/>
 
             <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Search Form">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
                 <div class="field">
-                    <label for="iata" class="form-label">Flight Number</label>
+                    <label for="iata" class="label">Flight Number</label>
                     <div class="control mt-2">
                         <InputText id="iata" class="input is-warning" @bind-Value="SearchModel!.FlightIATA" placeholder="Flight Number" />
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="departure" class="form-label">Departure IATA</label>
+                    <label for="departure" class="label">Departure IATA</label>
                     <div class="control mt-2">
                         <InputText id="departure" class="input is-warning" @bind-Value="SearchModel!.DepartureIATA" placeholder="Departure IATA" />
                     </div>
                 </div>
 
-                <div>
-                    <label for="arrival" class="form-label">Arrival IATA</label>
+                <div class="field">
+                    <label for="arrival" class="label">Arrival IATA</label>
                     <div class="control mt-2">
                         <InputText id="arrival" class="input is-warning" @bind-Value="SearchModel!.ArrivalIATA" placeholder="Arrival IATA" />
                     </div>
@@ -44,14 +47,35 @@
 @code{
     public SearchModel SearchModel = new();
 
+    public string? ErrorMessage;
 
     private void HandleInvalidSubmit()
     {
-        Console.WriteLine("OnInvalidSubmit");
+
     }
 
     protected void HandleValidSubmit()
     {
-        NavigationManager.NavigateTo($"Results?departure={SearchModel!.DepartureIATA}&arrival={SearchModel!.ArrivalIATA}");
+        if (String.IsNullOrEmpty(SearchModel.FlightIATA) &&
+                String.IsNullOrEmpty(SearchModel.DepartureIATA) &&
+                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Search must have at least one search term"; return; }
+
+        NavigationManager.NavigateTo($"Results?{CreateQueryString()}");
+    }
+
+    protected string CreateQueryString() 
+    {
+        HashSet<string> parameters = [];
+
+        if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"flight_iata={SearchModel!.FlightIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departures={SearchModel!.DepartureIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
+
+        return String.Join("&", parameters);
+    }
+
+    protected void ResetError()
+    {
+        ErrorMessage = "";
     }
 }
