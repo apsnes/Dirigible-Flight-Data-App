@@ -15,7 +15,7 @@ namespace FlightApp.Controllers
         }
 
         [HttpGet("{iata}")]
-        [Authorize(Roles = "Customer")]
+        //[Authorize(Roles = "Customer")]
         public IActionResult GetFlightByIata(string iata)
         {
             var result = _flightApiService.GetFlightByIata(iata);

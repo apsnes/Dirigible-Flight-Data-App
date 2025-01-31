@@ -21,8 +21,4 @@
     <ProjectReference Include="..\..\FlightAppLibrary\FlightAppLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\Utility\" />
-  </ItemGroup>
-
 </Project>
