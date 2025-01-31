@@ -51,6 +51,17 @@
 
     protected void HandleValidSubmit()
     {
-        NavigationManager.NavigateTo($"Results?departure={SearchModel!.DepartureIATA}&arrival={SearchModel!.ArrivalIATA}");
+        NavigationManager.NavigateTo($"Results?{CreateQueryString()}");
+    }
+
+    protected string CreateQueryString() 
+    {
+        HashSet<string> parameters = [];
+
+        if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"departure={SearchModel!.FlightIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departure={SearchModel!.DepartureIATA}");
+        if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"departure={SearchModel!.ArrivalIATA}");
+
+        return String.Join("&", parameters);
     }
 }
