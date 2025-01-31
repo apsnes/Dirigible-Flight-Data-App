@@ -1,13 +1,16 @@
 @page "/Results"
 @using FlightAppFrontend.Shared.Components.Loaders
 
-<FlightResultsLoader DepartureIATA="@DepartureIATA" ArrivalIATA="@ArrivalIATA" />
+<FlightResultsLoader FlightIATA="FlightIATA" DepartureIATA="@DepartureIATA" ArrivalIATA="@ArrivalIATA" />
 
 @code{
 
-    [SupplyParameterFromQuery(Name="departure")]
+    [SupplyParameterFromQuery(Name="flight_iata")]
+    public string? FlightIATA { get; set; }
+
+    [SupplyParameterFromQuery(Name="departures")]
     public string? DepartureIATA { get; set; }
 
-    [SupplyParameterFromQuery(Name="arrival")]
+    [SupplyParameterFromQuery(Name="arrivals")]
     public string? ArrivalIATA { get; set;  }
 }
