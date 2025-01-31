@@ -8,8 +8,8 @@ namespace FlightApp.Controllers
     [Route("api/[controller]")]
     public class FlightApiController : ControllerBase
     {
-        private readonly IFlightApiService _flightApiService;
-        public FlightApiController(IFlightApiService flightApiService)
+        private readonly IFlightService _flightApiService;
+        public FlightApiController(IFlightService flightApiService)
         {
             _flightApiService = flightApiService;
         }

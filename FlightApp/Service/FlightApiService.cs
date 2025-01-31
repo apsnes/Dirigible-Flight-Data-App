@@ -3,7 +3,7 @@ using FlightApp.Repository;
 
 namespace FlightApp.Service
 {
-    public interface IFlightApiService
+    public interface IFlightService
     {
         FlightResponse? GetFlightByIata(string iata);
         List<FlightResponse> GetFlightsByArrivalIataActive(string arr_iata);
@@ -12,7 +12,7 @@ namespace FlightApp.Service
         List<FlightResponse> GetFlightsByDepartureAirportActive(string dep_iata);
     }
 
-    public class FlightApiService : IFlightApiService
+    public class FlightApiService : IFlightService
     {
         private readonly IFlightApiRepository _flightApiRepository;
         public FlightApiService(IFlightApiRepository flightApiRepository)
