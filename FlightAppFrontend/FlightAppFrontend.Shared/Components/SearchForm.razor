@@ -4,8 +4,6 @@
 @using FlightAppLibrary.Models
 
 <div class="container">
-
-
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
 
@@ -24,19 +22,9 @@
                     </div>
                 </div>
 
-                <div class="field">
-                    <label for="departure" class="label">Departure IATA</label>
-                    <div class="control mt-2">
-                        <InputText id="departure" class="input is-warning" @bind-Value="SearchModel!.DepartureIATA" placeholder="Departure IATA" />
-                    </div>
-                </div>
+                <AutoCompleteField Dictionary="AirportDictionary" Label="Departure" OnSetValue="SetDeparture"/>
 
-                <div class="field">
-                    <label for="arrival" class="label">Arrival IATA</label>
-                    <div class="control mt-2">
-                        <InputText id="arrival" class="input is-warning" @bind-Value="SearchModel!.ArrivalIATA" placeholder="Arrival IATA" />
-                    </div>
-                </div>
+                <AutoCompleteField Dictionary="AirportDictionary" Label="Arrival" OnSetValue="SetArrival"/>
 
                 <MainButton Text="Submit"/>
             </EditForm>
@@ -74,8 +62,29 @@
         return String.Join("&", parameters);
     }
 
+    private void SetDeparture(string value)
+    {
+        if(AirportDictionary.ContainsKey(value))
+        {
+            SearchModel.DepartureIATA = AirportDictionary[value];
+        }
+    }
+
+    private void SetArrival(string value)
+    {
+        SearchModel.ArrivalIATA = AirportDictionary[value];
+    }
+
     protected void ResetError()
     {
         ErrorMessage = "";
     }
+
+    private Dictionary<string, string> AirportDictionary = new()
+    {
+        {"Manchester Airport (MAN)", "MAN"},
+        {"Amsterdam Airport Schiphol (AMS)", "AMS"},
+        {"Liverpool John Lennon Airport (LPL)", "LPL"},
+        {"London Heathrow Airport (LHR)", "LHR"}
+    };
 }
