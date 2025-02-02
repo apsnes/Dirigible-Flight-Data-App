@@ -58,6 +58,7 @@
         return Dictionary!
         .Where(x => x.Key.ToLower().Contains(searchString.ToLower()))
         .Select(x => x.Key)
+        .Take(10)
         .ToList();
     }
 }
