@@ -1,5 +1,7 @@
 ﻿@using FlightAppFrontend.Shared.Components
+@using FlightAppFrontend.Shared.Auth
 @inherits LayoutComponentBase
+@inject TokenService tokenService
 
 <div>
     <header>
@@ -24,3 +26,12 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+           var token = await tokenService.LoadTokenAsync();
+        }
+    }
+}

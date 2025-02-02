@@ -1,4 +1,5 @@
 ﻿@using System.ComponentModel.DataAnnotations
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
@@ -6,6 +7,7 @@
 @using System.Text
 @inject IHttpClientFactory DirigibleApi
 @inject IJsInteropService JsInteropService
+@inject CustomAuthenticationStateProvider customAuthenticationStateProvider
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
@@ -56,7 +58,8 @@
             var deserializedData = JsonSerializer.Deserialize<SignInResponseDTO>(data);
             var token = deserializedData?.Token;
             if(token!=null){
-                await JsInteropService.SetItem("token", token);
+                await JsInteropService.SetItem("jwtToken", token);
+                customAuthenticationStateProvider.NotifyUserAuthentication(token);
                 JsInteropService.CreateAlert("Login successful");
             }
             else{

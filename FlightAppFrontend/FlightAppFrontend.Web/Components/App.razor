@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using FlightAppFrontend.Shared.Auth
+@inject TokenService tokenService
+<!DOCTYPE html>
 <html lang="en" class="has-background-link-dark">
 
 <head>
@@ -24,3 +26,12 @@
 </body>
 
 </html>
+@* @code{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await tokenService.LoadTokenAsync();
+        }
+    }
+} *@
