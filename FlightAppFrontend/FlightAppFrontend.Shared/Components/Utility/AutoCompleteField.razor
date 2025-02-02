@@ -1,9 +1,12 @@
-@using FlightAppLibrary.Models
+﻿@using FlightAppLibrary.Models
 
 <div class="field">
-    <label for="@Label" class="label">@Label</label>
-    <div class="control mt-2">
-        <InputText id="@Label" class="input is-warning" @bind-Value="Value" @oninput="(e) => MakeSuggestions(e)" @onblur="() => SetValue(Value)" placeholder="@Label" aria-autocomplete="list" autocomplete="off"/>
+    <label for="@Name" class="label">@Name</label>
+    <div class="control mt-2 has-icons-right">
+        <InputText id="@Name" class="input is-warning" @bind-Value="Value" @oninput="(e) => MakeSuggestions(e)" @onblur="() => SetValue(Value)" placeholder="@Name" aria-autocomplete="list" autocomplete="off"/>
+        <span class="icon is-right is-clickable" @onclick="() => SetValue(null)">
+            <button type="button" class="fas fa-home"></button>
+        </span>
     </div>
 
     @if (IsActive && !String.IsNullOrEmpty(searchString))
@@ -28,7 +31,7 @@
     public Dictionary<string, string>? Dictionary { get; set; }
 
     [Parameter]
-    public string? Label { get; set; }
+    public string? Name { get; set; }
 
     [Parameter]
     public EventCallback<string> OnSetValue { get; set; }
@@ -58,7 +61,7 @@
         return Dictionary!
         .Where(x => x.Key.ToLower().Contains(searchString.ToLower()))
         .Select(x => x.Key)
-        .Take(10)
+        .Take(7)
         .ToList();
     }
 }

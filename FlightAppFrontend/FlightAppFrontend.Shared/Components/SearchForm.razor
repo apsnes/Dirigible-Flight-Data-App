@@ -22,9 +22,9 @@
                     </div>
                 </div>
 
-                <AutoCompleteField Dictionary="AirportDictionary" Label="Departure City" OnSetValue="SetDeparture"/>
+                <AutoCompleteField Dictionary="AirportDictionary" Name="Departure City" OnSetValue="SetDeparture"/>
 
-                <AutoCompleteField Dictionary="AirportDictionary" Label="Arrival City" OnSetValue="SetArrival"/>
+                <AutoCompleteField Dictionary="AirportDictionary" Name="Arrival City" OnSetValue="SetArrival"/>
 
                 <MainButton Text="Submit"/>
             </EditForm>
@@ -59,16 +59,18 @@
         return String.Join("&", parameters);
     }
 
-    private void SetDeparture(string key)
+    private void SetDeparture(string? key)
     {
+        if (key == null) {SearchModel.DepartureIATA = null; return;}
         string? value;
-        SearchModel.DepartureIATA = AirportDictionary.TryGetValue(key, out value) ? value : null;
+        SearchModel.DepartureIATA = AirportDictionary.TryGetValue(key!, out value) ? value : null;
     }
 
-    private void SetArrival(string key)
+    private void SetArrival(string? key)
     {
+        if (key == null) { SearchModel.DepartureIATA = null; return; }
         string? value;
-        SearchModel.ArrivalIATA = AirportDictionary.TryGetValue(key, out value) ? value : null;
+        SearchModel.ArrivalIATA = AirportDictionary.TryGetValue(key!, out value) ? value : null;
     }
 
     protected void ResetError()
