@@ -1,6 +1,6 @@
 ﻿@using FlightAppLibrary.Models
 
-<div class="field">
+<div class="field" aria-label="@Name">
     <label for="@Name" class="label">@Name</label>
     <div class="control mt-2 has-icons-right">
         <InputText id="@Name" class="input is-warning" @bind-Value="Value" @oninput="(e) => MakeSuggestions(e)" @onblur="() => SetValue(Value)" placeholder="@Name" aria-autocomplete="list" autocomplete="off"/>
@@ -61,7 +61,7 @@
         return Dictionary!
         .Where(x => x.Key.ToLower().Contains(searchString.ToLower()))
         .Select(x => x.Key)
-        .Take(6)
+        .Take(5)
         .ToList();
     }
 }
