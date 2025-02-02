@@ -5,9 +5,11 @@
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IHttpClientFactory DirigibleApi
 @inject IJsInteropService JsInteropService
-@inject CustomAuthenticationStateProvider customAuthenticationStateProvider
+@inject AuthenticationStateProvider customAuthenticationStateProvider
+@inject TokenStateService tokenStateService
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
@@ -40,12 +42,47 @@
             </div>
         </div>
     </div>
+    <AuthorizeView>
+        <Authorized>
+            <p>@($"You are logged in {firstName}!")</p>
+        </Authorized>
+        <NotAuthorized>
+            <p>You are not logged in.</p>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 
 @code {
 
     private SignInRequestDTO LoginModel = new SignInRequestDTO();
+    private string firstName ="";
+
+    private AuthenticationState _authState;
+    protected override async Task OnInitializedAsync()
+    {
+        _authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = _authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            firstName = user.FindFirst("firstName")?.Value;
+        }
+    }
+  
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+        
+    //     if (firstRender)
+    //     {
+    //         _authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
+    //         var user = _authState.User;
+    //         if (user.Identity.IsAuthenticated)
+    //         {
+    //             firstName = user.FindFirst("firstName")?.Value;
+    //             StateHasChanged();
+    //         }
+    //     }
+    // }
 
     private async Task HandleValidSubmit()
     {
@@ -53,13 +90,16 @@
         var content = new StringContent(JsonSerializer.Serialize(LoginModel), Encoding.UTF8, "application/json");
         var result = await client.PostAsync("Account/SignIn", content);
         if(result.IsSuccessStatusCode){
-            Console.WriteLine("Login successful");
             var data = await result.Content.ReadAsStringAsync();
             var deserializedData = JsonSerializer.Deserialize<SignInResponseDTO>(data);
             var token = deserializedData?.Token;
             if(token!=null){
                 await JsInteropService.SetItem("jwtToken", token);
-                customAuthenticationStateProvider.NotifyUserAuthentication(token);
+                if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
+                {
+                    tokenStateService.SetToken(token);
+                    customProvider.NotifyAuthenticationStateChanged();
+                }
                 JsInteropService.CreateAlert("Login successful");
             }
             else{

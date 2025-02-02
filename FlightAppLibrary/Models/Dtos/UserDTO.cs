@@ -11,8 +11,10 @@ namespace FlightAppLibrary.Models.Dtos
     {
         [JsonPropertyName("id")]
         public string? Id { get; set; }
-        [JsonPropertyName("name")]
-        public string? Name { get; set; }
+        [JsonPropertyName("firstName")]
+        public string? FirstName { get; set; }
+        [JsonPropertyName("lastName")]
+        public string? LastName { get; set; }
         [JsonPropertyName("email")]
         public string Email { get; set; }
         [JsonPropertyName("phoneNumber")]

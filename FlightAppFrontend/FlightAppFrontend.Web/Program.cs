@@ -16,9 +16,11 @@ builder.Services.AddHttpClient("DirigibleApi", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
+builder.Services.AddSingleton<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthenticationStateProvider>());
+//builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthenticationStateProvider>());
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
 

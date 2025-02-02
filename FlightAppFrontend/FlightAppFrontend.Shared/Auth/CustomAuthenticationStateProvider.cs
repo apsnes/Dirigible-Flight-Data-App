@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -13,49 +14,51 @@ namespace FlightAppFrontend.Shared.Auth
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly IJSRuntime _jsRuntime;
-        private readonly HttpClient _httpClient;
-        private readonly AuthenticationState _anonymous;
+        private readonly TokenStateService _tokenStateService;
+    
+        
 
-        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, HttpClient httpClient)
+        public CustomAuthenticationStateProvider(TokenStateService tokenStateService)
         {
-            _jsRuntime = jsRuntime;
-            _httpClient = httpClient;
-            _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            _tokenStateService = tokenStateService;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            JsInteropService js = new(_jsRuntime);
-            //var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "jwtToken");
-            var token = js.GetItem("jwtToken").Result;
+            var token = _tokenStateService.GetToken();
+            var identity = new ClaimsIdentity();
 
-            if (string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(token))
             {
-                return _anonymous;
+                var handler = new JwtSecurityTokenHandler();
+
+                if (handler.CanReadToken(token))
+                {
+                    var jwtToken = handler.ReadJwtToken(token);
+                    var claims = jwtToken.Claims.ToList();
+
+                    // Add additional claims if necessary
+                    claims.Add(new Claim("Token", token));
+
+                    identity = new ClaimsIdentity(claims, "jwtAuthType");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid token format");
+                }
             }
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var identity = new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwt");
             var user = new ClaimsPrincipal(identity);
+            return await Task.FromResult(new AuthenticationState(user));
 
-            return new AuthenticationState(user);
         }
 
-        public void NotifyUserAuthentication(string token)
+        public void NotifyAuthenticationStateChanged()
         {
-            var identity = new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwt");
-            var user = new ClaimsPrincipal(identity);
-
-            var authState = Task.FromResult(new AuthenticationState(user));
-            NotifyAuthenticationStateChanged(authState);
-        }
-
-        public void NotifyUserLogout()
-        {
-            var authState = Task.FromResult(_anonymous);
+            var authState = GetAuthenticationStateAsync();
             NotifyAuthenticationStateChanged(authState);
         }
     }
+
+
 }

@@ -11,31 +11,32 @@ namespace FlightAppFrontend.Shared.Auth
 {
     public class TokenService
     {
-        private readonly IJSRuntime _jsRuntime;
-        private string _token;
+        private readonly IJsInteropService _jsInteropService;
+        private readonly TokenStateService _tokenStateService;
         
 
-        public TokenService(IJSRuntime jsRuntime)
+        public TokenService(IJsInteropService jsInteropService, TokenStateService tokenStateService)
         {
-            _jsRuntime = jsRuntime;
+            _jsInteropService = jsInteropService;
+            _tokenStateService = tokenStateService;
         }
 
         public async Task<string> LoadTokenAsync()
         {
-            // Retrieve the JWT token from localStorage
-            JsInteropService jsInteropService = new(_jsRuntime);
-            _token = await GetTokenFromLocalStorageAsync();
-            Console.WriteLine($"this is the token {_token}");
-            return _token;
+            var token = await GetTokenFromLocalStorageAsync();
+            _tokenStateService.SetToken( token );
+            return token;
         }
 
         public string GetToken()
         {
-            return _token;
+            return _tokenStateService.GetToken();
         }
         private async Task<string> GetTokenFromLocalStorageAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "jwtToken");
+            return await _jsInteropService.GetItem("jwtToken");
+          
+           
         }
     }
 

@@ -99,9 +99,10 @@ namespace FlightApp.Service
                     UserDTO = new UserDTO
                     {
                         Id = user.Id,
-                        Name = user.UserName,
                         Email = user.Email,
-                        PhoneNumber = user.PhoneNumber
+                        PhoneNumber = user.PhoneNumber,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
                     }
                 };
 
