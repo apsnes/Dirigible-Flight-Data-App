@@ -38,10 +38,16 @@
         if (firstRender)
         {
            var token = await tokenService.LoadTokenAsync();
+           if(token!=null)
+           {
             if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
             {
                 customProvider.NotifyAuthenticationStateChanged();
             }
+         }
+         else{
+                Console.WriteLine("Token is null");
+         }
         }
     }
 }

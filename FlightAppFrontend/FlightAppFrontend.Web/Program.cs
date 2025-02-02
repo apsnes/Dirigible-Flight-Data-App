@@ -19,7 +19,6 @@ builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddSingleton<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-//builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthenticationStateProvider>());
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 

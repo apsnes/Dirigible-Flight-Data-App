@@ -44,7 +44,7 @@
     </div>
     <AuthorizeView>
         <Authorized>
-            <p>@($"You are logged in {firstName}!")</p>
+            <p>@($"You are logged in {name}!")</p>
         </Authorized>
         <NotAuthorized>
             <p>You are not logged in.</p>
@@ -57,32 +57,38 @@
 
     private SignInRequestDTO LoginModel = new SignInRequestDTO();
     private string firstName ="";
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    string name = "";
 
     private AuthenticationState _authState;
     protected override async Task OnInitializedAsync()
     {
-        _authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = _authState.User;
-        if (user.Identity.IsAuthenticated)
-        {
-            firstName = user.FindFirst("firstName")?.Value;
-        }
+        
     }
   
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
         
-    //     if (firstRender)
-    //     {
-    //         _authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
-    //         var user = _authState.User;
-    //         if (user.Identity.IsAuthenticated)
-    //         {
-    //             firstName = user.FindFirst("firstName")?.Value;
-    //             StateHasChanged();
-    //         }
-    //     }
-    // }
+        if (firstRender)
+        {
+            var au = await authenticationStateTask;
+            if (au != null && au.User.Identity.IsAuthenticated)
+            {
+                name = au.User.Identity.Name;
+                _authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
+                var user = _authState.User;
+                if (user.Identity.IsAuthenticated)
+                {
+                    firstName = user.FindFirst("firstName")?.Value;
+                }
+            }
+            else
+            {
+                Console.WriteLine("User is not authenticated");
+            }
+        }
+    }
 
     private async Task HandleValidSubmit()
     {
