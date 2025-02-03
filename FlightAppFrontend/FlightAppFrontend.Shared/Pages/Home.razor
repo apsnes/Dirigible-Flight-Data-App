@@ -1,12 +1,15 @@
 ﻿@page "/"
+@layout UnauthorizedLayout
+@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Layout
 @using FlightAppFrontend.Shared.Services
 @using FlightAppFrontend.Shared.Components
 @inject IFormFactor FormFactor
+@inject TokenStateService TokenStateService
+@inject TokenService TokenService
 
 <PageTitle>Home</PageTitle>
-<div class="mt-6">
-    <LoginForm />
-</div>
+<p>this is the homepage</p>
 
 @code {
     private string factor => FormFactor.GetFormFactor();

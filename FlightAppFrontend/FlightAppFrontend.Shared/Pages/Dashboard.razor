@@ -1,0 +1,36 @@
+﻿@page "/dashboard"
+
+@using FlightAppFrontend.Shared.Auth
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+<PageTitle>Dashboard</PageTitle>
+<h3>Dashboard</h3>
+<p>Welcome to the dashboard @(name)</p>
+
+@code {
+    private AuthenticationState _authState;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private string name = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            var authState = await authenticationStateTask;
+            if (authState != null && authState.User.Identity.IsAuthenticated)
+            {
+                name = authState.User.Identity.Name;
+                StateHasChanged();
+            }
+
+            else
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+    }
+
+}

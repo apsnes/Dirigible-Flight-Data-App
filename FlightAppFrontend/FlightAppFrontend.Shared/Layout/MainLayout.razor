@@ -15,10 +15,19 @@
     <div class="container hero is-fullheight pl-6 pr-6">
 
         <main class="body">
-            @* @if(isLoaded){
+
+            <AuthorizeView>
+                <Authorized>
                 @Body
-            } *@
-            @Body
+                </Authorized>
+                <NotAuthorized>
+                    <p>Unauthorized</p>
+                </NotAuthorized>
+            </AuthorizeView>
+            
+
+            
+     
         </main>
 
         <footer class="mt-auto is-flex-align-items-flex-end">
@@ -26,6 +35,8 @@
         </footer>
     </div>
 </div>
+
+
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
@@ -35,12 +46,17 @@
 
 @code {
     private bool isLoaded = false;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private AuthenticationState? _authState;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
 
     {
         if (firstRender)
         {
+           
             var token = await tokenService.LoadTokenAsync();
             if(token!=null)
             {
@@ -50,6 +66,7 @@
                     isLoaded = true;
                     StateHasChanged();
                 }
+                _authState = await authenticationStateTask;
          }
          else{
                 Console.WriteLine("Token is null");
