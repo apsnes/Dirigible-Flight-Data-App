@@ -12,52 +12,65 @@
 @inject TokenStateService tokenStateService
 @inject NavigationManager NavigationManager;
 
-<div class="container">
-    <div class="columns is-centered">
-        <div class="column is-one-third is-offset-one-third">
+@if(Loading)
+{
+    <Loading/>
+}
+else
+{
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-one-third is-offset-one-third">
 
-            <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
+                <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError" />
 
-            ﻿<Title Text="Login"/>
+                @if(Registered) {
+                    <TitleSuccess Text="Welcome Aboard!"/>
+                }
+                else{
+                    ﻿<Title Text="Login" />
+                }
 
-            <EditForm FormName="loginForm" Model="LoginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Login Form">
-                <DataAnnotationsValidator />
+                <EditForm FormName="loginForm" Model="LoginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Login Form">
+                    <DataAnnotationsValidator />
 
-                <div class="field">
-                    <label for="email" class="label">Email</label>
-                    <div class="control mt-2">
-                        <InputText id="email" class="input is-warning" @bind-Value="LoginModel.UserName" placeholder="Email" />
-                        <ValidationMessage class="help is-danger" For="@(() => LoginModel.UserName)" />
+                    <div class="field">
+                        <label for="email" class="label">Email</label>
+                        <div class="control mt-2">
+                            <InputText id="email" class="input is-warning" @bind-Value="LoginModel.UserName" placeholder="Email" />
+                            <ValidationMessage class="help is-danger" For="@(() => LoginModel.UserName)" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="field">
-                    <label for="password" class="label">Password</label>
-                    <div class="control mt-2">
-                        <InputText type="password" id="password" class="input is-warning" @bind-Value="LoginModel.Password" placeholder="Password" />
-                        <ValidationMessage class="help is-danger" For="@(() => LoginModel!.Password)" />
+                    <div class="field">
+                        <label for="password" class="label">Password</label>
+                        <div class="control mt-2">
+                            <InputText type="password" id="password" class="input is-warning" @bind-Value="LoginModel.Password" placeholder="Password" />
+                            <ValidationMessage class="help is-danger" For="@(() => LoginModel!.Password)" />
+                        </div>
                     </div>
-                </div>
 
-                <MainButton Text="Login"/>
-            </EditForm>
-            <div class="mt-2">
-                <a class="has-text-white is-underlined" href="/Registration">Register</a>
+                    <MainButton Text="Login" />
+                </EditForm>
+                <div class="mt-2">
+                    <a class="has-text-white is-underlined" href="/Registration">Register</a>
+                </div>
             </div>
         </div>
+        <AuthorizeView>
+            <Authorized>
+                <p>@($"You are logged in {name}!")</p>
+            </Authorized>
+            <NotAuthorized>
+                <p>You are not logged in.</p>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
-    <AuthorizeView>
-        <Authorized>
-            <p>@($"You are logged in {name}!")</p>
-        </Authorized>
-        <NotAuthorized>
-            <p>You are not logged in.</p>
-        </NotAuthorized>
-    </AuthorizeView>
-</div>
-
+}
 
 @code {
+    [SupplyParameterFromQuery(Name = "registered")]
+    public bool Registered { get; set; }
 
     private SignInRequestDTO LoginModel = new SignInRequestDTO();
     private string firstName ="";
@@ -65,6 +78,7 @@
     private Task<AuthenticationState> authenticationStateTask { get; set; }
     string name = "";
     private string? ErrorMessage;
+    private bool Loading;
 
     private AuthenticationState _authState;
     protected override async Task OnInitializedAsync()
@@ -97,6 +111,7 @@
 
     private async Task HandleValidSubmit()
     {
+        Loading = true;
         var client = DirigibleApi.CreateClient("DirigibleApi");
         var content = new StringContent(JsonSerializer.Serialize(LoginModel), Encoding.UTF8, "application/json");
         var result = await client.PostAsync("Account/SignIn", content);
@@ -114,14 +129,16 @@
                 NavigationManager.NavigateTo("/dashboard?login=true");
             }
             else{
+                Loading = false;
                 ErrorMessage = "Login failed";
             }
         }
         else{
+            Loading = false;
             ErrorMessage = "Login failed";
         }
-
     }
+
     private void HandleInvalidSubmit()
     {
         Console.WriteLine("OnInvalidSubmit");
