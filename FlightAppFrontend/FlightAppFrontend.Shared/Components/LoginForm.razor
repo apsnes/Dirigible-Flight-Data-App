@@ -11,9 +11,12 @@
 @inject AuthenticationStateProvider customAuthenticationStateProvider
 @inject TokenStateService tokenStateService
 @inject NavigationManager NavigationManager;
+
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
+
+            <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
             ﻿<Title Text="Login"/>
 
@@ -61,6 +64,7 @@
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
     string name = "";
+    private string? ErrorMessage;
 
     private AuthenticationState _authState;
     protected override async Task OnInitializedAsync()
@@ -78,12 +82,12 @@
             {
                 //name = authState.User.Identity.Name;
                 //name = authState.User.Claims.FirstOrDefault(c => c.Type == "FirstName")?.Value;
-                
+
 
 
                 StateHasChanged();
             }
-                
+
             else
             {
                 Console.WriteLine("User is not authenticated");
@@ -107,16 +111,14 @@
                     tokenStateService.SetToken(token);
                     customProvider.NotifyAuthenticationStateChanged();
                 }
-                JsInteropService.CreateAlert("Login successful");
                 NavigationManager.NavigateTo("/dashboard?login=true");
             }
             else{
-                JsInteropService.CreateAlert("Login failed");
+                ErrorMessage = "Login failed";
             }
-            
         }
         else{
-            JsInteropService.CreateAlert("Login failed");
+            ErrorMessage = "Login failed";
         }
 
     }
@@ -125,4 +127,8 @@
         Console.WriteLine("OnInvalidSubmit");
     }
 
+    private void ResetError()
+    {
+        ErrorMessage = "";
+    }
 }
