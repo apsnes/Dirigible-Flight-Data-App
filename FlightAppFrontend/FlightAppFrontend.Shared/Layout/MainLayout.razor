@@ -5,17 +5,13 @@
 @inject TokenService tokenService
 @inject AuthenticationStateProvider customAuthenticationStateProvider
 
-
 <div>
     <header>
-
         <NavMenu />
     </header>
 
     <div class="container hero is-fullheight pl-6 pr-6">
-
         <main class="body">
-
             <AuthorizeView>
                 <Authorized>
                 @Body
@@ -24,10 +20,6 @@
                     <p>Unauthorized</p>
                 </NotAuthorized>
             </AuthorizeView>
-            
-
-            
-     
         </main>
 
         <footer class="mt-auto is-flex-align-items-flex-end">
