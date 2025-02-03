@@ -1,10 +1,15 @@
+@using FlightAppLibrary.Models.AircraftPhoto
 @using FlightAppLibrary.Models.Response
-@using FlightAppFrontend.Shared.Components.Loaders
+
 
 <FlightSummaryCard FlightResponse="@FlightResponse" />
-<CoordinateLoader  FlightResponse="@FlightResponse" />
+<AircraftCard FlightResponse="@FlightResponse" aircraftPhoto="@AircraftPhoto" />
+
+
 
 @code{
     [Parameter]
     public FlightResponse? FlightResponse { get; set; }
+    [Parameter]
+    public Photo? AircraftPhoto { get; set; }
 }

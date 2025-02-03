@@ -5,4 +5,7 @@
     setItem: function (key, value) {
         localStorage.setItem(key, value);
     },
+    removeItem: function (key) {
+        localStorage.removeItem(key);
+    },
 };

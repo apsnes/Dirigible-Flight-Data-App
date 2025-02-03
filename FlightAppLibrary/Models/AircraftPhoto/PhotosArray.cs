@@ -10,6 +10,6 @@ namespace FlightAppLibrary.Models.AircraftPhoto
     public class PhotosArray
     {
         [JsonPropertyName("photos")]
-        public Photo[] Photos {  get; set; }
+        public Photo[]? Photos {  get; set; }
     }
 }

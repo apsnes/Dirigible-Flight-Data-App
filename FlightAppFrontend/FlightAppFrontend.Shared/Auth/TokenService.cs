@@ -38,6 +38,15 @@ namespace FlightAppFrontend.Shared.Auth
           
            
         }
+        public async void SetTokenToNull()
+        {
+            await _jsInteropService.SetItem("jwtToken", null);
+
+        }
+        public async void RemoveToken() {
+            await _jsInteropService.RemoveItem("jwtToken");
+        
+        }
     }
 
 

@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="card mb-5 pb-4">
+    <div class="card-content">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-96x96 is-square">
+                    <img src="" alt="user-avatar" />
+                </figure>
+            </div>
+            <div class="media-content">
+                <p class="title is-4">@AuthState.User.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [Parameter]
+    public AuthenticationState? AuthState { get; set; }
+}
