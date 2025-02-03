@@ -4,6 +4,7 @@
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
+@inject NavigationManager NavigationManager
 @inject IHttpClientFactory DirigibleApi
 @inject IJsInteropService JsInteropService
 
@@ -82,6 +83,7 @@
         if (result.IsSuccessStatusCode)
         {
             JsInteropService.CreateAlert("Account created");
+            NavigationManager.NavigateTo("/login");
         }
         else
         {

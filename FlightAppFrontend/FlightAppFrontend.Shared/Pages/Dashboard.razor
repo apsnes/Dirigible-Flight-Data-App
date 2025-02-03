@@ -1,12 +1,19 @@
 ﻿@page "/dashboard"
-
 @using FlightAppFrontend.Shared.Auth
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
 <PageTitle>Dashboard</PageTitle>
+
+
+
+
 <h3>Dashboard</h3>
 <p>Welcome to the dashboard @(name)</p>
+
+
+
+
 
 @code {
     private AuthenticationState _authState;
@@ -16,7 +23,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
         if (firstRender)
         {
             var authState = await authenticationStateTask;
@@ -25,7 +31,6 @@
                 name = authState.User.Identity.Name;
                 StateHasChanged();
             }
-
             else
             {
                 NavigationManager.NavigateTo("/login");
