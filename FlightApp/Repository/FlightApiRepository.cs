@@ -15,7 +15,7 @@ namespace FlightApp.Repository
 
     public class FlightApiRepository : IFlightApiRepository
     {
-        string key = "49ffed4f5a793e3538024995ddb26f0e";
+        string key = "fb7c292b632cfe66d517705b143c0dc9";
 
         public async Task<FlightResponse?> GetFlightByIata(string iata)
         {

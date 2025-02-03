@@ -11,7 +11,7 @@
             </div>
             <div class="media-right">
                 <figure class="image is-96x96 is-square">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/800px-Emirates_logo.svg.png"
+                    <img src="ImageUrl"
                     alt="Placeholder image" />
                 </figure>
             </div>
@@ -48,6 +48,14 @@
 @code {
     [Parameter]
     public FlightResponse? FlightResponse { get; set; }
+
+    protected string ImageUrl;
+
+    protected override void OnInitialized()
+    {
+        ImageUrl = $"https://content.airhex.com/content/logos/airlines_{FlightResponse.Airline.Iata}_96_96_s.png";
+    }
+    
 
     protected string ParseFlightDateTime(DateTime? dateTime)
     {

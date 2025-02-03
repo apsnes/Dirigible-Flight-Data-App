@@ -49,7 +49,12 @@
         "icao": "KLM1034",
         "codeshared": null
       },
-      "aircraft": null,
+      "aircraft": {
+        "registration": "G-EZTZ",
+        "iata": "A320",
+        "icao": "A320",
+        "icao24": "40643A"
+      },
       "live": null
     }
   ]
