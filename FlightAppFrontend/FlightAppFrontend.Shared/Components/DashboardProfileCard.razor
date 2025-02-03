@@ -5,12 +5,11 @@
         <div class="media">
             <div class="media-left">
                 <figure class="image is-96x96 is-square">
-                    <img src="https://yt3.googleusercontent.com/iPJIxKeh-2RWWl8Y4dXPN_L5cFRfR35akUxAG-8hUkfmrHGbcU-1FUHHdSlI7y4kR2335lEAFg=s900-c-k-c0x00ffffff-no-rj"
-                            alt="Placeholder image" />
+                    <img src="" alt="user-avatar" />
                 </figure>
             </div>
             <div class="media-content">
-                <p class="title is-4">User Details</p>
+                <p class="title is-4">@AuthState.User.</p>
             </div>
         </div>
     </div>
@@ -20,4 +19,7 @@
 @code{
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [Parameter]
+    public AuthenticationState? AuthState { get; set; }
 }
