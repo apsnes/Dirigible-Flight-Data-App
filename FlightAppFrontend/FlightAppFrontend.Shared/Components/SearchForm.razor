@@ -1,19 +1,17 @@
-@inject IHttpClientFactory ClientFactory
+﻿@inject IHttpClientFactory ClientFactory
 @inject NavigationManager NavigationManager
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppLibrary.Models
 
 <div class="container">
-
-
     <div class="columns is-centered">
-        <div class="column is-one-third is-offset-one-third">
+        <div class="column is-two-fifths">
 
             <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
             <Title Text="Search Flights"/>
 
-            <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Search Form">
+            <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" aria-label="Search Form">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
@@ -24,19 +22,9 @@
                     </div>
                 </div>
 
-                <div class="field">
-                    <label for="departure" class="label">Departure IATA</label>
-                    <div class="control mt-2">
-                        <InputText id="departure" class="input is-warning" @bind-Value="SearchModel!.DepartureIATA" placeholder="Departure IATA" />
-                    </div>
-                </div>
+                <AutoCompleteField Dictionary="AirportDictionary" Name="Departure Airport" OnSetValue="SetDeparture"/>
 
-                <div class="field">
-                    <label for="arrival" class="label">Arrival IATA</label>
-                    <div class="control mt-2">
-                        <InputText id="arrival" class="input is-warning" @bind-Value="SearchModel!.ArrivalIATA" placeholder="Arrival IATA" />
-                    </div>
-                </div>
+                <AutoCompleteField Dictionary="AirportDictionary" Name="Arrival Airport" OnSetValue="SetArrival"/>
 
                 <MainButton Text="Submit"/>
             </EditForm>
@@ -49,16 +37,13 @@
 
     public string? ErrorMessage;
 
-    private void HandleInvalidSubmit()
-    {
-
-    }
-
     protected void HandleValidSubmit()
     {
         if (String.IsNullOrEmpty(SearchModel.FlightIATA) &&
                 String.IsNullOrEmpty(SearchModel.DepartureIATA) &&
-                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Search must have at least one search term"; return; }
+                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Search terms must be valid"; return; }
+
+        if(SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
 
         NavigationManager.NavigateTo($"Results?{CreateQueryString()}");
     }
@@ -74,8 +59,479 @@
         return String.Join("&", parameters);
     }
 
+    private void SetDeparture(string? key)
+    {
+        if (key == null) {SearchModel.DepartureIATA = null; return;}
+        string? value;
+        SearchModel.DepartureIATA = AirportDictionary.TryGetValue(key!, out value) ? value : null;
+    }
+
+    private void SetArrival(string? key)
+    {
+        if (key == null) { SearchModel.DepartureIATA = null; return; }
+        string? value;
+        SearchModel.ArrivalIATA = AirportDictionary.TryGetValue(key!, out value) ? value : null;
+    }
+
     protected void ResetError()
     {
         ErrorMessage = "";
     }
+
+    private Dictionary<string, string> AirportDictionary = new()
+    {
+        //North America
+        {"Abbotsford International Airport (YXX)", "YXX"},
+        {"Abraham Lincoln Capital Airport (SPI)", "SPI"},
+        {"Acadiana Regional Airport (ARA)", "ARA"},
+        {"Akron-Canton Airport (CAK)", "CAK"},
+        {"Albuquerque International Sunport (ABQ)", "ABQ"},
+        {"Alexandria International Airport (AEX)", "AEX"},
+        {"Alpena County Regional Airport (APN)", "APN"},
+        {"Altoona–Blair County Airport (AOO)", "AOO"},
+        {"Amarillo International Airport (AMA)", "AMA"},
+        {"Anchorage International Airport (ANC)", "ANC"},
+        {"Appleton International Airport (ATW)", "ATW"},
+        {"Arcata-Eureka Airport (ACV)", "ACV"},
+        {"Asheville Regional Airport (AVL)", "AVL"},
+        {"Aspen-Pitkin County Airport (ASE)", "ASE"},
+        {"Athens-Ben Epps Airport (AHN)", "AHN"},
+        {"Atlanta Hartsfield-Jackson International Airport (ATL)", "ATL"},
+        {"Atlantic City International Airport (ACY)", "ACY"},
+        {"Augusta Regional Airport (AGS)", "AGS"},
+        {"Austin-Bergstrom International Airport (AUS)", "AUS"},
+        {"Baltimore/Washington International Thurgood Marshall Airport (BWI)", "BWI"},
+        {"Bangor International Airport (BGR)", "BGR"},
+        {"Baton Rouge Metropolitan Airport (BTR)", "BTR"},
+        {"Bellingham International Airport (BLI)", "BLI"},
+        {"Bemidji Regional Airport (BJI)", "BJI"},
+        {"Billings Logan International Airport (BIL)", "BIL"},
+        {"Birmingham-Shuttlesworth International Airport (BHM)", "BHM"},
+        {"Bismarck Municipal Airport (BIS)", "BIS"},
+        {"Boise Air Terminal (BOI)", "BOI"},
+        {"Boston Logan International Airport (BOS)", "BOS"},
+        {"Bozeman Yellowstone International Airport (BZN)", "BZN"},
+        {"Bradley International Airport (BDL)", "BDL"},
+        {"Brownsville/South Padre Island International Airport (BRO)", "BRO"},
+        {"Buffalo Niagara International Airport (BUF)", "BUF"},
+        {"Burlington International Airport (BTV)", "BTV"},
+        {"Calgary International Airport (YYC)", "YYC"},
+        {"Calexico International Airport (CXL)", "CXL"},
+        {"Capital City Airport (LAN)", "LAN"},
+        {"Casper/Natrona County International Airport (CPR)", "CPR"},
+        {"Cedar Rapids Eastern Iowa Airport (CID)", "CID"},
+        {"Central Illinois Regional Airport (BMI)", "BMI"},
+        {"Champaign-Urbana Willard Airport (CMI)", "CMI"},
+        {"Charleston International Airport (CHS)", "CHS"},
+        {"Charleston Yeager Airport (CRW)", "CRW"},
+        {"Charlotte Douglas International Airport (CLT)", "CLT"},
+        {"Charlottesville-Albemarle Airport (CHO)", "CHO"},
+        {"Chattanooga Metropolitan Airport (CHA)", "CHA"},
+        {"Chicago Midway International Airport (MDW)", "MDW"},
+        {"Chicago O'Hare International Airport (ORD)", "ORD"},
+        {"Chippewa Valley Regional Airport (EAU)", "EAU"},
+        {"Cincinnati/Northern Kentucky International Airport (CVG)", "CVG"},
+        {"City of Colorado Springs Municipal Airport (COS)", "COS"},
+        {"Cleveland Hopkins International Airport (CLE)", "CLE"},
+        {"Clinton National Airport (LIT)", "LIT"},
+        {"Cody Yellowstone Regional Airport (COD)", "COD"},
+        {"College Station Easterwood Airport (CLL)", "CLL"},
+        {"Columbia Metropolitan Airport (CAE)", "CAE"},
+        {"Columbus John Glenn International Airport (CMH)", "CMH"},
+        {"Corpus Christi International Airport (CRP)", "CRP"},
+        {"Dallas/Fort Worth International Airport (DFW)", "DFW"},
+        {"Dallas Love Field Airport (DAL)", "DAL"},
+        {"Dayton International Airport (DAY)", "DAY"},
+        {"Daytona Beach International Airport (DAB)", "DAB"},
+        {"Denver International Airport (DEN)", "DEN"},
+        {"Des Moines International Airport (DSM)", "DSM"},
+        {"Detroit Metropolitan Wayne County Airport (DTW)", "DTW"},
+        {"Duluth International Airport (DLH)", "DLH"},
+        {"Durango-La Plata County Airport (DRO)", "DRO"},
+        {"Eagle County Regional Airport (EGE)", "EGE"},
+        {"El Paso International Airport (ELP)", "ELP"},
+        {"Elmira/Corning Regional Airport (ELM)", "ELM"},
+        {"Erie International Airport (ERI)", "ERI"},
+        {"Eugene Airport (EUG)", "EUG"},
+        {"Evansville Regional Airport (EVV)", "EVV"},
+        {"Fairbanks International Airport (FAI)", "FAI"},
+        {"Fargo Hector International Airport (FAR)", "FAR"},
+        {"Fayetteville Regional Airport (FAY)", "FAY"},
+        {"Flagstaff Pulliam Airport (FLG)", "FLG"},
+        {"Flint Bishop International Airport (FNT)", "FNT"},
+        {"Fort Lauderdale-Hollywood International Airport (FLL)", "FLL"},
+        {"Fort Myers Southwest Florida International Airport (RSW)", "RSW"},
+        {"Fort Wayne International Airport (FWA)", "FWA"},
+        {"Fresno Yosemite International Airport (FAT)", "FAT"},
+        {"Gainesville Regional Airport (GNV)", "GNV"},
+        {"Glacier Park International Airport (FCA)", "FCA"},
+        {"Grand Forks International Airport (GFK)", "GFK"},
+        {"Grand Junction Regional Airport (GJT)", "GJT"},
+        {"Grand Rapids Gerald R. Ford International Airport (GRR)", "GRR"},
+        {"Great Falls International Airport (GTF)", "GTF"},
+        {"Green Bay Austin Straubel International Airport (GRB)", "GRB"},
+        {"Greensboro Piedmont Triad International Airport (GSO)", "GSO"},
+        {"Greenville-Spartanburg International Airport (GSP)", "GSP"},
+        {"Gulfport-Biloxi International Airport (GPT)", "GPT"},
+        {"Harrisburg International Airport (MDT)", "MDT"},
+        {"Hartford Bradley International Airport (BDL)", "BDL"},
+        {"Hilo International Airport (ITO)", "ITO"},
+        {"Honolulu International Airport (HNL)", "HNL"},
+        {"Houston George Bush Intercontinental Airport (IAH)", "IAH"},
+        {"Houston William P. Hobby Airport (HOU)", "HOU"},
+        {"Huntsville International Airport (HSV)", "HSV"},
+        {"Indianapolis International Airport (IND)", "IND"},
+        {"Jackson-Evers International Airport (JAN)", "JAN"},
+        {"Jacksonville International Airport (JAX)", "JAX"},
+        {"Juneau International Airport (JNU)", "JNU"},
+        {"Kahului Airport (OGG)", "OGG"},
+        {"Kansas City International Airport (MCI)", "MCI"},
+        {"Killeen-Fort Hood Regional Airport (GRK)", "GRK"},
+        {"Kona International Airport (KOA)", "KOA"},
+        {"LaGuardia Airport (LGA)", "LGA"},
+        {"Las Vegas Harry Reid International Airport (LAS)", "LAS"},
+        {"Lexington Blue Grass Airport (LEX)", "LEX"},
+        {"Little Rock Clinton National Airport (LIT)", "LIT"},
+        {"Los Angeles International Airport (LAX)", "LAX"},
+        {"Louis Armstrong New Orleans International Airport (MSY)", "MSY"},
+        {"Louisville Muhammad Ali International Airport (SDF)", "SDF"},
+        {"Lubbock Preston Smith International Airport (LBB)", "LBB"},
+        {"McAllen Miller International Airport (MFE)", "MFE"},
+        {"Memphis International Airport (MEM)", "MEM"},
+        {"Miami International Airport (MIA)", "MIA"},
+        {"Milwaukee Mitchell International Airport (MKE)", "MKE"},
+        {"Minneapolis-Saint Paul International Airport (MSP)", "MSP"},
+        {"Missoula International Airport (MSO)", "MSO"},
+        {"Montreal-Pierre Elliott Trudeau International Airport (YUL)", "YUL"},
+        {"Nashville International Airport (BNA)", "BNA"},
+        {"New York John F. Kennedy International Airport (JFK)", "JFK"},
+        {"Newark Liberty International Airport (EWR)", "EWR"},
+        {"Norfolk International Airport (ORF)", "ORF"},
+        {"Oakland International Airport (OAK)", "OAK"},
+        {"Oklahoma City Will Rogers World Airport (OKC)", "OKC"},
+        {"Omaha Eppley Airfield (OMA)", "OMA"},
+        {"Ontario International Airport (ONT)", "ONT"},
+        {"Orlando International Airport (MCO)", "MCO"},
+        {"Ottawa Macdonald-Cartier International Airport (YOW)", "YOW"},
+        {"Palm Beach International Airport (PBI)", "PBI"},
+        {"Philadelphia International Airport (PHL)", "PHL"},
+        {"Phoenix Sky Harbor International Airport (PHX)", "PHX"},
+        {"Pittsburgh International Airport (PIT)", "PIT"},
+        {"Portland International Airport (PDX)", "PDX"},
+        {"Québec City Jean Lesage International Airport (YQB)", "YQB"},
+        {"Raleigh-Durham International Airport (RDU)", "RDU"},
+        {"Regina International Airport (YQR)", "YQR"},
+        {"Reno-Tahoe International Airport (RNO)", "RNO"},
+        {"Richmond International Airport (RIC)", "RIC"},
+        {"Sacramento International Airport (SMF)", "SMF"},
+        {"Salt Lake City International Airport (SLC)", "SLC"},
+        {"San Antonio International Airport (SAT)", "SAT"},
+        {"San Diego International Airport (SAN)", "SAN"},
+        {"San Francisco International Airport (SFO)", "SFO"},
+        {"San Jose Mineta International Airport (SJC)", "SJC"},
+        {"San Juan Luis Muñoz Marín International Airport (SJU)", "SJU"},
+        {"Santa Ana John Wayne Airport (SNA)", "SNA"},
+        {"Saskatoon John G. Diefenbaker International Airport (YXE)", "YXE"},
+        {"Seattle-Tacoma International Airport (SEA)", "SEA"},
+        {"St. Louis Lambert International Airport (STL)", "STL"},
+        {"Tampa International Airport (TPA)", "TPA"},
+        {"Toronto Pearson International Airport (YYZ)", "YYZ"},
+        {"Tucson International Airport (TUS)", "TUS"},
+        {"Tulsa International Airport (TUL)", "TUL"},
+        {"Vancouver International Airport (YVR)", "YVR"},
+        {"Washington Dulles International Airport (IAD)", "IAD"},
+        {"Washington Ronald Reagan National Airport (DCA)", "DCA"},
+        {"Winnipeg James Armstrong Richardson International Airport (YWG)", "YWG"},
+
+        //Central America
+        {"Augusto C. Sandino International Airport (MGA), Managua", "MGA"},
+        {"Bocas del Toro Isla Colón International Airport (BOC)", "BOC"},
+        {"Daniel Oduber Quirós International Airport (LIR), Liberia", "LIR"},
+        {"Enrique Malek International Airport (DAV), David", "DAV"},
+        {"La Aurora International Airport (GUA), Guatemala City", "GUA"},
+        {"Philip S. W. Goldson International Airport (BZE), Belize City", "BZE"},
+        {"Scarlett Martínez International Airport (RIH), Río Hato", "RIH"},
+        {"Tobías Bolaños International Airport (SYQ), San José", "SYQ"},
+        {"Toncontín International Airport (TGU), Tegucigalpa", "TGU"},
+        {"Marcos A. Gelabert International Airport (PAC), Panama City", "PAC"},
+        {"Panamá Pacifico International Airport (BLB), Panama City", "BLB"},
+
+        //Mexico
+        {"Abraham González International Airport (CJS), Ciudad Juárez", "CJS"},
+        {"Cancún International Airport (CUN)", "CUN"},
+        {"General Rafael Buelna International Airport (MMM), Mazatlán", "MMM"},
+        {"Guadalajara International Airport (GDL)", "GDL"},
+        {"Hermosillo International Airport (HMO)", "HMO"},
+        {"Intercontinental de Querétaro Airport (QRO)", "QRO"},
+        {"Los Cabos International Airport (SJD), San José del Cabo", "SJD"},
+        {"Mexico City International Airport (MMMX)", "MMMX"},
+        {"Monterrey International Airport (MTY)", "MTY"},
+        {"Tijuana International Airport (TIJ)", "TIJ"},
+        {"Veracruz International Airport (VER)", "VER"},
+        {"Zihuatanejo–Ixtapa International Airport (ZIH)", "ZIH"},
+        
+        //South America
+        {"Asunción–Silvio Pettirossi (ASU), Asunción", "ASU"},
+        {"Barranquilla–Ernesto Cortissoz (BAQ)", "BAQ"},
+        {"Bogotá–El Dorado (BOG)", "BOG"},
+        {"Buenos Aires–Ministro Pistarini (EZE)", "EZE"},
+        {"Cali–Alfonso Bonilla Aragón (CLO), Cali", "CLO"},
+        {"Caracas–Simón Bolívar (CCS)", "CCS"},
+        {"Cartagena–Rafael Núñez (CTG)", "CTG"},
+        {"Curitiba–Afonso Pena (CWB)", "CWB"},
+        {"Fortaleza–Pinto Martins (FOR)", "FOR"},
+        {"Guayaquil–José Joaquín de Olmedo (GYE)", "GYE"},
+        {"Galeão–Antonio Carlos Jobim (GIG), Rio de Janeiro", "GIG"},
+        {"Guarulhos–Governador André Franco Montoro (GRU), São Paulo", "GRU"},
+        {"La Paz–El Alto (LPB)", "LPB"},
+        {"Lima–Jorge Chávez (LIM)", "LIM"},
+        {"Manaus–Eduardo Gomes (MAO)", "MAO"},
+        {"Medellín–José María Córdova (MDE)", "MDE"},
+        {"Montevideo–Carrasco (MVD)", "MVD"},
+        {"Porto Alegre–Salgado Filho (POA)", "POA"},
+        {"Quito–Mariscal Sucre (UIO)", "UIO"},
+        {"Recife–Guararapes–Gilberto Freyre (REC)", "REC"},
+        {"Rio de Janeiro–Santos Dumont (SDU)", "SDU"},
+        {"Salvador–Deputado Luís Eduardo Magalhães (SSA)", "SSA"},
+        {"São Paulo–Congonhas (CGH)", "CGH"},
+        {"São Paulo–Guarulhos (GRU)", "GRU"},
+        {"São Paulo–Viracopos (VCP), Campinas", "VCP"},
+        {"Santiago–Arturo Merino Benítez (SCL)", "SCL"},
+        {"Santa Cruz–Viru Viru (VVI), Santa Cruz de la Sierra", "VVI"},
+
+        //Europe
+        {"Adolfo Suárez Madrid–Barajas Airport (MAD)", "MAD"},
+        {"Alicante–Elche Airport (ALC)", "ALC"},
+        {"Amsterdam Airport Schiphol (AMS)", "AMS"},
+        {"Athens International Airport (ATH)", "ATH"},
+        {"Barcelona–El Prat Airport (BCN)", "BCN"},
+        {"Belfast International Airport (BFS)", "BFS"},
+        {"Belgrade Nikola Tesla Airport (BEG)", "BEG"},
+        {"Berlin Brandenburg Airport (BER)", "BER"},
+        {"Birmingham Airport (BHX)", "BHX"},
+        {"Bordeaux–Mérignac Airport (BOD)", "BOD"},
+        {"Bristol Airport (BRS)", "BRS"},
+        {"Brussels Airport (BRU)", "BRU"},
+        {"Budapest Ferenc Liszt International Airport (BUD)", "BUD"},
+        {"Copenhagen Airport (CPH)", "CPH"},
+        {"Dublin Airport (DUB)", "DUB"},
+        {"Düsseldorf Airport (DUS)", "DUS"},
+        {"Edinburgh Airport (EDI)", "EDI"},
+        {"EuroAirport Basel–Mulhouse–Freiburg (BSL)", "BSL"},
+        {"Frankfurt Airport (FRA)", "FRA"},
+        {"Geneva Airport (GVA)", "GVA"},
+        {"Glasgow Airport (GLA)", "GLA"},
+        {"Hamburg Airport (HAM)", "HAM"},
+        {"Helsinki-Vantaa Airport (HEL)", "HEL"},
+        {"Istanbul Airport (IST)", "IST"},
+        {"Lisbon Airport (LIS)", "LIS"},
+        {"Liverpool John Lennon Airport (LPL)", "LPL"},
+        {"London Gatwick Airport (LGW)", "LGW"},
+        {"London Heathrow Airport (LHR)", "LHR"},
+        {"Lyon–Saint-Exupéry Airport (LYS)", "LYS"},
+        {"Manchester Airport (MAN)", "MAN"},
+        {"Milan Malpensa Airport (MXP)", "MXP"},
+        {"Munich Airport (MUC)", "MUC"},
+        {"Nice Côte d'Azur Airport (NCE)", "NCE"},
+        {"Oslo Airport, Gardermoen (OSL)", "OSL"},
+        {"Palma de Mallorca Airport (PMI)", "PMI"},
+        {"Paris Charles de Gaulle Airport (CDG)", "CDG"},
+        {"Paris Orly Airport (ORY)", "ORY"},
+        {"Porto Airport (OPO)", "OPO"},
+        {"Prague Václav Havel Airport (PRG)", "PRG"},
+        {"Rome–Fiumicino International Airport (FCO)", "FCO"},
+        {"Stockholm Arlanda Airport (ARN)", "ARN"},
+        {"Vienna International Airport (VIE)", "VIE"},
+        {"Warsaw Chopin Airport (WAW)", "WAW"},
+        {"Zurich Airport (ZRH)", "ZRH"},
+        {"A Coruña Airport (LCG)", "LCG"},
+        {"Aberdeen Dyce Airport (ABZ)", "ABZ"},
+        {"Alghero-Fertilia Airport (AHO)", "AHO"},
+        {"Ankara Esenboğa Airport (ESB)", "ESB"},
+        {"Antalya Airport (AYT)", "AYT"},
+        {"Antwerp International Airport (ANR)", "ANR"},
+        {"Arlanda Airport (ARN)", "ARN"},
+        {"Athens Eleftherios Venizelos Airport (ATH)", "ATH"},
+        {"Baden Airpark (FKB)", "FKB"},
+        {"Bari Karol Wojtyła Airport (BRI)", "BRI"},
+        {"Bastia – Poretta Airport (BIA)", "BIA"},
+        {"Belfast City Airport (BHD)", "BHD"},
+        {"Belgrade Airport (BEG)", "BEG"},
+        {"Bergamo Orio al Serio Airport (BGY)", "BGY"},
+        {"Berlin Schönefeld Airport (SXF)", "SXF"},
+        {"Bologna Guglielmo Marconi Airport (BLQ)", "BLQ"},
+        {"Bournemouth Airport (BOH)", "BOH"},
+        {"Bratislava Airport (BTS)", "BTS"},
+        {"Bremen Airport (BRE)", "BRE"},
+        {"Brindisi Airport (BDS)", "BDS"},
+        {"Brno–Tuřany Airport (BRQ)", "BRQ"},
+        {"Brussels South Charleroi Airport (CRL)", "CRL"},
+        {"Bucharest Henri Coandă International Airport (OTP)", "OTP"},
+        {"Burgas Airport (BOJ)", "BOJ"},
+        {"Cagliari Elmas Airport (CAG)", "CAG"},
+        {"Catania Fontanarossa Airport (CTA)", "CTA"},
+        {"Chania International Airport (CHQ)", "CHQ"},
+        {"Cluj-Napoca International Airport (CLJ)", "CLJ"},
+        {"Cologne Bonn Airport (CGN)", "CGN"},
+        {"Cork Airport (ORK)", "ORK"},
+        {"Dalaman Airport (DLM)", "DLM"},
+        {"Doncaster Sheffield Airport (DSA)", "DSA"},
+        {"Dortmund Airport (DTM)", "DTM"},
+        {"East Midlands Airport (EMA)", "EMA"},
+        {"Eindhoven Airport (EIN)", "EIN"},
+        {"Faro Airport (FAO)", "FAO"},
+        {"Fuerteventura Airport (FUE)", "FUE"},
+        {"Gdańsk Lech Wałęsa Airport (GDN)", "GDN"},
+        {"Girona–Costa Brava Airport (GRO)", "GRO"},
+        {"Gothenburg Landvetter Airport (GOT)", "GOT"},
+        {"Gran Canaria Airport (LPA)", "LPA"},
+        {"Heraklion International Airport (HER)", "HER"},
+        {"Ibiza Airport (IBZ)", "IBZ"},
+        {"Innsbruck Airport (INN)", "INN"},
+        {"Keflavík International Airport (KEF)", "KEF"},
+        {"Kraków John Paul II International Airport (KRK)", "KRK"},
+        {"Lanzarote Airport (ACE)", "ACE"},
+        {"Leeds Bradford Airport (LBA)", "LBA"},
+        {"Lille Airport (LIL)", "LIL"},
+        {"Linz Airport (LNZ)", "LNZ"},
+        {"London City Airport (LCY)", "LCY"},
+        {"London Luton Airport (LTN)", "LTN"},
+        {"London Stansted Airport (STN)", "STN"},
+        {"Luxembourg Airport (LUX)", "LUX"},
+        {"Malaga Airport (AGP)", "AGP"},
+        {"Malta International Airport (MLA)", "MLA"},
+        {"Menorca Airport (MAH)", "MAH"},
+        {"Milan Linate Airport (LIN)", "LIN"},
+        {"Minsk National Airport (MSQ)", "MSQ"},
+        {"Moscow Domodedovo Airport (DME)", "DME"},
+        {"Moscow Sheremetyevo Airport (SVO)", "SVO"},
+        {"Moscow Vnukovo Airport (VKO)", "VKO"},
+        {"Naples International Airport (NAP)", "NAP" },
+        {"Newcastle International Airport (NCL)", "NCL"},
+        {"Nuremberg Airport (NUE)", "NUE"},
+        {"Olbia Costa Smeralda Airport (OLB)", "OLB"},
+        {"Palermo Falcone–Borsellino Airport (PMO)", "PMO"},
+        {"Paphos International Airport (PFO)", "PFO"},
+        {"Pisa International Airport (PSA)", "PSA"},
+        {"Riga International Airport (RIX)", "RIX"},
+        {"Rhodes International Airport (RHO)", "RHO"},
+        {"Rovaniemi Airport (RVN)", "RVN"},
+        {"Santorini (Thira) National Airport (JTR)", "JTR"},
+        {"Seville Airport (SVQ)", "SVQ"},
+        {"Sofia Airport (SOF)", "SOF"},
+        {"Split Airport (SPU)", "SPU"},
+        {"Stuttgart Airport (STR)", "STR"},
+        {"Tenerife North Airport (TFN)", "TFN"},
+        {"Tenerife South Airport (TFS)", "TFS"},
+        {"Thessaloniki Airport (SKG)", "SKG"},
+        {"Toulouse–Blagnac Airport (TLS)", "TLS"},
+        {"Turin Airport (TRN)", "TRN"},
+        {"Valencia Airport (VLC)", "VLC"},
+        {"Venice Marco Polo Airport (VCE)", "VCE"},
+        {"Verona Villafranca Airport (VRN)", "VRN"},
+        {"Vilnius Airport (VNO)", "VNO"},
+        {"Zagreb Franjo Tuđman Airport (ZAG)", "ZAG"},
+        {"Zakynthos International Airport (ZTH)", "ZTH"},
+
+        //Africa
+        {"Addis Ababa Bole International Airport (ADD)", "ADD"},
+        {"Algiers Houari Boumediene Airport (ALG)", "ALG"},
+        {"Cairo International Airport (CAI)", "CAI"},
+        {"Cape Town International Airport (CPT)", "CPT"},
+        {"Dar es Salaam Julius Nyerere International Airport (DAR)", "DAR"},
+        {"Douala International Airport (DLA)", "DLA"},
+        {"Durban King Shaka International Airport (DUR)", "DUR"},
+        {"Entebbe International Airport (EBB)", "EBB"},
+        {"Francistown International Airport (FRW)", "FRW"},
+        {"Gaborone Sir Seretse Khama International Airport (GBE)", "GBE"},
+        {"Harare International Airport (HRE)", "HRE"},
+        {"Johannesburg O. R. Tambo International Airport (JNB)", "JNB"},
+        {"Kigali International Airport (KGL)", "KGL"},
+        {"Kinshasa N'djili International Airport (FIH)", "FIH"},
+        {"Lagos Murtala Muhammed International Airport (LOS)", "LOS"},
+        {"Lusaka Kenneth Kaunda International Airport (LUN)", "LUN"},
+        {"Marrakech Menara Airport (RAK)", "RAK"},
+        {"Mogadishu Aden Adde International Airport (MGQ)", "MGQ"},
+        {"Nairobi Jomo Kenyatta International Airport (NBO)", "NBO"},
+        {"N'Djamena Hassan Djamous International Airport (NDJ)", "NDJ"},
+        {"Ouagadougou International Airport (OUA)", "OUA"},
+        {"Port Louis Sir Seewoosagur Ramgoolam International Airport (MRU)", "MRU"},
+        {"Port Harcourt International Airport (PHC)", "PHC"},
+        {"Rabat Sale Airport (RBA)", "RBA"},
+        {"Tunis Carthage International Airport (TUN)", "TUN"},
+        {"Victoria Falls International Airport (VFA)", "VFA"},
+        {"Windhoek Hosea Kutako International Airport (WDH)", "WDH"},
+
+        //Middle East
+        {"Abu Dhabi International Airport (AUH)", "AUH"},
+        {"Bahrain International Airport (BAH)", "BAH"},
+        {"Beirut Rafic Hariri International Airport (BEY)", "BEY"},
+        {"Dubai International Airport (DXB)", "DXB"},
+        {"Doha Hamad International Airport (DOH)", "DOH"},
+        {"Kuwait International Airport (KWI)", "KWI"},
+        {"Muscat Seeb International Airport (MCT)", "MCT"},
+        {"Riyadh King Khalid International Airport (RUH)", "RUH"},
+        {"Sharjah International Airport (SHJ)", "SHJ"},
+        {"Tehran Imam Khomeini International Airport (IKA)", "IKA"},
+        {"Tel Aviv Ben Gurion International Airport (TLV)", "TLV"},
+        {"Yerevan Zvartnots International Airport (EVN)", "EVN"},
+
+        //India
+        {"Ahmedabad Sardar Vallabhbhai Patel International Airport (AMD)", "AMD"},
+        {"Bengaluru Kempegowda International Airport (BLR)", "BLR"},
+        {"Chandigarh International Airport (IXC)", "IXC"},
+        {"Chennai International Airport (MAA)", "MAA"},
+        {"Cochin International Airport (COK)", "COK"},
+        {"Delhi Indira Gandhi International Airport (DEL)", "DEL"},
+        {"Goa Dabolim Airport (GOI)", "GOI"},
+        {"Hyderabad Rajiv Gandhi International Airport (HYD)", "HYD"},
+        {"Kochi Cochin International Airport (COK)", "COK"},
+        {"Kolkata Netaji Subhas Chandra Bose International Airport (CCU)", "CCU"},
+        {"Mumbai Chhatrapati Shivaji Maharaj International Airport (BOM)", "BOM"},
+        {"New Delhi Indira Gandhi International Airport (DEL)", "DEL"},
+        {"Pune Lohegaon Airport (PNQ)", "PNQ"},
+        {"Thiruvananthapuram Trivandrum International Airport (TRV)", "TRV"},
+        {"Varanasi Lal Bahadur Shastri International Airport (VNS)", "VNS"},
+
+        //China
+        {"Beijing Capital International Airport (PEK)", "PEK"},
+        {"Chengdu Shuangliu International Airport (CTU)", "CTU"},
+        {"Guangzhou Baiyun International Airport (CAN)", "CAN"},
+        {"Hangzhou Xiaoshan International Airport (HGH)", "HGH"},
+        {"Hong Kong International Airport (HKG)", "HKG"},
+        {"Kunming Changshui International Airport (KMG)", "KMG"},
+        {"Nanjing Lukou International Airport (NKG)", "NKG"},
+        {"Shanghai Pudong International Airport (PVG)", "PVG"},
+        {"Shenzhen Bao'an International Airport (SZX)", "SZX"},
+        {"Tianjin Binhai International Airport (TSN)", "TSN"},
+        {"Xi'an Xianyang International Airport (XIY)", "XIY"},
+
+        //East Asia
+        {"Amritsar Sri Guru Ram Dass Jee International Airport (ATQ)", "ATQ"},
+        {"Baku Heydar Aliyev International Airport (GYD)", "GYD"},
+        {"Bangkok Suvarnabhumi Airport (BKK)", "BKK"},
+        {"Colombo Bandaranaike International Airport (CMB)", "CMB"},
+        {"Dhaka Shahjalal International Airport (DAC)", "DAC"},
+        {"Jakarta Soekarno-Hatta International Airport (CGK)", "CGK"},
+        {"Karachi Jinnah International Airport (KHI)", "KHI"},
+        {"Kuala Lumpur International Airport (KUL)", "KUL"},
+        {"Manila Ninoy Aquino International Airport (MNL)", "MNL"},
+        {"Seoul Incheon International Airport (ICN)", "ICN"},
+        {"Singapore Changi Airport (SIN)", "SIN"},
+        {"Srinagar Sheikh ul-Alam International Airport (SXR)", "SXR"},
+        {"Taipei Taoyuan International Airport (TPE)", "TPE"},
+        {"Tokyo Narita International Airport (NRT)", "NRT"},
+        {"Tokyo Haneda International Airport (HND)", "HND"},
+
+        //Oceania
+        {"Auckland Airport (AKL)", "AKL"},
+        {"Brisbane Airport (BNE)", "BNE"},
+        {"Christchurch Airport (CHC)", "CHC"},
+        {"Fiji Nadi International Airport (NAN)", "NAN"},
+        {"Hobart International Airport (HBA)", "HBA"},
+        {"Melbourne Tullamarine Airport (MEL)", "MEL"},
+        {"Port Moresby Jacksons International Airport (POM)", "POM"},
+        {"Sydney Kingsford Smith Airport (SYD)", "SYD"},
+        {"Wellington Airport (WLG)", "WLG"}
+    };
 }
