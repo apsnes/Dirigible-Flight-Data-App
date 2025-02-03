@@ -1,16 +1,23 @@
 ﻿@using FlightAppFrontend.Shared.Components
+@using FlightAppFrontend.Shared.Auth
+@using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
+@inject TokenService tokenService
+@inject AuthenticationStateProvider customAuthenticationStateProvider
+
 
 <div>
     <header>
-        
+
         <NavMenu />
     </header>
-        
+
     <div class="container hero is-fullheight pl-6 pr-6">
 
         <main class="body">
-            @Body
+            @if(isLoaded){
+                @Body
+            }
         </main>
 
         <footer class="mt-auto is-flex-align-items-flex-end">
@@ -24,3 +31,28 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private bool isLoaded = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+
+    {
+        if (firstRender)
+        {
+            var token = await tokenService.LoadTokenAsync();
+            if(token!=null)
+            {
+                if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
+                {
+                    customProvider.NotifyAuthenticationStateChanged();
+                    isLoaded = true;
+                    StateHasChanged();
+                }
+         }
+         else{
+                Console.WriteLine("Token is null");
+         }
+        }
+    }
+}
