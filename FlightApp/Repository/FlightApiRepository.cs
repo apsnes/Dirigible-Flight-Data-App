@@ -1,6 +1,8 @@
 ﻿using FlightApp.Database;
 using FlightAppLibrary.Models.Response;
 using System.Text.Json;
+using Microsoft.Extensions.Http;
+using System.Web;
 
 namespace FlightApp.Repository
 {
@@ -15,15 +17,22 @@ namespace FlightApp.Repository
 
     public class FlightApiRepository : IFlightApiRepository
     {
-        string key = "fb7c292b632cfe66d517705b143c0dc9";
-
+        private IHttpClientFactory _clientFactory;
+        public FlightApiRepository(IHttpClientFactory ClientFactory)
+        {
+            _clientFactory = ClientFactory;
+        }
         public async Task<FlightResponse?> GetFlightByIata(string iata)
         {
-            using (var client = new HttpClient())
+            using (var client = _clientFactory.CreateClient("FlightApi"))
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&flight_iata={iata}");
+                    var builder = new UriBuilder(client.BaseAddress!.ToString());
+                    var query = HttpUtility.ParseQueryString(builder.Query);
+                    query["flight_iata"] = iata;
+                    builder.Query = query.ToString();
+                    using HttpResponseMessage response = await client.GetAsync(builder.ToString());
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody)!.Data.FirstOrDefault();
@@ -39,11 +48,15 @@ namespace FlightApp.Repository
 
         public async Task<List<FlightResponse>> GetFlightByArrivalAirportActive(string arr_iata)
         {
-            using (var client = new HttpClient())
+            using (var client = _clientFactory.CreateClient("FlightApi"))
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&arr_iata={arr_iata}&flight_status=active");
+                    var builder = new UriBuilder(client.BaseAddress!.ToString());
+                    var query = HttpUtility.ParseQueryString(builder.Query);
+                    query["arr_iata"] = arr_iata;
+                    builder.Query = query.ToString();
+                    using HttpResponseMessage response = await client.GetAsync(builder.ToString());
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
@@ -59,11 +72,15 @@ namespace FlightApp.Repository
 
         public async Task<List<FlightResponse>> GetIncidentFlights()
         {
-            using (var client = new HttpClient())
+            using (var client = _clientFactory.CreateClient("FlightApi"))
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&flight_status=incident");
+                    var builder = new UriBuilder(client.BaseAddress!.ToString());
+                    var query = HttpUtility.ParseQueryString(builder.Query);
+                    query["flight_status"] = "incident";
+                    builder.Query = query.ToString();
+                    using HttpResponseMessage response = await client.GetAsync(builder.ToString());
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
@@ -79,11 +96,16 @@ namespace FlightApp.Repository
 
         public async Task<List<FlightResponse>> GetFlightsByRoute(string dep_iata, string arr_iata)
         {
-            using (var client = new HttpClient())
+            using (var client = _clientFactory.CreateClient("FlightApi"))
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&dep_iata={dep_iata}&arr_iata={arr_iata}");
+                    var builder = new UriBuilder(client.BaseAddress!.ToString());
+                    var query = HttpUtility.ParseQueryString(builder.Query);
+                    query["dep_iata"] = dep_iata;
+                    query["arr_iata"] = arr_iata;   
+                    builder.Query = query.ToString();
+                    using HttpResponseMessage response = await client.GetAsync(builder.ToString());
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
@@ -98,11 +120,15 @@ namespace FlightApp.Repository
         }
         public async Task<List<FlightResponse>> GetFlightsByDepartureAirportActive(string dep_iata)
         {
-            using (var client = new HttpClient())
+            using (var client = _clientFactory.CreateClient("FlightApi"))
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"https://api.aviationstack.com/v1/flights?access_key={key}&dep_iata={dep_iata}&flight_status=active");
+                    var builder = new UriBuilder(client.BaseAddress!.ToString());
+                    var query = HttpUtility.ParseQueryString(builder.Query);
+                    query["dep_iata"] = dep_iata;
+                    builder.Query = query.ToString();
+                    using HttpResponseMessage response = await client.GetAsync(builder.ToString());
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody).Data.ToList();
