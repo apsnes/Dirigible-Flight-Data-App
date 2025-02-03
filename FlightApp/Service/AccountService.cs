@@ -2,6 +2,7 @@
 using FlightApp.Helpers;
 using FlightApp.Models;
 using FlightAppLibrary.Models.Dtos;
+using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -139,6 +140,25 @@ namespace FlightApp.Service
             var key = Encoding.UTF8.GetBytes(_authSettings.SecretKey);
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+        }
+
+        public async Task<UserDTO> GetUserDetails(string userId)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userId);
+            if (user != null)
+            {
+                UserDTO userDTO = new UserDTO()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber
+
+                };
+                return userDTO;
+            }
+            return null;
+
         }
     }
 }
