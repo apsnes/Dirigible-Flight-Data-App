@@ -1,5 +1,8 @@
 ﻿<nav class="navbar is-warning" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <image src="_content/FlightAppFrontend.Shared/Images/dirigible-navbar.png" alt="dirigible-logo"/>
+        </a>
         <a role="button" class="navbar-burger @IsActive" aria-label="menu" aria-expanded="false" @onclick="()=>ToggleHamburger()">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -10,9 +13,6 @@
 
     <div class="navbar-menu @IsActive">
         <div class="navbar-start">
-            <a class="navbar-item" href="/">
-                Dirigible
-            </a>
 
             <a class="navbar-item" href="/Search">
                 Search
