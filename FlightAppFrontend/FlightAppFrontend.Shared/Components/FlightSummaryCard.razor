@@ -4,15 +4,17 @@
 
 <div class="card mb-5 pb-4 mt-5">
     <div class="card-content">
-        <div class="media-content">
-            <p class="title is-4">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
-            <p class="subtitle is-6">@FlightResponse!.Departure.Airport (@FlightResponse!.Departure.Iata) to @FlightResponse!.Arrival.Airport (@FlightResponse!.Arrival.Iata)</p>
-        </div>
-        <div class="media-right">
-            <figure class="image is-96x96 is-square">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/800px-Emirates_logo.svg.png"
-                        alt="Placeholder image" />
-            </figure>
+        <div class="media">
+            <div class="media-content">
+                <p class="title is-4">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
+                <p class="subtitle is-6">@FlightResponse!.Departure.Airport (@FlightResponse!.Departure.Iata) to @FlightResponse!.Arrival.Airport (@FlightResponse!.Arrival.Iata)</p>
+            </div>
+            <div class="media-right">
+                <figure class="image is-96x96 is-square">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/800px-Emirates_logo.svg.png"
+                    alt="Placeholder image" />
+                </figure>
+            </div>
         </div>
     </div>
 </div>
@@ -22,26 +24,22 @@
     <div class="columns">
         <div class="column" id="arrivals__collumn">
             <div class="card-content">
-                <div class="media-content">
-                    <p class="title is-4">Departure Information</p>
-                    <p class="subtitle is-6">Departing: @FlightResponse!.Departure.Airport</p>
-                    <p class="subtitle is-6">Scheduled time: @FlightResponse!.Departure.Scheduled</p>
-                    <p class="subtitle is-6">Estiamted: @FlightResponse!.Departure.Estimated</p>
-                    <p class="subtitle is-6">Delay: @FlightResponse!.Departure.Delay</p>
-                    <p class="subtitle is-6">Terminal: @FlightResponse!.Departure.Terminal</p>
-                </div>
+                <p class="title is-4">Departure Information</p>
+                <p class="subtitle is-6">Departing: @FlightResponse!.Departure.Airport</p>
+                <p class="is-6">Scheduled time: @ParseFlightDateTime(@FlightResponse!.Departure.Scheduled)</p>
+                <p class="is-6">Estiamted: @ParseFlightDateTime(@FlightResponse!.Departure.Estimated)</p>
+                <p class="is-6">Delay: @ParseDelayInformation(@FlightResponse!.Departure.Delay)</p>
+                <p class="is-6">Terminal: @FlightResponse!.Departure.Terminal</p>
             </div>
         </div>
         <div class="column" id="departures__collumn">
             <div class="card-content">
-                <div class="media-content">
-                    <p class="title is-4">Arrival Information</p>
-                    <p class="subtitle is-6">Arriving: @FlightResponse!.Arrival.Airport</p>
-                    <p class="subtitle is-6">Scheduled time: @FlightResponse!.Arrival.Scheduled</p>
-                    <p class="subtitle is-6">Estiamted: @FlightResponse!.Arrival.Estimated</p>
-                    <p class="subtitle is-6">Delay: @FlightResponse!.Arrival.Delay</p>
-                    <p class="subtitle is-6">Terminal: @FlightResponse!.Arrival.Terminal</p>
-                </div>
+                <p class="title is-4">Arrival Information</p>
+                <p class="subtitle is-6">Arriving: @FlightResponse!.Arrival.Airport</p>
+                <p class="is-6">Scheduled time: @ParseFlightDateTime(@FlightResponse!.Arrival.Scheduled)</p>
+                <p class="is-6">Estiamted: @ParseFlightDateTime(@FlightResponse!.Arrival.Estimated)</p>
+                <p class="is-6">Delay: @ParseDelayInformation(@FlightResponse!.Arrival.Delay)</p>
+                <p class="is-6">Terminal: @FlightResponse!.Arrival.Terminal</p>
             </div>
         </div>
     </div>
@@ -50,4 +48,15 @@
 @code {
     [Parameter]
     public FlightResponse? FlightResponse { get; set; }
+
+    protected string ParseFlightDateTime(DateTime? dateTime)
+    {
+        if (dateTime == null) return "";
+        return ((DateTime)dateTime).ToString("HH:MM - dd/MM/yyyy");
+    }
+
+    protected string ParseDelayInformation(int? delay){
+        if (delay == null) return "none";
+        return ((int)delay).ToString();
+    }
 }

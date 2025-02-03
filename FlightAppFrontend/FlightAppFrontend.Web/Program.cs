@@ -1,6 +1,9 @@
+using FlightAppFrontend.Shared.Auth;
 using FlightAppFrontend.Shared.Services;
 using FlightAppFrontend.Web.Components;
 using FlightAppFrontend.Web.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +11,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
 builder.Services.AddHttpClient("DirigibleApi", client =>
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!));
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!))
+    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
+builder.Services.AddScoped<TokenStateService>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+
+
+
 
 // Add device-specific services used by the FlightAppFrontend.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();

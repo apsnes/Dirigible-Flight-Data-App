@@ -1,0 +1,67 @@
+﻿@using FlightAppLibrary.Models
+
+<div class="field" aria-label="@Name">
+    <label for="@Name" class="label">@Name</label>
+    <div class="control mt-2 has-icons-right">
+        <InputText id="@Name" class="input is-warning" @bind-Value="Value" @oninput="(e) => MakeSuggestions(e)" @onblur="() => SetValue(Value)" placeholder="@Name" aria-autocomplete="list" autocomplete="off"/>
+        <span class="icon is-right is-clickable has-text-warning" @onclick="() => SetValue(null)">
+            <button type="button" class="fas fa-xmark"></button>
+        </span>
+    </div>
+
+    @if (IsActive && !String.IsNullOrEmpty(searchString))
+    {
+        <div class="dropdown is-active">
+            <div class="dropdown-menu" role="menu">
+                <div class="dropdown-content" style="width: max-content">
+                    @foreach (var result in SearchDictionary())
+                    {
+                        <div class="dropdown-item">
+                            <button type="button" @onmouseover="() => Value = result" @onclick="() => SetValue(result)">@result</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code{
+    [Parameter]
+    public Dictionary<string, string>? Dictionary { get; set; }
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSetValue { get; set; }
+
+    protected string? Value { get; set; } = "";
+
+    protected string searchString = "";
+
+    protected bool IsActive;
+
+    protected void MakeSuggestions(ChangeEventArgs e)
+    {
+        searchString = e.Value!.ToString()!;
+        IsActive = true;
+    }
+
+    protected async void SetValue(string? value)
+    {
+        Value = value;
+        searchString = "";
+        IsActive = false;
+        await OnSetValue.InvokeAsync(Value);
+    }
+
+    protected List<string> SearchDictionary()
+    {
+        return Dictionary!
+        .Where(x => x.Key.ToLower().Contains(searchString.ToLower()))
+        .Select(x => x.Key)
+        .Take(5)
+        .ToList();
+    }
+}
