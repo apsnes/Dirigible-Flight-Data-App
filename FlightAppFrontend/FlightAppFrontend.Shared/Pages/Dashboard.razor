@@ -17,6 +17,12 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery(Name = "flight_iata")]
+    public string? FlightIATA { get; set; }
+
+    [SupplyParameterFromQuery(Name = "departures")]
+    public string? DepartureIATA { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 

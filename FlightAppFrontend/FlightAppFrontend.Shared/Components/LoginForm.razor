@@ -108,7 +108,7 @@
                     customProvider.NotifyAuthenticationStateChanged();
                 }
                 JsInteropService.CreateAlert("Login successful");
-                NavigationManager.NavigateTo("/dashboard");
+                NavigationManager.NavigateTo("/dashboard?login=true");
             }
             else{
                 JsInteropService.CreateAlert("Login failed");
