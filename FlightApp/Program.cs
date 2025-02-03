@@ -71,7 +71,9 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddHealthChecks()
     .AddCheck<AviationApiHealthCheck>("AviationApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
-    .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy);
+    .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<WeatherApiHealthcheck>("WeatherApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
 var app = builder.Build();
 
