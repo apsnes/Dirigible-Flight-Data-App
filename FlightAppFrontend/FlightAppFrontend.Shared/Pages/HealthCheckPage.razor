@@ -1,7 +1,9 @@
 ﻿@page "/health"
+@layout UnauthorizedLayout
 @inject IHttpClientFactory ClientFactory
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Layout
 
 <div class="container health-check-container">
     @if (healthChecks == null)

@@ -1,4 +1,10 @@
-﻿<nav class="navbar is-warning" role="navigation" aria-label="main navigation">
+﻿@using FlightAppFrontend.Shared.Auth
+@using Microsoft.AspNetCore.Components.Authorization
+@inject TokenStateService tokenStateService
+@inject NavigationManager NavigationManager
+@inject TokenService TokenService
+@inject AuthenticationStateProvider authenticationStateProvider
+<nav class="navbar is-warning" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
             <image src="_content/FlightAppFrontend.Shared/Images/dirigible-navbar.png" alt="dirigible-logo"/>
@@ -14,8 +20,16 @@
     <div class="navbar-menu @IsActive">
         <div class="navbar-start">
 
-            <a class="navbar-item" href="/Search">
+            <a class="navbar-item" href="/dashboard">
+                Dashboard
+            </a>
+
+            <a class="navbar-item" href="/search">
                 Search
+            </a>
+
+            <a class="navbar-item" href="/health">
+                Health
             </a>
 
             <div class="navbar-item has-dropdown is-hoverable">
@@ -44,12 +58,23 @@
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-                    <a class="button is-link is-dark">
-                        <strong>Sign up</strong>
-                    </a>
-                    <a class="button is-warning is-dark">
-                        Log in
-                    </a>
+
+                    <AuthorizeView>
+                        <NotAuthorized>
+                            <a class="button is-link is-dark" href="/registration">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-warning is-dark" href="/login">
+                                Log in
+                            </a>
+                        </NotAuthorized>
+                        <Authorized>
+                            <button class="button" @onclick="Logout">Logout</button>
+                        </Authorized>
+                    </AuthorizeView>
+
+
+
                 </div>
             </div>
         </div>
@@ -67,5 +92,16 @@
     private void ToggleHamburger()
     {
         IsActive = IsActive is "" ? "is-active" : "";
+    }
+    private void Logout()
+    {
+        tokenStateService.SetToken(null);
+        //TokenService.SetTokenToNull();
+        TokenService.RemoveToken();
+        if (authenticationStateProvider is CustomAuthenticationStateProvider customProvider){
+            customProvider.NotifyAuthenticationStateChanged();
+        }
+        this.StateHasChanged();
+        NavigationManager.NavigateTo("/");
     }
 }

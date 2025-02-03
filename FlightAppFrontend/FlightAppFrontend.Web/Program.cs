@@ -5,6 +5,7 @@ using FlightAppFrontend.Web.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,13 +16,18 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient("DirigibleApi", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+builder.Services.AddHttpClient("AircraftPhotos", client =>
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AircraftPhotos")!))
+    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddSingleton<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
-
 
 
 
@@ -42,6 +48,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+//app.UseAuthentication();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

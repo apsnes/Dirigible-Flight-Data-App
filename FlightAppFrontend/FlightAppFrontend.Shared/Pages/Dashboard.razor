@@ -1,0 +1,43 @@
+﻿@page "/dashboard"
+@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Components
+@using FlightAppFrontend.Shared.Components.Utility
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+<PageTitle>Dashboard</PageTitle>
+
+<div class="container mt-6">
+    <Title Text="Welcome [Username]" />
+    <div class="columns">
+        <div class="column is-half">
+            <DashboardProfileCard AuthState="_authState" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private AuthenticationState _authState;
+
+    private string name = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _authState = await AuthenticationStateTask;
+            if (_authState != null && _authState.User.Identity.IsAuthenticated)
+            {
+                name = _authState.User.Identity.Name;
+                StateHasChanged();
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+    }
+}

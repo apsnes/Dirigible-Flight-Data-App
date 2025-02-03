@@ -10,6 +10,7 @@
 @inject IJsInteropService JsInteropService
 @inject AuthenticationStateProvider customAuthenticationStateProvider
 @inject TokenStateService tokenStateService
+@inject NavigationManager NavigationManager;
 <div class="container">
     <div class="columns is-centered">
         <div class="column is-one-third is-offset-one-third">
@@ -75,7 +76,11 @@
             var authState = await authenticationStateTask;
             if (authState != null && authState.User.Identity.IsAuthenticated)
             {
-                name = authState.User.Identity.Name;
+                //name = authState.User.Identity.Name;
+                //name = authState.User.Claims.FirstOrDefault(c => c.Type == "FirstName")?.Value;
+                
+
+
                 StateHasChanged();
             }
                 
@@ -103,6 +108,7 @@
                     customProvider.NotifyAuthenticationStateChanged();
                 }
                 JsInteropService.CreateAlert("Login successful");
+                NavigationManager.NavigateTo("/dashboard");
             }
             else{
                 JsInteropService.CreateAlert("Login failed");
