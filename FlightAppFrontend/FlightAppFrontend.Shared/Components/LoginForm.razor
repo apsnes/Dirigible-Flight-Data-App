@@ -64,25 +64,21 @@
     private AuthenticationState _authState;
     protected override async Task OnInitializedAsync()
     {
-        
+
     }
-  
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        
+
         if (firstRender)
         {
-            var au = await authenticationStateTask;
-            if (au != null && au.User.Identity.IsAuthenticated)
+            var authState = await authenticationStateTask;
+            if (authState != null && authState.User.Identity.IsAuthenticated)
             {
-                name = au.User.Identity.Name;
-                _authState = await customAuthenticationStateProvider.GetAuthenticationStateAsync();
-                var user = _authState.User;
-                if (user.Identity.IsAuthenticated)
-                {
-                    firstName = user.FindFirst("firstName")?.Value;
-                }
+                name = authState.User.Identity.Name;
+                StateHasChanged();
             }
+                
             else
             {
                 Console.WriteLine("User is not authenticated");

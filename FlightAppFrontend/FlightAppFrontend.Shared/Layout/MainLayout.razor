@@ -15,7 +15,9 @@
     <div class="container hero is-fullheight pl-6 pr-6">
 
         <main class="body">
-            @Body
+            @if(isLoaded){
+                @Body
+            }
         </main>
 
         <footer class="mt-auto is-flex-align-items-flex-end">
@@ -31,19 +33,22 @@
 </div>
 
 @code {
-    
+    private bool isLoaded = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
-    
+
     {
         if (firstRender)
         {
-           var token = await tokenService.LoadTokenAsync();
-           if(token!=null)
-           {
-            if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
+            var token = await tokenService.LoadTokenAsync();
+            if(token!=null)
             {
-                customProvider.NotifyAuthenticationStateChanged();
-            }
+                if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
+                {
+                    customProvider.NotifyAuthenticationStateChanged();
+                    isLoaded = true;
+                    StateHasChanged();
+                }
          }
          else{
                 Console.WriteLine("Token is null");
