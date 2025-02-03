@@ -5,6 +5,7 @@ using FlightAppFrontend.Web.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -21,7 +22,6 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
-
 
 
 
@@ -42,6 +42,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+//app.UseAuthentication();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

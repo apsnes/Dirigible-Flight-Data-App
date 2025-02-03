@@ -28,5 +28,9 @@ namespace FlightAppFrontend.Shared.Services
         {
             await _jsRuntime.InvokeVoidAsync("alertMessage", message);
         }
+        public async Task RemoveItem(string key)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorageFunctions.removeItem", key);
+        }
     }
 }
