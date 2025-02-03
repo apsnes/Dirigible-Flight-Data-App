@@ -1,4 +1,5 @@
 @using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppLibrary.Models.AircraftPhoto
 @using FlightAppLibrary.Models.Response
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppFrontend.Shared.Pages
@@ -16,6 +17,7 @@ else if(@FlightResponse == null)
 else
 {
     <FlightSummary FlightResponse="@FlightResponse"/>
+    <AircraftCard FlightResponse="@FlightResponse" aircraftPhoto="@AircraftPhoto" />
 }
 
 @code{
@@ -26,26 +28,58 @@ else
 
     protected string? ErrorMessage;
 
+    protected Photo? AircraftPhoto { get; set; }
+    protected string PhotoErrorMessage { get; set;}
+
     protected override async Task OnInitializedAsync()
+    {
+        await GetFlightResponse();
+        await GetPhoto();
+    }
+
+    protected async Task GetFlightResponse()
     {
         try
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
 
-            var test = client.BaseAddress;
+            var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
+            // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
 
-            // var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
-            var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+            // FlightResponse = response[0];
+            FlightResponse = response.Value;
+            ErrorMessage = response.ErrorMessage;
 
-            FlightResponse = response[0];
-            //FlightResponse = response.Value;
-            // ErrorMessage = response.ErrorMessage;
-
-            //----Query airciraft picture-----------
         }
         catch(Exception ex)
         {
             ErrorMessage = $"An error occured: {ex.Message}";
+        }
+    }
+
+    protected async Task GetPhoto()
+    {
+        if(FlightResponse != null)
+        {
+            try
+            {
+                var client = ClientFactory.CreateClient("AircraftPhotos");
+
+                var photoResponse = await client.GetValueAsync<PhotosArray>($"{FlightResponse.Aircraft.Registration}");
+
+
+                AircraftPhoto = photoResponse.Value.Photos[0];
+                PhotoErrorMessage = photoResponse.ErrorMessage;
+
+            }
+            catch (Exception ex)
+            {
+                AircraftPhoto = null;
+            }
+        }
+        else
+        {
+            AircraftPhoto = null;
         }
     }
 

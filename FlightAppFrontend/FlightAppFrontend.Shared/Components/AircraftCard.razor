@@ -1,7 +1,28 @@
-﻿@using FlightAppLibrary.Models.Response
-<h3>AircraftCard</h3>
+﻿@using FlightAppLibrary.Models.AircraftPhoto
+@using FlightAppLibrary.Models.Response
+
+@if(aircraftPhoto != null)
+{
+    <div class="card mb-5 pb-4 mt-5">
+        <div class="card-image is-relative has-text-centered">
+            <figure class="iamge is-4by3 in-line-block" id="aircraftPhoto" name="aircraftPhoto">
+                <img src="@aircraftPhoto.ThumbnailLarge.Src" alt="photo of aircraft" />
+            </figure>
+        </div>
+        <div class="card-content">
+            <p class="title is-4">Aircraft details</p>
+            <p class="is-6">Aircraft type: @FlightResponse.Aircraft.Icao</p>
+            <p class="is-6">Registration: @FlightResponse.Aircraft.Registration</p>
+        </div>
+    </div>
+}
+
+
 
 @code {
     [Parameter]
     public FlightResponse? FlightResponse { get; set; }
+
+    [Parameter]
+    public Photo? aircraftPhoto { get; set; }
 }
