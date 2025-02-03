@@ -15,6 +15,14 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient("DirigibleApi", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+builder.Services.AddHttpClient("WeatherApp", client =>
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("WeatherApp")!));
+
+builder.Services.AddHttpClient("OpenCageBase", client =>
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("OpenCageBase")!));
+
+
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddSingleton<TokenStateService>();
 builder.Services.AddScoped<TokenService>();

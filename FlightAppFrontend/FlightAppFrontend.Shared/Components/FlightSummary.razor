@@ -1,9 +1,8 @@
 @using FlightAppLibrary.Models.Response
-
+@using FlightAppFrontend.Shared.Components.Loaders
 
 <FlightSummaryCard FlightResponse="@FlightResponse" />
-
-
+<CoordinateLoader  FlightResponse="@FlightResponse" />
 
 @code{
     [Parameter]

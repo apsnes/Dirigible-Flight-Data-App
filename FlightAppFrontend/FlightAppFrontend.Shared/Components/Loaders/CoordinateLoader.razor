@@ -1,0 +1,50 @@
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Response
+@using FlightAppFrontend.Shared.Components.Utility
+@using System.Web
+@inject IHttpClientFactory ClientFactory
+
+@if (CoordinateResults == null || CoordinateResults.Count == 0)
+{
+    <Loading />
+}
+else
+{
+    <WeatherLoader CoordinateResults="@CoordinateResults" />
+}
+
+@code
+{
+    [Parameter] public FlightResponse? FlightResponse { get; set; }
+    public Dictionary<string, decimal> CoordinateResults = new();
+    private string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("OpenCageBase");
+
+            var arrivalBuilder = new UriBuilder(client.BaseAddress!.ToString());
+            var arrivalQuery = HttpUtility.ParseQueryString(arrivalBuilder.Query);
+            arrivalQuery["q"] = $"{FlightResponse!.Arrival.Airport}";
+            arrivalBuilder.Query = arrivalQuery.ToString();
+            var arrivalResponse = await client.GetValueAsync<OpenCageResponse>(arrivalBuilder.ToString());
+
+            var departureBuilder = new UriBuilder(client.BaseAddress!.ToString());
+            var departureQuery = HttpUtility.ParseQueryString(departureBuilder.Query);
+            departureQuery["q"] = $"{FlightResponse!.Departure.Airport}";
+            departureBuilder.Query = departureQuery.ToString();
+            var departureResponse = await client.GetValueAsync<OpenCageResponse>(departureBuilder.ToString());
+
+            CoordinateResults.Add("arrivalLat", arrivalResponse.Value.Results.First().Geometry["lat"]);
+            CoordinateResults.Add("arrivalLng", arrivalResponse.Value.Results.First().Geometry["lng"]);
+            CoordinateResults.Add("departureLat", departureResponse.Value.Results.First().Geometry["lat"]);
+            CoordinateResults.Add("departureLng", departureResponse.Value.Results.First().Geometry["lng"]);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occured: {ex.Message}";
+        }
+    }
+}
