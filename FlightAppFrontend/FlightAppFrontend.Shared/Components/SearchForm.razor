@@ -43,7 +43,7 @@
                 String.IsNullOrEmpty(SearchModel.DepartureIATA) &&
                     String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Search terms must be valid"; return; }
 
-        if(SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
+        if(String.IsNullOrEmpty(SearchModel.FlightIATA) && SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
 
         NavigationManager.NavigateTo($"Results?{CreateQueryString()}");
     }
