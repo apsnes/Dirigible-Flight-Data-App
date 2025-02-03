@@ -1,7 +1,9 @@
 ﻿
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FlightApp.Controllers
 {
@@ -43,6 +45,14 @@ namespace FlightApp.Controllers
                 return Unauthorized(result);
             }
             return Ok(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUserDetails()
+        {
+            var userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+            UserDTO? user = await _accountService.GetUserDetails(userId);
+            if (user == null) return BadRequest();
+            return Ok(user);
         }
     }
 }

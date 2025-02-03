@@ -6,7 +6,7 @@
             <div class="media">
                 <div class="media-left">
                     <figure class="image is-96x96 is-square">
-                        <img src="https://yt3.googleusercontent.com/iPJIxKeh-2RWWl8Y4dXPN_L5cFRfR35akUxAG-8hUkfmrHGbcU-1FUHHdSlI7y4kR2335lEAFg=s900-c-k-c0x00ffffff-no-rj"
+                        <img src=@ImageUrl;
                         alt="Placeholder image" />
                     </figure>
                 </div>
@@ -26,9 +26,14 @@
 
     protected string? Path { get; set; }
 
+    protected string ImageUrl;
+
+
     protected override void OnInitialized()
     {
         Path = $"/FlightSummary/{FlightResponse!.Flight.Iata}";
+
+        ImageUrl = $"https://content.airhex.com/content/logos/airlines_{FlightResponse.Airline.Iata}_96_96_s.png";
     }
 
     protected string ParseFlightDateTime(DateTime? dateTime)

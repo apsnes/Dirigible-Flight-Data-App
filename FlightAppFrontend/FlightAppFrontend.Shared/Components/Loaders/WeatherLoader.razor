@@ -1,0 +1,48 @@
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Response
+@using System.Web
+@inject IHttpClientFactory ClientFactory
+
+@if (@weatherArrival == null || @weatherDeparture == null) 
+{
+    <Loading />
+}
+else
+{
+    <FlightWeatherCard WeatherArrival="@weatherArrival" WeatherDeparture="@weatherDeparture" />
+}
+
+@code
+{
+    [Parameter] public Dictionary<string, decimal> CoordinateResults { get; set; }
+    private WeatherResponse weatherArrival;
+    private WeatherResponse weatherDeparture;
+    private string ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("WeatherApp");
+
+            var arrivalBuilder = new UriBuilder(client.BaseAddress!.ToString());
+            var arrivalQuery = HttpUtility.ParseQueryString(arrivalBuilder.Query);
+            arrivalQuery["q"] = $"{CoordinateResults["arrivalLat"]},{CoordinateResults["arrivalLng"]}";
+            arrivalBuilder.Query = arrivalQuery.ToString();
+            var arrivalResponse = await client.GetValueAsync<WeatherResponse>(arrivalBuilder.ToString());
+
+            var departureBuilder = new UriBuilder(client.BaseAddress!.ToString());
+            var departureQuery = HttpUtility.ParseQueryString(departureBuilder.Query);
+            departureQuery["q"] = $"{CoordinateResults["departureLat"]},{CoordinateResults["departureLng"]}";
+            departureBuilder.Query = departureQuery.ToString();
+            var departureResponse = await client.GetValueAsync<WeatherResponse>(departureBuilder.ToString());
+
+            weatherArrival = arrivalResponse.Value;
+            weatherDeparture = departureResponse.Value;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occured: {ex.Message}";
+        }
+    }
+}

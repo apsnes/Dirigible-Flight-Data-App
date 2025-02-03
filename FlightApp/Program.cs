@@ -20,6 +20,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient("FlightApi", client =>
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("FlightApi")!));
+
 builder.Services.AddDbContext<FlightAppDbContext>(options=>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -68,7 +71,9 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddHealthChecks()
     .AddCheck<AviationApiHealthCheck>("AviationApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
-    .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy);
+    .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<WeatherApiHealthcheck>("WeatherApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
 var app = builder.Build();
 
