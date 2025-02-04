@@ -1,0 +1,30 @@
+﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using FlightAppLibrary.Models.Response
+@inject IHttpClientFactory ClientFactory
+
+@if (Notes == null)
+{
+    <Loading />
+}
+else
+{
+    <FlightNotesCard Notes="@Notes" />
+}
+
+@code
+{
+    [Parameter] public FlightResponse FlightResponse { get; set; }
+    public List<NoteDto> Notes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        //Get notes from db
+        var response = await client.GetValueAsync<List<FlightDto>>($"Flights/{FlightResponse.Flight.Iata}");
+        var correctFlight = response.Value.FirstOrDefault(f => f.Date == DateOnly.FromDateTime(FlightResponse.Departure.Scheduled.Value.Date));
+        Notes = correctFlight.Notes;
+    }
+    
+}
