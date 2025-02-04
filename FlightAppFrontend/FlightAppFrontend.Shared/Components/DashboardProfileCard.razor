@@ -12,27 +12,33 @@
                 </figure>
             </div>
             <div class="media-content">
-                <p class="title is-4">@($"{AppUser.FirstName} {AppUser.LastName}")</p>
-                <p class="subtitle is-5">Username <small>(He/Him)</small></p>
+                <p class="title is-4">@($"{AppUser!.FirstName} {AppUser!.LastName}")</p>
+                <p class="subtitle is-5">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
                 <p>Frequent Flyer</p>
-
-                <p>Utrecht, Netherlands</p>
             </div>
         </div>
     </div>
     <footer class="card-footer">
-        <a href="#" class="card-footer-item has-text-warning">Edit Details</a>
+        <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
     </footer>
 </div>
 
 
 @code{
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     [Parameter]
     public AuthenticationState? AuthState { get; set; }
+
     [Parameter]
-    public UserDTO AppUser { get; set; }
-    
+    public UserDTO? AppUser { get; set; }
+
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    protected async Task Edit()
+    {
+        await OnEdit.InvokeAsync();
+    }
 }
