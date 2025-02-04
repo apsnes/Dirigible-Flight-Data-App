@@ -9,7 +9,7 @@ namespace FlightAppLibrary.Models.Dtos
 {
     public class SignUpRequestDTO
     {
-        public string? Title { get; set; }
+        public string? Pronouns { get; set; }
         [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Last Name is required")]
@@ -26,6 +26,6 @@ namespace FlightAppLibrary.Models.Dtos
         [Compare("Password", ErrorMessage = "Password and Confirm Password do not match")]
         public string ConfirmPassword { get; set; }
         public string? DisplayName { get; set; }
-        public int? Karma { get; set; }
+        public int Karma { get; set; }
     }
 }
