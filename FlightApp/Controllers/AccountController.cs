@@ -1,6 +1,7 @@
 ﻿
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -47,12 +48,40 @@ namespace FlightApp.Controllers
             return Ok(result);
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetUserDetails()
         {
-            var userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserDTO? user = await _accountService.GetUserDetails(userId);
-            if (user == null) return BadRequest();
-            return Ok(user);
+            try
+            {
+                var userId = User.FindFirst("Id");
+                string userIdValue = userId.Value;
+                UserDTO? user = await _accountService.GetUserDetails(userIdValue);
+                if (user == null) return BadRequest();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromBody]UserDTO userDto)
+        {
+            try
+            {
+                var userId = User.FindFirst("Id");
+                string userIdValue = userId.Value;
+                var result = await _accountService.UpdateUser(userIdValue, userDto);
+                if (!result.IsSuccess) return BadRequest(result.Message);
+                return Ok(result.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+       
     }
 }

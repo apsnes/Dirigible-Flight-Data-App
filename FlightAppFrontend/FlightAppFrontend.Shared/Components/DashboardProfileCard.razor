@@ -1,31 +1,44 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IHttpClientFactory ClientFactory
 
 <div class="card mb-5 pb-4">
     <div class="card-content">
         <div class="media">
             <div class="media-left">
                 <figure class="image is-128x128 is-square">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
+                    <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
                 </figure>
             </div>
             <div class="media-content">
-                <p class="title is-4">Charlie Lashmar</p>
-                <p class="subtitle is-5">Username <small>(He/Him)</small></p>
+                <p class="title is-4">@($"{AppUser!.FirstName} {AppUser!.LastName}")</p>
+                <p class="subtitle is-5">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
                 <p>Frequent Flyer</p>
-                <p>Utrecht, Netherlands</p>
             </div>
         </div>
     </div>
     <footer class="card-footer">
-        <a href="#" class="card-footer-item has-text-warning">Edit</a>
+        <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
     </footer>
 </div>
 
 
 @code{
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     [Parameter]
     public AuthenticationState? AuthState { get; set; }
+
+    [Parameter]
+    public UserDTO? AppUser { get; set; }
+
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    protected async Task Edit()
+    {
+        await OnEdit.InvokeAsync();
+    }
 }

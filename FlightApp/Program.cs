@@ -13,12 +13,36 @@ using FlightApp.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FlightApp", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please Bearer and then token in the field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                });
+});
 
 builder.Services.AddHttpClient("FlightApi", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("FlightApi")!));
@@ -59,12 +83,8 @@ builder.Services.AddDbContext<FlightAppDbContext>();
 
 builder.Services.AddScoped<IFlightApiRepository, FlightApiRepository>();
 builder.Services.AddScoped<IFlightService, FlightApiService>();
-builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-builder.Services.AddScoped<IFlightsService, FlightsService>();
 builder.Services.AddScoped<INotesService, NotesService>();
-builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -102,7 +122,6 @@ app.UseHealthChecks("/health", new HealthCheckOptions
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 });
-
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

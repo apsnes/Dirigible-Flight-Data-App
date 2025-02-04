@@ -1,4 +1,5 @@
 ﻿using FlightApp.Service;
+using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,7 +76,7 @@ namespace FlightApp.Controllers
             else if (!string.IsNullOrEmpty(flightIata))
             {
                 var result = _flightApiService.GetFlightByIata(flightIata);
-                return result == null ? BadRequest("No flight found") : Ok(result);
+                return result == null ? BadRequest("No flight found") : Ok(new List<FlightResponse>() { result });
             }
             return BadRequest("No valid query parameters found.");
         }
