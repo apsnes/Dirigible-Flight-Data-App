@@ -16,10 +16,18 @@
     @if(Login){
         <TitleSuccess Text="Welcome Back!" />
     }
+    else if(Updated)
+    {
+        <TitleSuccess Text="Updated Successfully!" />
+    }
+    else if(Editing)
+    {
+        <Title Text="Edit Details" />
+    }
     else{
         <Title Text="Welcome Back!" />
     }
-    
+
     <div class="columns">
         <div class="column is-half">
             @if (Editing)
@@ -38,10 +46,16 @@
     [SupplyParameterFromQuery(Name = "login")]
     public bool Login { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [SupplyParameterFromQuery(Name = "updated")]
+    public bool Updated { get; set; }
 
-    private AuthenticationState _authState;
+    [SupplyParameterFromQuery(Name = "editing")]
+    public bool Editing { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    private AuthenticationState? _authState;
 
     private string email = "";
     private UserDTO User { get; set; } = new UserDTO();
@@ -77,10 +91,10 @@
         }
     }
 
-    public bool Editing;
 
     public void ToggleEditing()
     {
         Editing = !Editing;
+        Updated = false;
     }
 }
