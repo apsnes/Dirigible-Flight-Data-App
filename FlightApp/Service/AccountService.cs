@@ -171,5 +171,49 @@ namespace FlightApp.Service
             return null;
 
         }
+        public async Task<ResponseItem> UpdateUser(string userId, UserDTO userDto)
+        {
+            try
+            {
+
+
+                ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+
+                    user.DisplayName = userDto.DisplayName;
+                    user.FirstName = userDto.FirstName;
+                    user.LastName = userDto.LastName;
+                    user.Email = userDto.Email;
+                    user.PhoneNumber = userDto.PhoneNumber;
+                    user.Karma = userDto.Karma;
+                    user.Pronouns = userDto.Pronouns;
+
+                  
+                    await _userManager.UpdateAsync(user);
+                    return new ResponseItem()
+                    {
+                        IsSuccess = true,
+                        Message = "Success"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseItem()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+
+            }
+            return new ResponseItem()
+            {
+                IsSuccess = false,
+                Message = "Something went wrong"
+            };
+
+
+        }
     }
 }
