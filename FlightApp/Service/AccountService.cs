@@ -144,7 +144,7 @@ namespace FlightApp.Service
 
         public async Task<UserDTO> GetUserDetails(string userId)
         {
-            ApplicationUser? user = await _userManager.FindByNameAsync(userId);
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
                 UserDTO userDTO = new UserDTO()
