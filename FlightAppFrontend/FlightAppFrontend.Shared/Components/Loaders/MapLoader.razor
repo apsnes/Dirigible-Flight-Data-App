@@ -1,0 +1,43 @@
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Response
+@using System.Web
+@inject IHttpClientFactory ClientFactory
+
+
+@if (MapUri != null)
+{
+    <MapCard FlightResponse="@FlightResponse" MapUri="@MapUri"/>
+}
+}
+
+@code {
+
+    [Parameter]
+    public FlightResponse? FlightResponse { get; set; }
+    //create url
+    private string ErrorMessage;
+    public string MapUri;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("MapData");
+
+            var mapBuilder = new UriBuilder(client.BaseAddress!.ToString());
+            var mapQuery = HttpUtility.ParseQueryString(mapBuilder.Query);
+            mapQuery["center"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}";
+            mapQuery["marker"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};type:awesome;color:%23ffff00;size:x-large;icon:paw";
+            mapBuilder.Query = mapQuery.ToString();
+            MapUri = mapBuilder.Uri.ToString();
+
+            client.Dispose();
+            MapUri = $"https://maps.geoapify.com/v1/staticmap?style=positron&width=800&height=600&center=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}&zoom=11.7625&marker=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};type:circle;icontype:awesome;color:%23ffff00;icon:plane;shadow:no&apiKey=124b8857d6914329bfbec6152c9f04b3";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occured: {ex.Message}";
+        }
+
+    }
+}

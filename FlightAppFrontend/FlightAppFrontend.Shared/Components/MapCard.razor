@@ -1,0 +1,22 @@
+﻿@using FlightAppLibrary.Models.Response
+
+<div class="card mb-5 pb-4 mt-5">
+    <div class="card-image is-relative has-text-centered">
+        <figure class="iamge is-4by3 in-line-block" id="aircraftPhoto" name="aircraftPhoto">
+            <iframe src="@MapUri" width="400" height="300" style="border:6px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </figure>
+    </div>
+    <div class="card-content">
+        <p class="title is-4">Flight location</p>
+        <p class="is-6">Latitude: @FlightResponse.Live.Latitude</p>
+        <p class="is-6">Longitude: @FlightResponse.Live.Longitude</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public FlightResponse? FlightResponse { get; set; }
+
+    [Parameter]
+    public string MapUri { get; set; }
+}
