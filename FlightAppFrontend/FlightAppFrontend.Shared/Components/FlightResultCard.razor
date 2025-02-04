@@ -13,7 +13,10 @@
                 <div class="media-content">
                     <p class="title is-4">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
                     <p class="subtitle is-6">@FlightResponse!.Departure.Airport (@FlightResponse!.Departure.Iata) to @FlightResponse!.Arrival.Airport (@FlightResponse!.Arrival.Iata)</p>
-                    <p class="subtitle is-6">@ParseFlightDateTime(@FlightResponse.Departure.Scheduled)</p>
+                    @if (@FlightResponse.Departure.Scheduled is DateTime dateTime)
+                    {
+                        <p class="subtitle is-6">@dateTime.ToString("HH:mm dd/MM/yyyy") </p>
+                    }
                 </div>
             </div>
         </div>
@@ -28,23 +31,10 @@
 
     protected string ImageUrl;
 
-
     protected override void OnInitialized()
     {
         Path = $"/FlightSummary/{FlightResponse!.Flight.Iata}";
 
         ImageUrl = $"https://content.airhex.com/content/logos/airlines_{FlightResponse.Airline.Iata}_96_96_s.png";
-    }
-
-    protected string ParseFlightDateTime(DateTime? dateTime)
-    {
-        if (dateTime == null) return "";
-
-        var dateTimeArray = dateTime.ToString()!.Split(' ');
-        string date = dateTimeArray[0];
-        var timeArray = dateTimeArray[1].Split(':');
-        string time = timeArray[0] + ":" + timeArray[1];
-
-        return $"{time} - {date}";
     }
 }
