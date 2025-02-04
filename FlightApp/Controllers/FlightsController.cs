@@ -33,7 +33,7 @@ namespace FlightApp.Controllers
         public IActionResult AddFlight([FromBody] Flight flight)
         {
             var result = _flightsService.AddFlight(flight);
-            return result == null ? BadRequest($"Unable to add flight {flight.Id}") : Ok(result);
+            return result == null ? BadRequest($"Unable to add flight {flight.FlightId}") : Ok(result);
         }
     }
 }

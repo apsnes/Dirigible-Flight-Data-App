@@ -9,7 +9,6 @@ namespace FlightApp.Mapper
         public MapperProfile()
         {
             CreateMap<Flight, FlightDto>().ReverseMap();
-            CreateMap<FlightNote, FlightNoteDto>().ReverseMap();
             CreateMap<Note, NoteDto>().ReverseMap();
         }
     }
