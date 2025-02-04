@@ -2,7 +2,12 @@
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
 @using Microsoft.AspNetCore.Components.Authorization
-@inject IHttpClientFactory ClientFactory
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory DirigibleApi
+@inject NavigationManager NavigationManager
+
+<ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
 <div class="card mb-5 pb-4">
     <EditForm FormName="EditForm" Model="AppUser" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Edit User Form">
@@ -60,9 +65,29 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
-    protected void HandleValidSubmit()
-    {
+    public string? ErrorMessage;
 
+    protected async Task HandleValidSubmit()
+    {
+        try
+        {
+            var client = DirigibleApi.CreateClient("DirigibleApi");
+            var content = new StringContent(JsonSerializer.Serialize(AppUser), Encoding.UTF8, "application/json");
+            var result = await client.PutAsync("Account/UpdateUser", content);
+            if (result.IsSuccessStatusCode)
+            {
+                await OnCancel.InvokeAsync();
+                NavigationManager.NavigateTo("/dashboard?updated=true");
+            }
+            else
+            {
+                ErrorMessage = "Could not update details";
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
     protected void HandleInvalidSubmit()
     {
@@ -72,5 +97,10 @@
     protected async Task Cancel()
     {
         await OnCancel.InvokeAsync();
+    }
+
+    private void ResetError()
+    {
+        ErrorMessage = "";
     }
 }
