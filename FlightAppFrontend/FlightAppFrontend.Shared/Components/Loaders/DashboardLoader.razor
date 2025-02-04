@@ -1,0 +1,117 @@
+@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Components
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+
+@if (ErrorMessage != null)
+{
+    <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError" />
+}
+else if (@User == null)
+{
+    <Loading />
+}
+else
+{
+    <PageTitle>Dashboard</PageTitle>
+
+    <div class="container mt-6">
+        @if (Login)
+        {
+            <TitleSuccess Text="Welcome Back!" />
+        }
+        else if (Updated)
+        {
+            <TitleSuccess Text="Updated Successfully!" />
+        }
+        else if (Editing)
+        {
+            <Title Text="Edit Details" />
+        }
+        else
+        {
+            <Title Text="Welcome Back!" />
+        }
+
+        <div class="columns">
+            <div class="column is-half">
+                @if (Editing)
+                {
+                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" />
+                }
+                else
+                {
+                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" />
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "login")]
+    public bool Login { get; set; }
+
+    [SupplyParameterFromQuery(Name = "updated")]
+    public bool Updated { get; set; }
+
+    private bool Editing;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    private AuthenticationState? _authState;
+
+    private string email = "";
+
+    private UserDTO User { get; set; } = new UserDTO();
+
+    private string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var response = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+            User = response.Value!;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _authState = await AuthenticationStateTask;
+            if (_authState != null && _authState.User.Identity.IsAuthenticated)
+            {
+                email = _authState.User.Identity.Name;
+                StateHasChanged();
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+    }
+
+    public void ToggleEditing()
+    {
+        Editing = !Editing;
+        if (Editing) Updated = false;
+    }
+
+    protected void ResetError()
+    {
+        ErrorMessage = "";
+    }
+}

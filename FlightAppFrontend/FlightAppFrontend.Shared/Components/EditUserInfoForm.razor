@@ -76,7 +76,8 @@
             var result = await client.PutAsync("Account/UpdateUser", content);
             if (result.IsSuccessStatusCode)
             {
-                NavigationManager.NavigateTo("/dashboard?updated=true&editing=false");
+                await OnCancel.InvokeAsync();
+                NavigationManager.NavigateTo("/dashboard?updated=true");
             }
             else
             {
