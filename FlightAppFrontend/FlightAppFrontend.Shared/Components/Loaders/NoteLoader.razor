@@ -21,10 +21,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         var client = ClientFactory.CreateClient("DirigibleApi");
-        //Get notes from db
-        var response = await client.GetValueAsync<List<FlightDto>>($"Flights/{FlightResponse.Flight.Iata}");
-        var correctFlight = response.Value.FirstOrDefault(f => f.Date == DateOnly.FromDateTime(FlightResponse.Departure.Scheduled.Value.Date));
-        Notes = correctFlight.Notes;
-    }
-    
+        string url = $"Notes/flight?flight_iata={FlightResponse.Flight.Iata}&departure_time={FlightResponse.Departure.Scheduled.ToString()}";
+        var response = await client.GetValueAsync<List<NoteDto>>(url);
+        //https://localhost:7246/api/Notes/flight?flight_iata=FR3208&departure_time=2/4/2025 8:30:00 AM
+        Notes = response.Value;
+    }  
 }

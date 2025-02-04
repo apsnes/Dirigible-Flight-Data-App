@@ -51,7 +51,6 @@ namespace FlightApp.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserDetails()
         {
-
             try
             {
                 var userId = User.FindFirst("Id");

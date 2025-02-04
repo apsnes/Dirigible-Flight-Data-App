@@ -39,13 +39,10 @@ namespace FlightApp.Service
             {
                 UserName = signUpRequestDTO.Email,
                 Email = signUpRequestDTO.Email,
-                Pronouns = signUpRequestDTO.Pronouns,
                 FirstName = signUpRequestDTO.FirstName,
                 LastName = signUpRequestDTO.LastName,
                 PhoneNumber = signUpRequestDTO.PhoneNumber,
-                EmailConfirmed = true,
-                Karma = signUpRequestDTO.Karma,
-                DisplayName = signUpRequestDTO.DisplayName,
+                EmailConfirmed = true
             };
             var result = await _userManager.CreateAsync(user, signUpRequestDTO.Password);
             if (!result.Succeeded)

@@ -1,4 +1,5 @@
 ﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
@@ -12,7 +13,7 @@
                 <p class="title is-4 mb-2">Add Comment</p>
                 <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
                     <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
-                    <MainButton Text="Submit"/>
+                    <button type="submit">Submit</button>
                 </EditForm>
             </div>
         </div>
@@ -24,12 +25,20 @@
     [Parameter] public FlightResponse FlightResponse { get; set; }
     public NoteDto NoteDto { get; set; } = new();
 
-    public void HandleValidSubmit()
-    {
-        var client = ClientFactory.CreateClient("DirigibleApi");        
+    public async Task HandleValidSubmit()
+    {       
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+        var currUser = userResponse.Value;
+
+        NoteDto.UserEmail = currUser.Email;
+        NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
+        NoteDto.FlightIata = FlightResponse.Flight.Iata;
+        NoteDto.TimeStamp = DateTime.UtcNow;
+
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = client.PostAsync("api/notes", content).Result;
+        var response = client.PostAsync("notes", content).Result;
         if (response.IsSuccessStatusCode)
         {
             NoteDto = null;
