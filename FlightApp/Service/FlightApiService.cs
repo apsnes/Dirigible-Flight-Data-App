@@ -5,7 +5,7 @@ namespace FlightApp.Service
 {
     public interface IFlightService
     {
-        FlightResponse? GetFlightByIata(string iata);
+        List<FlightResponse?> GetFlightByIata(string iata);
         List<FlightResponse> GetFlightsByArrivalIataActive(string arr_iata);
         List<FlightResponse> GetIncidentFlights();
         List<FlightResponse> GetFlightsByRoute(string dep_iata, string arr_iata);
@@ -19,7 +19,7 @@ namespace FlightApp.Service
         {
             _flightApiRepository = flightApiRepository;
         }
-        public FlightResponse? GetFlightByIata(string iata)
+        public List<FlightResponse?> GetFlightByIata(string iata)
         {
             return  _flightApiRepository.GetFlightByIata(iata).Result;
         }
