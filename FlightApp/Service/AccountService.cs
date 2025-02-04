@@ -1,11 +1,14 @@
 ﻿
+using Azure.Core;
 using FlightApp.Helpers;
 using FlightApp.Models;
 using FlightAppLibrary.Models.Dtos;
 using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -211,6 +214,36 @@ namespace FlightApp.Service
             };
 
 
+        }
+
+        public async Task<string> UpdatePassword(PasswordResetDto dto)
+        {
+            try
+            {
+                ApplicationUser? user = await _userManager.FindByEmailAsync(dto.Email);
+                if (user == null)
+                {
+                    
+                    return "User not found";
+                   
+                }
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (result.Succeeded)
+                {
+                
+                    return "Success";
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+             
+               return ex.Message;
+            
+            }
+          
+            return "An error occurred";
         }
     }
 }

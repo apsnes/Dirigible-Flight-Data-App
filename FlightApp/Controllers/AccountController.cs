@@ -1,8 +1,10 @@
 ﻿
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -82,6 +84,25 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
-       
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordResetDto model)
+        {
+          
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var result = await _accountService.UpdatePassword(model);
+            if (result!=null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+
+                
+
+        }
+
     }
 }
