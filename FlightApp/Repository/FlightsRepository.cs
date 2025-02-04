@@ -37,7 +37,7 @@ namespace FlightApp.Repository
         {
             try
             {
-                return db.Flights.Include(x => x.Notes).FirstOrDefault(x => x.FlightNumber == iata)!;
+                return db.Flights.Include(x => x.Notes).ThenInclude(x => x.User).FirstOrDefault(x => x.FlightNumber == iata)!;
             }
             catch (Exception e)
             {

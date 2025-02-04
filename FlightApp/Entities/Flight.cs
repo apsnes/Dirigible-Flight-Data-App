@@ -7,6 +7,7 @@ namespace FlightApp.Entities
         [Key]
         public int FlightId { get; set; }
         public string FlightNumber { get; set; }
+        public DateOnly Date { get; set; }
         public List<Note> Notes { get; set; }
     }
 }

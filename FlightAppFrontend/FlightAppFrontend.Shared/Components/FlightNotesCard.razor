@@ -1,7 +1,21 @@
-﻿@using FlightAppLibrary.Models.Response
-<h3>FlgihtNotes</h3>
+﻿@using FlightAppLibrary.Models.Dtos
 
-@code {
-    [Parameter]
-    public FlightResponse? FlightResponse { get; set; }
+<div class="card mb-5 pb-4 mt-5">
+    <div class="card-content">
+        <div class="media">
+            <div class="media-content">
+                <p class="title is-4 mb-2">Comments</p>
+                @foreach (var note in Notes)
+                {
+                    @* <p class="subtitle is-6">@note.User.UserName @note.TimeStamp</p> *@
+                    <p>@note.NoteText</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public List<NoteDto> Notes { get; set; }
 }

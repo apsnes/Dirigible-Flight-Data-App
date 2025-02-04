@@ -10,8 +10,8 @@ namespace FlightApp.Entities
         public int NoteId { get; set; }
 
 
-        [ForeignKey("UserId")]
-        public string UserId { get; set; }
+        [ForeignKey("Email")]
+        public string UserEmail { get; set; }
         public ApplicationUser User { get; set; }
 
 
@@ -20,6 +20,7 @@ namespace FlightApp.Entities
         public Flight Flight { get; set; }
 
 
+        public string NoteText { get; set; }
         public DateTime TimeStamp { get; set; }
     }
 }
