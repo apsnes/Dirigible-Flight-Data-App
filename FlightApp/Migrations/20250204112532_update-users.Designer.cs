@@ -4,6 +4,7 @@ using FlightApp.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightApp.Migrations
 {
     [DbContext(typeof(FlightAppDbContext))]
-    partial class FlightAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204112532_update-users")]
+    partial class updateusers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +32,6 @@ namespace FlightApp.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlightId"));
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
 
                     b.Property<string>("FlightNumber")
                         .IsRequired()
@@ -53,18 +53,11 @@ namespace FlightApp.Migrations
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.Property<string>("NoteText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("NoteId");
@@ -315,7 +308,9 @@ namespace FlightApp.Migrations
 
                     b.HasOne("FlightApp.Models.ApplicationUser", "User")
                         .WithMany("Notes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Flight");
 
