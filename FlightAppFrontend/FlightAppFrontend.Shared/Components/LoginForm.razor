@@ -38,7 +38,7 @@ else
                         <label for="email" class="label">Email</label>
                         <div class="control mt-2">
                             <InputText id="email" class="input is-warning" @bind-Value="LoginModel.UserName" placeholder="Email" />
-                            <ValidationMessage class="help is-danger" For="@(() => LoginModel.UserName)" />
+                            <ValidationMessage class="help is-danger" For="@(() => LoginModel.UserName)"/>
                         </div>
                     </div>
 

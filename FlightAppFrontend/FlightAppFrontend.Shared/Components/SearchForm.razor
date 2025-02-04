@@ -45,7 +45,7 @@
 
         if(String.IsNullOrEmpty(SearchModel.FlightIATA) && SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
 
-        NavigationManager.NavigateTo($"results?{CreateQueryString()}");
+        NavigationManager.NavigateTo($"/results?{CreateQueryString()}");
     }
 
     protected string CreateQueryString() 
