@@ -1,4 +1,5 @@
 ﻿using FlightApp.Repository;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace FlightAppTests.RepositoryTests
         [SetUp]
         public void Setup()
         {
-            _repository = new FlightApiRepository();
+            var clientFactory = new Mock<IHttpClientFactory>();
+            _repository = new FlightApiRepository(clientFactory.Object);
         }
     }
 }
