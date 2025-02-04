@@ -8,7 +8,10 @@
         <div class="column is-half">
             @foreach (var response in @FlightResponses!)
             {
-                <FlightResultCard FlightResponse="response" />
+                @if(response.Flight.Codeshared is null)
+                {
+                    <FlightResultCard FlightResponse="response" />
+                }
             }
         </div>
     </div>

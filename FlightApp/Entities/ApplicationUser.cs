@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FlightApp.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace FlightApp.Models
 {
@@ -6,5 +7,6 @@ namespace FlightApp.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public List<Note> Notes { get; set; }
     }
 }
