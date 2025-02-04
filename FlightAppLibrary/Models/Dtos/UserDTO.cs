@@ -12,7 +12,7 @@ namespace FlightAppLibrary.Models.Dtos
         [JsonPropertyName("id")]
         public string? Id { get; set; }
         [JsonPropertyName("title")]
-        public string? Title { get; set; }
+        public string? Pronouns { get; set; }
 
         [JsonPropertyName("firstName")]
         public string? FirstName { get; set; }
@@ -25,7 +25,7 @@ namespace FlightAppLibrary.Models.Dtos
         [JsonPropertyName("phoneNumber")]
         public string? PhoneNumber { get; set; }
         [JsonPropertyName("karma")]
-        public int? Karma { get; set; }
+        public int Karma { get; set; }
      
 
     }
