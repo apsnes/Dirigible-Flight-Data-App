@@ -5,10 +5,17 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
+
 <PageTitle>Dashboard</PageTitle>
 
 <div class="container mt-6">
-    <Title Text="Welcome [Username]" />
+    @if(Login){
+        <TitleSuccess Text="Welcome Back!" />
+    }
+    else{
+        <Title Text="Welcome Back!" />
+    }
+    
     <div class="columns">
         <div class="column is-half">
             <DashboardProfileCard AuthState="_authState" />
@@ -17,6 +24,9 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery(Name = "login")]
+    public bool Login { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
