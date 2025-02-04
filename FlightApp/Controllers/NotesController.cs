@@ -27,7 +27,7 @@ namespace FlightApp.Controllers
         public IActionResult AddNote([FromBody] Note note)
         {
             var result = _notesService.AddNote(note);
-            return result == null ? BadRequest($"Unable to add note {note.Id}") : Ok(result);
+            return result == null ? BadRequest($"Unable to add note {note.NoteId}") : Ok(result);
         }
     }
 }

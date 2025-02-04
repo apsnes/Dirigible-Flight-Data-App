@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightApp.Migrations
 {
     [DbContext(typeof(FlightAppDbContext))]
-    [Migration("20250129133005_addIdentity")]
-    partial class addIdentity
+    [Migration("20250204100032_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,50 @@ namespace FlightApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FlightApp.Entities.Flight", b =>
+                {
+                    b.Property<int>("FlightId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlightId"));
+
+                    b.Property<string>("FlightNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FlightId");
+
+                    b.ToTable("Flights");
+                });
+
+            modelBuilder.Entity("FlightApp.Entities.Note", b =>
+                {
+                    b.Property<int>("NoteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NoteId"));
+
+                    b.Property<int>("FlightId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("NoteId");
+
+                    b.HasIndex("FlightId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notes");
+                });
 
             modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>
                 {
@@ -43,6 +87,14 @@ namespace FlightApp.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -90,77 +142,6 @@ namespace FlightApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("FlightApp.Models.Flight", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FlightNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Flights");
-                });
-
-            modelBuilder.Entity("FlightApp.Models.FlightNote", b =>
-                {
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NoteId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FlightNumber")
-                        .HasColumnType("int");
-
-                    b.HasKey("FlightId", "NoteId");
-
-                    b.HasIndex("FlightNumber");
-
-                    b.ToTable("FlightNotes");
-                });
-
-            modelBuilder.Entity("FlightApp.Models.Note", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notes");
-                });
-
-            modelBuilder.Entity("FlightApp.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -186,6 +167,20 @@ namespace FlightApp.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -294,17 +289,23 @@ namespace FlightApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FlightApp.Models.FlightNote", b =>
+            modelBuilder.Entity("FlightApp.Entities.Note", b =>
                 {
-                    b.HasOne("FlightApp.Models.Flight", null)
-                        .WithMany("FlightNotes")
+                    b.HasOne("FlightApp.Entities.Flight", "Flight")
+                        .WithMany("Notes")
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlightApp.Models.Note", null)
-                        .WithMany("FlightNotes")
-                        .HasForeignKey("FlightNumber");
+                    b.HasOne("FlightApp.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flight");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -358,14 +359,9 @@ namespace FlightApp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FlightApp.Models.Flight", b =>
+            modelBuilder.Entity("FlightApp.Entities.Flight", b =>
                 {
-                    b.Navigation("FlightNotes");
-                });
-
-            modelBuilder.Entity("FlightApp.Models.Note", b =>
-                {
-                    b.Navigation("FlightNotes");
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }
