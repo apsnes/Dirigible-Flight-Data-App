@@ -65,5 +65,6 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+       
     }
 }

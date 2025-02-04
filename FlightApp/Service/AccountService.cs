@@ -39,10 +39,13 @@ namespace FlightApp.Service
             {
                 UserName = signUpRequestDTO.Email,
                 Email = signUpRequestDTO.Email,
+                Title = signUpRequestDTO.Title,
                 FirstName = signUpRequestDTO.FirstName,
                 LastName = signUpRequestDTO.LastName,
                 PhoneNumber = signUpRequestDTO.PhoneNumber,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Karma = signUpRequestDTO.Karma,
+                DisplayName = signUpRequestDTO.DisplayName,
             };
             var result = await _userManager.CreateAsync(user, signUpRequestDTO.Password);
             if (!result.Succeeded)
@@ -102,8 +105,12 @@ namespace FlightApp.Service
                         Id = user.Id,
                         Email = user.Email,
                         PhoneNumber = user.PhoneNumber,
+                        Title = user.Title,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        DisplayName = user.DisplayName,
+                        Karma = user.Karma,
+
                     }
                 };
 
@@ -149,10 +156,14 @@ namespace FlightApp.Service
             {
                 UserDTO userDTO = new UserDTO()
                 {
+                    Id = user.Id,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Title = user.Title,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber
+                    DisplayName = user.DisplayName,
+                    Karma = user.Karma,
 
                 };
                 return userDTO;
