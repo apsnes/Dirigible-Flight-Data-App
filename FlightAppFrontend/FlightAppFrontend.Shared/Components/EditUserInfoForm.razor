@@ -17,24 +17,24 @@
                 <div class="media-content">
                     <div class="field">
                         <div class="control mt-2">
-                            <InputText id="first-name" class="input" @bind-Value="AppUser.FirstName" placeholder="First Name" />
-                            <ValidationMessage class="help is-danger" For="@(() => AppUser.FirstName)" />
-                            <InputText id="last-name" class="input" @bind-Value="AppUser.LastName" placeholder="Last Name" />
-                            <ValidationMessage class="help is-danger" For="@(() => AppUser.LastName)" />
+                            <InputText id="first-name" class="input" @bind-Value="AppUser!.FirstName" placeholder="First Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.FirstName)" />
+                            <InputText id="last-name" class="input" @bind-Value="AppUser!.LastName" placeholder="Last Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.LastName)" />
                         </div>
                     </div>
 
                     <div class="field">
                         <div class="control mt-2">
-                            <InputText id="display-name" class="input" @bind-Value="AppUser.DisplayName" placeholder="Display Name" />
-                            <ValidationMessage class="help is-danger" For="@(() => AppUser.DisplayName)" />
+                            <InputText id="display-name" class="input" @bind-Value="AppUser!.DisplayName" placeholder="Display Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.DisplayName)" />
                         </div>
                     </div>
 
                     <div class="field">
                         <div class="control mt-2">
-                            <InputText id="pronouns" class="input" @bind-Value="AppUser.Pronouns" placeholder="Pronouns (optional)" />
-                            <ValidationMessage class="help is-danger" For="@(() => AppUser.Pronouns)" />
+                            <InputText id="pronouns" class="input" @bind-Value="AppUser!.Pronouns" placeholder="Pronouns (optional)" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
 
 @code {
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     [Parameter]
     public AuthenticationState? AuthState { get; set; }

@@ -3,37 +3,30 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IHttpClientFactory ClientFactory
 
-
-@if(Editing)
-{
-    <EditUserInfoForm AuthState="@AuthState" AppUser="@AppUser" OnCancel="Cancel"/>
-}
-else
-{
-    <div class="card mb-5 pb-4">
-        <div class="card-content">
-            <div class="media">
-                <div class="media-left">
-                    <figure class="image is-128x128 is-square">
-                        <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
-                    </figure>
-                </div>
-                <div class="media-content">
-                    <p class="title is-4">@($"{AppUser!.FirstName} {AppUser!.LastName}")</p>
-                    <p class="subtitle is-5">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
-                    <p>Frequent Flyer</p>
-                </div>
+<div class="card mb-5 pb-4">
+    <div class="card-content">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-128x128 is-square">
+                    <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
+                </figure>
+            </div>
+            <div class="media-content">
+                <p class="title is-4">@($"{AppUser!.FirstName} {AppUser!.LastName}")</p>
+                <p class="subtitle is-5">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
+                <p>Frequent Flyer</p>
             </div>
         </div>
-        <footer class="card-footer">
-            <button type="button" class="card-footer-item has-text-warning" @onclick="() => Editing = true">Edit Details</button>
-        </footer>
     </div>
-}
+    <footer class="card-footer">
+        <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
+    </footer>
+</div>
+
 
 @code{
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     [Parameter]
     public AuthenticationState? AuthState { get; set; }
@@ -41,10 +34,11 @@ else
     [Parameter]
     public UserDTO? AppUser { get; set; }
 
-    public bool Editing;
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
 
-    public void Cancel()
+    protected async Task Edit()
     {
-        Editing = false;
+        await OnEdit.InvokeAsync();
     }
 }

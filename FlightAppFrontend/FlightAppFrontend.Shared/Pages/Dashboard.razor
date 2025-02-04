@@ -22,10 +22,14 @@
     
     <div class="columns">
         <div class="column is-half">
-
-
-
-            <DashboardProfileCard AuthState="_authState" AppUser="User" />
+            @if (Editing)
+            {
+                <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" />
+            }
+            else
+            {
+                <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing"/>
+            }
         </div>
     </div>
 </div>
@@ -71,5 +75,12 @@
                 NavigationManager.NavigateTo("/login");
             }
         }
+    }
+
+    public bool Editing;
+
+    public void ToggleEditing()
+    {
+        Editing = !Editing;
     }
 }
