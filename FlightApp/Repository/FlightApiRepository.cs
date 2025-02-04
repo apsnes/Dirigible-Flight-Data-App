@@ -8,7 +8,7 @@ namespace FlightApp.Repository
 {
     public interface IFlightApiRepository
     {
-        Task<List<FlightResponse?>> GetFlightByIata(string iata);
+        Task<FlightResponse?> GetFlightByIata(string iata);
         Task<List<FlightResponse>> GetFlightByArrivalAirportActive(string arr_iata);
         Task<List<FlightResponse>> GetIncidentFlights();
         Task<List<FlightResponse>> GetFlightsByRoute(string dep_iata, string arr_iata);
@@ -22,7 +22,7 @@ namespace FlightApp.Repository
         {
             _clientFactory = ClientFactory;
         }
-        public async Task<List<FlightResponse?>> GetFlightByIata(string iata)
+        public async Task<FlightResponse?> GetFlightByIata(string iata)
         {
             using (var client = _clientFactory.CreateClient("FlightApi"))
             {
@@ -35,7 +35,7 @@ namespace FlightApp.Repository
                     using HttpResponseMessage response = await client.GetAsync(builder.ToString());
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody)!.Data.ToList()!;
+                    return JsonSerializer.Deserialize<FlightResponseWrapper>(responseBody)!.Data.FirstOrDefault();
                 }
                 catch (HttpRequestException e)
                 {
