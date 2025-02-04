@@ -65,6 +65,24 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromBody]UserDTO userDto)
+        {
+            try
+            {
+                var userId = User.FindFirst("Id");
+                string userIdValue = userId.Value;
+                var result = await _accountService.UpdateUser(userIdValue, userDto);
+                if (!result.IsSuccess) return BadRequest(result.Message);
+                return Ok(result.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
        
     }
 }
