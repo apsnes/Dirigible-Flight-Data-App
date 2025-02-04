@@ -1,4 +1,7 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IHttpClientFactory ClientFactory
 
 <div class="card mb-5 pb-4">
     <div class="card-content">
@@ -9,7 +12,7 @@
                 </figure>
             </div>
             <div class="media-content">
-                <p class="title is-4">Charlie Lashmar</p>
+                <p class="title is-4">@($"{AppUser.FirstName} {AppUser.LastName}")</p>
                 <p class="subtitle is-5">Username <small>(He/Him)</small></p>
                 <p>Frequent Flyer</p>
                 <p>Utrecht, Netherlands</p>
@@ -28,4 +31,7 @@
 
     [Parameter]
     public AuthenticationState? AuthState { get; set; }
+    [Parameter]
+    public UserDTO AppUser { get; set; }
+    
 }
