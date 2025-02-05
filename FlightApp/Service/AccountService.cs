@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using Azure.Core;
 using FlightApp.Helpers;
 using FlightApp.Models;
@@ -22,23 +23,27 @@ namespace FlightApp.Service
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApiAuthenticationSettings _authSettings;
+        private readonly IMapper _mapper;
 
         public AccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IOptions<ApiAuthenticationSettings> authSettings
+            IOptions<ApiAuthenticationSettings> authSettings,
+            IMapper mapper
            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _authSettings = authSettings.Value;
+            _mapper = mapper;
         }
 
         public async Task<SignUpResponseDTO> Register(SignUpRequestDTO signUpRequestDTO)
         {
-            var user = new ApplicationUser
+           
+             var user = new ApplicationUser()
             {
                 UserName = signUpRequestDTO.Email,
                 Email = signUpRequestDTO.Email,
@@ -47,6 +52,7 @@ namespace FlightApp.Service
                 PhoneNumber = signUpRequestDTO.PhoneNumber,
                 EmailConfirmed = true
             };
+            //doesnt work
             var result = await _userManager.CreateAsync(user, signUpRequestDTO.Password);
             if (!result.Succeeded)
             {
@@ -100,18 +106,7 @@ namespace FlightApp.Service
                 {
                     IsAuthSuccessful = true,
                     Token = token,
-                    UserDTO = new UserDTO
-                    {
-                        Id = user.Id,
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        Pronouns = user.Pronouns,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        DisplayName = user.DisplayName,
-                        Karma = user.Karma,
-
-                    }
+                    UserDTO = _mapper.Map<UserDTO>(user)
                 };
 
 
@@ -154,18 +149,8 @@ namespace FlightApp.Service
             ApplicationUser? user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                UserDTO userDTO = new UserDTO()
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Pronouns = user.Pronouns,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    DisplayName = user.DisplayName,
-                    Karma = user.Karma,
-
-                };
+                UserDTO userDTO = new UserDTO();
+                userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
             }
             return null;
@@ -181,13 +166,7 @@ namespace FlightApp.Service
                 if (user != null)
                 {
 
-                    user.DisplayName = userDto.DisplayName;
-                    user.FirstName = userDto.FirstName;
-                    user.LastName = userDto.LastName;
-                    user.Email = userDto.Email;
-                    user.PhoneNumber = userDto.PhoneNumber;
-                    user.Karma = userDto.Karma;
-                    user.Pronouns = userDto.Pronouns;
+                     user = _mapper.Map<ApplicationUser>(userDto);
 
 
                     await _userManager.UpdateAsync(user);
