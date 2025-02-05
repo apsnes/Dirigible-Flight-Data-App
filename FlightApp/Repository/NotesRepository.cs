@@ -1,5 +1,6 @@
 ﻿using FlightApp.Database;
 using FlightApp.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlightApp.Repository
 {
@@ -7,6 +8,7 @@ namespace FlightApp.Repository
     {
         List<Note> GetNotes();
         Note AddNote(Note note);
+        List<Note> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled);
     }
 
     public class NotesRepository : INotesRepository
@@ -23,6 +25,21 @@ namespace FlightApp.Repository
             try
             {
                 return db.Notes.ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
+        public List<Note> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled)
+        {
+            try
+            {
+                var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).Include(n => n.User).ToList();
+                //var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).ToList();
+                return res;
             }
             catch (Exception e)
             {

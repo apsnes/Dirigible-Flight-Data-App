@@ -8,7 +8,7 @@
         <div class="column is-half">
             @foreach (var response in @FlightResponses!)
             {
-                @if(response.Flight.Codeshared is null)
+                @if(response.Flight.Codeshared is null && !string.IsNullOrEmpty(response.Flight.Iata))
                 {
                     <FlightResultCard FlightResponse="response" />
                 }
@@ -19,6 +19,6 @@
 
 @code{
     [Parameter]
-    public List<FlightResponse>? FlightResponses { get; set;}
+    public List<FlightResponse>? FlightResponses { get; set; }
 
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightApp.Migrations
 {
     [DbContext(typeof(FlightAppDbContext))]
-    [Migration("20250204100032_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250205083354_FixDB")]
+    partial class FixDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,23 +25,6 @@ namespace FlightApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FlightApp.Entities.Flight", b =>
-                {
-                    b.Property<int>("FlightId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlightId"));
-
-                    b.Property<string>("FlightNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FlightId");
-
-                    b.ToTable("Flights");
-                });
-
             modelBuilder.Entity("FlightApp.Entities.Note", b =>
                 {
                     b.Property<int>("NoteId")
@@ -50,19 +33,28 @@ namespace FlightApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NoteId"));
 
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
+                    b.Property<string>("FlightIata")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NoteText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ScheduledDeparture")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserEmail")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("NoteId");
-
-                    b.HasIndex("FlightId");
 
                     b.HasIndex("UserId");
 
@@ -81,6 +73,9 @@ namespace FlightApp.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -91,6 +86,9 @@ namespace FlightApp.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Karma")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -118,6 +116,9 @@ namespace FlightApp.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Pronouns")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -291,19 +292,9 @@ namespace FlightApp.Migrations
 
             modelBuilder.Entity("FlightApp.Entities.Note", b =>
                 {
-                    b.HasOne("FlightApp.Entities.Flight", "Flight")
-                        .WithMany("Notes")
-                        .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FlightApp.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Flight");
+                        .WithMany("Notes")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -359,7 +350,7 @@ namespace FlightApp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FlightApp.Entities.Flight", b =>
+            modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Notes");
                 });

@@ -1,0 +1,106 @@
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory DirigibleApi
+@inject NavigationManager NavigationManager
+
+<ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
+
+<div class="card mb-5 pb-4">
+    <EditForm FormName="EditForm" Model="AppUser" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Edit User Form">
+        <DataAnnotationsValidator />
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <figure class="image is-128x128 is-square">
+                        <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <div class="field">
+                        <div class="control mt-2">
+                            <InputText id="first-name" class="input" @bind-Value="AppUser!.FirstName" placeholder="First Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.FirstName)" />
+                            <InputText id="last-name" class="input" @bind-Value="AppUser!.LastName" placeholder="Last Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.LastName)" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control mt-2">
+                            <InputText id="display-name" class="input" @bind-Value="AppUser!.DisplayName" placeholder="Display Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.DisplayName)" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control mt-2">
+                            <InputText id="pronouns" class="input" @bind-Value="AppUser!.Pronouns" placeholder="Pronouns (optional)" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <button type="submit" class="card-footer-item has-text-success">Save</button>
+            <button type="button" class="card-footer-item has-text-danger" @onclick="() => Cancel()">Cancel</button>
+        </footer>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public AuthenticationState? AuthState { get; set; }
+
+    [Parameter]
+    public UserDTO? AppUser { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    public string? ErrorMessage;
+
+    protected async Task HandleValidSubmit()
+    {
+        try
+        {
+            var client = DirigibleApi.CreateClient("DirigibleApi");
+            var content = new StringContent(JsonSerializer.Serialize(AppUser), Encoding.UTF8, "application/json");
+            var result = await client.PutAsync("Account/UpdateUser", content);
+            if (result.IsSuccessStatusCode)
+            {
+                await OnCancel.InvokeAsync();
+                NavigationManager.NavigateTo("/dashboard?updated=true");
+            }
+            else
+            {
+                ErrorMessage = "Could not update details";
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+    protected void HandleInvalidSubmit()
+    {
+
+    }
+
+    protected async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private void ResetError()
+    {
+        ErrorMessage = "";
+    }
+}

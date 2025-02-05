@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using FlightAppLibrary.Models.Dtos;
 
 namespace FlightAppTests.ServiceTests
 {
@@ -19,8 +21,10 @@ namespace FlightAppTests.ServiceTests
         public void Setup()
         {
             _mockRepository = new Mock<INotesRepository>();
-            _service = new NotesService(_mockRepository.Object);
+            var _mockMapper = new Mock<IMapper>();
+            _service = new NotesService(_mockRepository.Object, _mockMapper.Object);
         }
+
         [Test]
         public void GetNotes_Invokes_Once()
         {
@@ -31,12 +35,24 @@ namespace FlightAppTests.ServiceTests
             //Assert
             _mockRepository.Verify(x => x.GetNotes(), Times.Once);
         }
+
+        [Test]
+        public void GetNotesByIataAndDateTime_Invokes_Once()
+        {
+            //Arrange
+            //Act
+            _service.GetNotesByIataAndDateTime(It.IsAny<string>(), It.IsAny<DateTime>());
+
+            //Assert
+            _mockRepository.Verify(x => x.GetNotesByIataAndDateTime(It.IsAny<string>(), It.IsAny<DateTime>()), Times.Once);
+        }
+
         [Test]
         public void AddNote_Invokes_Once()
         {
             //Arrange
             //Act
-            _service.AddNote(new Note());
+            _service.AddNote(new NoteDto());
 
             //Assert
             _mockRepository.Verify(x => x.AddNote(It.IsAny<Note>()), Times.Once);

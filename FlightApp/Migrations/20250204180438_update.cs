@@ -5,7 +5,7 @@
 namespace FlightApp.Migrations
 {
     /// <inheritdoc />
-    public partial class NoteListonAppUser : Migration
+    public partial class update : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

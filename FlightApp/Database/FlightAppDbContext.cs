@@ -3,13 +3,14 @@ using FlightApp.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 
 namespace FlightApp.Database
 {
     public class FlightAppDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Note> Notes { get; set; }
-        public DbSet<Flight> Flights { get; set; }
 
         public FlightAppDbContext(DbContextOptions<FlightAppDbContext> options) : base(options) { }
 

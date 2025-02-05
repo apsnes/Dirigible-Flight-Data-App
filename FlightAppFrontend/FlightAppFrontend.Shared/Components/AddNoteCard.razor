@@ -1,0 +1,48 @@
+﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@using FlightAppLibrary.Models.Response
+@inject IHttpClientFactory ClientFactory
+
+<div class="card mb-5 pb-4 mt-5">
+    <div class="card-content">
+        <div class="media">
+            <div class="media-content">
+                <p class="title is-4 mb-2">Add Comment</p>
+                <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
+                    <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
+                    <button type="submit">Submit</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public FlightResponse FlightResponse { get; set; }
+    public NoteDto NoteDto { get; set; } = new();
+
+    public async Task HandleValidSubmit()
+    {       
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+        var currUser = userResponse.Value;
+
+        NoteDto.UserId = currUser!.Id;
+        NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
+        NoteDto.FlightIata = FlightResponse.Flight.Iata;
+        NoteDto.TimeStamp = DateTime.UtcNow;
+
+        var json = JsonSerializer.Serialize(NoteDto);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = client.PostAsync("notes", content).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            NoteDto = null;
+        }
+    }
+}

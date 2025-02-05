@@ -1,12 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FlightAppLibrary.Models.Dtos
 {
     public class NoteDto
     {
-        public int NoteId { get; set; }      
+        [JsonPropertyName("flightIata")]
+        public string FlightIata { get; set; }
+        [JsonPropertyName("scheduledDeparture")]
+        public DateTime? ScheduledDeparture { get; set; }
+        [JsonPropertyName("userId")]
         public string UserId { get; set; }
-        public int FlightId { get; set; }
+        [JsonPropertyName("noteText")]
+        public string NoteText { get; set; }
+        [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set; }
+
+        [JsonPropertyName("user")]
+        public UserDTO User { get; set; }
     }
 }

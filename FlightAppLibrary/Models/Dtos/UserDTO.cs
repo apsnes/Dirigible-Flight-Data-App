@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -10,14 +11,24 @@ namespace FlightAppLibrary.Models.Dtos
     public class UserDTO
     {
         [JsonPropertyName("id")]
-        public string? Id { get; set; }
+        public string Id { get; set; }
+        [JsonPropertyName("title")]
+        public string? Pronouns { get; set; }
+
         [JsonPropertyName("firstName")]
         public string? FirstName { get; set; }
         [JsonPropertyName("lastName")]
         public string? LastName { get; set; }
+
+        [JsonPropertyName("displayName")]
+        [MinLength(3, ErrorMessage = "Must be at least three characters")]
+        public string? DisplayName { get; set; }
+
         [JsonPropertyName("email")]
         public string Email { get; set; }
         [JsonPropertyName("phoneNumber")]
         public string? PhoneNumber { get; set; }
+        [JsonPropertyName("karma")]
+        public int Karma { get; set; }
     }
 }

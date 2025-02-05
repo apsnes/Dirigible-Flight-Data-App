@@ -102,8 +102,12 @@ namespace FlightApp.Service
                         Id = user.Id,
                         Email = user.Email,
                         PhoneNumber = user.PhoneNumber,
+                        Pronouns = user.Pronouns,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        DisplayName = user.DisplayName,
+                        Karma = user.Karma,
+
                     }
                 };
 
@@ -149,15 +153,63 @@ namespace FlightApp.Service
             {
                 UserDTO userDTO = new UserDTO()
                 {
+                    Id = user.Id,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Pronouns = user.Pronouns,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber
+                    DisplayName = user.DisplayName,
+                    Karma = user.Karma,
 
                 };
                 return userDTO;
             }
             return null;
+
+        }
+        public async Task<ResponseItem> UpdateUser(string userId, UserDTO userDto)
+        {
+            try
+            {
+
+
+                ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+
+                    user.DisplayName = userDto.DisplayName;
+                    user.FirstName = userDto.FirstName;
+                    user.LastName = userDto.LastName;
+                    user.Email = userDto.Email;
+                    user.PhoneNumber = userDto.PhoneNumber;
+                    user.Karma = userDto.Karma;
+                    user.Pronouns = userDto.Pronouns;
+
+                  
+                    await _userManager.UpdateAsync(user);
+                    return new ResponseItem()
+                    {
+                        IsSuccess = true,
+                        Message = "Success"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseItem()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+
+            }
+            return new ResponseItem()
+            {
+                IsSuccess = false,
+                Message = "Something went wrong"
+            };
+
 
         }
     }

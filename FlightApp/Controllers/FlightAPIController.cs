@@ -76,8 +76,7 @@ namespace FlightApp.Controllers
             else if (!string.IsNullOrEmpty(flightIata))
             {
                 var result = _flightApiService.GetFlightByIata(flightIata);
-                List<FlightResponse> list = [result];
-                return result == null ? BadRequest("No flight found") : Ok(list);
+                return result == null ? BadRequest("No flight found") : Ok(new List<FlightResponse>() { result });
             }
             return BadRequest("No valid query parameters found.");
         }
