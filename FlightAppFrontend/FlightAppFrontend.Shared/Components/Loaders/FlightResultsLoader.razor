@@ -27,6 +27,9 @@
     [Parameter]
     public string? DepartureIATA { get; set; }
 
+    [Parameter]
+    public string? Date { get; set; }
+
     public List<FlightResponse>? FlightResponses { get; set; }
 
     protected string? ErrorMessage;
@@ -54,6 +57,7 @@
         if (!String.IsNullOrEmpty(FlightIATA)) parameters.Add($"flight_iata={FlightIATA}");
         if (!String.IsNullOrEmpty(DepartureIATA)) parameters.Add($"departures={DepartureIATA}");
         if (!String.IsNullOrEmpty(ArrivalIATA)) parameters.Add($"arrivals={ArrivalIATA}");
+        if (!String.IsNullOrEmpty(Date)) parameters.Add($"date={Date}");
 
         return String.Join("&", parameters);
     }
