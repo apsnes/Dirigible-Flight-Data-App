@@ -1,3 +1,4 @@
-﻿function alertMessage(message) {
+﻿
+function alertMessage(message) {
     alert(message);
- }
+}

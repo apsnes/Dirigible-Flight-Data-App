@@ -1,0 +1,20 @@
+﻿﻿@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="notification is-success mt-4 mb-0" aria-label="Error Message">
+        <button class="delete" @onclick="()=>DeleteNotification()"></button>
+        @Message
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public EventCallback OnDeleteNotification { get; set; }
+
+    private async Task DeleteNotification()
+    {
+        await OnDeleteNotification.InvokeAsync();
+    }
+}

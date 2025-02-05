@@ -3,19 +3,29 @@
 @using FlightAppLibrary.Models.Response
 
 <div class="mt-6">
-    <Title Text="Results:"/>
-    <div>
-        @foreach (var response in @FlightResponses!)
-        {
-            @if(response.Flight.Codeshared is null && !string.IsNullOrEmpty(response.Flight.Iata))
+    @if (FlightResponses is null || FlightResponses!.Count <= 0)
+    {
+        <Title Text="No Flights Found" />
+    }
+    else 
+    {
+        <Title Text="Results:" />
+    }
+    <div class="columns">
+        <div class="column is-half">
+            @foreach (var response in @FlightResponses!)
             {
-                <FlightResultCard FlightResponse="response" />
+                @if(response.Flight.Codeshared is null && !string.IsNullOrEmpty(response.Flight.Iata))
+                {
+                    <FlightResultCard FlightResponse="response" />
+                }
             }
-        }
+        </div>
     </div>
 </div>
 
-@code
-{
-    [Parameter] public List<FlightResponse>? FlightResponses { get; set; }
+@code{
+    [Parameter]
+    public List<FlightResponse>? FlightResponses { get; set; }
+
 }
