@@ -102,23 +102,6 @@ else
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _authState = await AuthenticationStateTask;
-            if (_authState != null && _authState.User.Identity.IsAuthenticated)
-            {
-                email = _authState.User.Identity.Name;
-                StateHasChanged();
-            }
-            else
-            {
-                NavigationManager.NavigateTo("/login");
-            }
-        }
-    }
-
     public void SetUpdated()
     {
         Updated = true;
@@ -144,7 +127,7 @@ else
         Login = false;
         Editing = false;
         UpdatingPassword = !UpdatingPassword;
-        if (UpdatingPassword) Updated = false;
+        if (UpdatingPassword) UpdatingPassword = false;
     }
 
     protected void ResetError()
