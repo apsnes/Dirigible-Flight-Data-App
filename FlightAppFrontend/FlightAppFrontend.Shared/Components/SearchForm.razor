@@ -32,7 +32,6 @@
                         <ValidationMessage class="help is-danger" For="@(() => SearchModel.Date)" />
                     </div>
                 </div>
-
                 <MainButton Text="Submit"/>
             </EditForm>
         </div>
@@ -52,7 +51,7 @@
 
         if(String.IsNullOrEmpty(SearchModel.FlightIATA) && SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
 
-        NavigationManager.NavigateTo($"/results?{CreateQueryString()}");
+        NavigationManager.NavigateTo($"/results?{CreateQueryString()}&page_number=1&page_size=10");
     }
 
     protected string CreateQueryString() 

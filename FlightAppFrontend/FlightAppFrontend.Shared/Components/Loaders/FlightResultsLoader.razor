@@ -30,6 +30,12 @@ else
     [Parameter]
     public string? Date { get; set; }
 
+    [Parameter]
+    public int PageNumber { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; }
+
     public List<FlightResponse>? FlightResponses { get; set; }
 
     protected string? ErrorMessage;
@@ -39,14 +45,14 @@ else
         try
         {      
             var client = ClientFactory.CreateClient("DirigibleApi");
-            // var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/results?{CreateQueryString()}");
+            var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/results?{CreateQueryString()}");
 
-            var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+            // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
 
-            FlightResponses = response.ToList();
+            // FlightResponses = response.ToList();
 
-            // FlightResponses = response.Value;
-            // ErrorMessage = response.ErrorMessage;
+            FlightResponses = response.Value;
+            ErrorMessage = response.ErrorMessage;
         }
         catch (Exception ex)
         {
@@ -62,6 +68,8 @@ else
         if (!String.IsNullOrEmpty(DepartureIATA)) parameters.Add($"departures={DepartureIATA}");
         if (!String.IsNullOrEmpty(ArrivalIATA)) parameters.Add($"arrivals={ArrivalIATA}");
         if (!String.IsNullOrEmpty(Date)) parameters.Add($"date={Date}");
+        if (PageNumber > 0) parameters.Add($"page_number={PageNumber}");
+        if (PageSize > 0) parameters.Add($"page_size={PageSize}");
 
         return String.Join("&", parameters);
     }
