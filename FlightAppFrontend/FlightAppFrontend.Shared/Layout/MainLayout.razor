@@ -12,17 +12,19 @@
     </header>
 
     <div class="container hero is-fullheight pl-6 pr-6">
+        
         <main class="body">
-            <AuthorizeView>
-                <Authorized>
-                @Body
-                </Authorized>
-                <NotAuthorized>
-                    <div class="has-text-centered">
-                        <RedirectHome/>
-                    </div>
-                </NotAuthorized>
-            </AuthorizeView>
+            @Body
+            @* <AuthorizeView> *@
+            @*     <Authorized> *@
+            @*     @Body *@
+            @*     </Authorized> *@
+            @*     <NotAuthorized> *@
+            @*         <div class="has-text-centered"> *@
+            @*             <RedirectHome/> *@
+            @*         </div> *@
+            @*     </NotAuthorized> *@
+            @* </AuthorizeView> *@
         </main>
 
         <footer class="mt-auto is-flex-align-items-flex-end">
