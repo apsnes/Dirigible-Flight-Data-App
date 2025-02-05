@@ -5,9 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightApp.Entities
 {
-    [PrimaryKey("FlightIata", "ScheduledDeparture")]
     public class Note
     {
+        [Key]
+        public int NoteId { get; set; }
         public string FlightIata { get; set; }
         public DateTime ScheduledDeparture { get; set; }
 
