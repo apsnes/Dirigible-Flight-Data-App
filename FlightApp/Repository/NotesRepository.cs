@@ -37,8 +37,11 @@ namespace FlightApp.Repository
         {
             try
             {
-                var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).Include(n => n.User).Include(n => n.Replies).ToList();
-                //var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).ToList();
+                var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled)
+                    .Include(n => n.User)
+                    .Include(n => n.Replies)
+                    .ToList();
+               
                 return res;
             }
             catch (Exception e)

@@ -33,6 +33,14 @@ else
         {
             <Title Text="Edit Details" />
         }
+        else if (UpdatingPassword)
+        {
+            <Title Text="Enter New Password" />
+        }
+        else if(PasswordUpdated)
+        {
+            <TitleSuccess Text="Password Updated" />
+        }
         else
         {
             <Title Text="Welcome Back!" />
@@ -42,11 +50,15 @@ else
             <div class="column is-half">
                 @if (Editing)
                 {
-                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" />
+                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/>
+                }
+                else if(UpdatingPassword)
+                {
+                    <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated"/>
                 }
                 else
                 {
-                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" />
+                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/>
                 }
             </div>
         </div>
@@ -57,10 +69,13 @@ else
     [SupplyParameterFromQuery(Name = "login")]
     public bool Login { get; set; }
 
-    [SupplyParameterFromQuery(Name = "updated")]
-    public bool Updated { get; set; }
+    private bool Updated;
 
     private bool Editing;
+
+    private bool UpdatingPassword;
+
+    private bool PasswordUpdated;
 
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
@@ -104,10 +119,32 @@ else
         }
     }
 
+    public void SetUpdated()
+    {
+        Updated = true;
+        Editing = false;
+    }
+
+    public void SetPasswordUpdated()
+    {
+        PasswordUpdated = true;
+        UpdatingPassword = false;
+    }
+
     public void ToggleEditing()
     {
+        Login = false;
+        UpdatingPassword = false;
         Editing = !Editing;
         if (Editing) Updated = false;
+    }
+
+    public void ToggleUpdatingPassword()
+    {
+        Login = false;
+        Editing = false;
+        UpdatingPassword = !UpdatingPassword;
+        if (UpdatingPassword) Updated = false;
     }
 
     protected void ResetError()

@@ -9,9 +9,8 @@
 <NoteLoader FlightResponse="@FlightResponse" />
 <AddNoteCard FlightResponse="@FlightResponse" />
 
-@code{
-    [Parameter]
-    public FlightResponse? FlightResponse { get; set; }
-    [Parameter]
-    public Photo? AircraftPhoto { get; set; }
+@code
+{
+    [Parameter] public FlightResponse? FlightResponse { get; set; }
+    [Parameter] public Photo? AircraftPhoto { get; set; }
 }

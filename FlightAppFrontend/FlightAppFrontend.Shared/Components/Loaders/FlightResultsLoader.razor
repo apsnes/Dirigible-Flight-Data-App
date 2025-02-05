@@ -4,18 +4,18 @@
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
 
- @if(ErrorMessage != null) 
- { 
-     <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/> 
- } 
- else if(@FlightResponses == null) 
- { 
-     <Loading/> 
- } 
- else 
- { 
-     <FlightsSummary FlightResponses="@FlightResponses"/> 
- } 
+@if(ErrorMessage != null) 
+{ 
+    <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/> 
+} 
+else if(@FlightResponses == null) 
+{ 
+    <Loading/> 
+} 
+else 
+{ 
+    <FlightsSummary FlightResponses="@FlightResponses"/> 
+} 
 
 @code {
     [Parameter]
@@ -27,6 +27,9 @@
     [Parameter]
     public string? DepartureIATA { get; set; }
 
+    [Parameter]
+    public string? Date { get; set; }
+
     public List<FlightResponse>? FlightResponses { get; set; }
 
     protected string? ErrorMessage;
@@ -36,10 +39,14 @@
         try
         {      
             var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/results?{CreateQueryString()}");
+            // var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/results?{CreateQueryString()}");
 
-            FlightResponses = response.Value;
-            ErrorMessage = response.ErrorMessage;
+            var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+
+            FlightResponses = response.ToList();
+
+            // FlightResponses = response.Value;
+            // ErrorMessage = response.ErrorMessage;
         }
         catch (Exception ex)
         {
@@ -54,6 +61,7 @@
         if (!String.IsNullOrEmpty(FlightIATA)) parameters.Add($"flight_iata={FlightIATA}");
         if (!String.IsNullOrEmpty(DepartureIATA)) parameters.Add($"departures={DepartureIATA}");
         if (!String.IsNullOrEmpty(ArrivalIATA)) parameters.Add($"arrivals={ArrivalIATA}");
+        if (!String.IsNullOrEmpty(Date)) parameters.Add($"date={Date}");
 
         return String.Join("&", parameters);
     }

@@ -26,28 +26,28 @@ else
                 <EditForm FormName="loginForm" Model="RegistrationModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Registration Form">
                     <DataAnnotationsValidator />
                     <div class="field">
-                        <label for="firstname" class="label">First Name</label>
+                        <label for="firstname" class="label has-text-light">First Name</label>
                         <div class="control mt-2">
-                            <InputText id="firstname" class="input is-warning" @bind-Value="RegistrationModel.FirstName" placeholder="Email" />
+                            <InputText id="firstname" class="input is-warning" @bind-Value="RegistrationModel.FirstName" placeholder="First Name" />
                             <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.FirstName)" />
                         </div>
                     </div>
                     <div class="field">
-                        <label for="lastname" class="label">Last Name</label>
+                        <label for="lastname" class="label  has-text-light">Last Name</label>
                         <div class="control mt-2">
-                            <InputText id="lastname" class="input is-warning" @bind-Value="RegistrationModel.LastName" placeholder="Email" />
+                            <InputText id="lastname" class="input is-warning" @bind-Value="RegistrationModel.LastName" placeholder="Last Name" />
                             <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.LastName)" />
                         </div>
                     </div>
                     <div class="field">
-                        <label for="phonenumber" class="label">Phone Number</label>
+                        <label for="phonenumber" class="label has-text-light">Phone Number</label>
                         <div class="control mt-2">
-                            <InputText id="phonenumber" class="input is-warning" @bind-Value="RegistrationModel.PhoneNumber" placeholder="Email" />
+                            <InputText id="phonenumber" class="input is-warning" @bind-Value="RegistrationModel.PhoneNumber" placeholder="Phone Number" />
                             <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.PhoneNumber)" />
                         </div>
                     </div>
                     <div class="field">
-                        <label for="email" class="label">Email</label>
+                        <label for="email" class="label has-text-light">Email</label>
                         <div class="control mt-2">
                             <InputText id="email" class="input is-warning" @bind-Value="RegistrationModel.Email" placeholder="Email" />
                             <ValidationMessage class="help is-danger" For="@(() => RegistrationModel.Email)" />
@@ -55,7 +55,7 @@ else
                     </div>
 
                     <div class="field">
-                        <label for="password" class="label">Password</label>
+                        <label for="password" class="label has-text-light">Password</label>
                         <div class="control mt-2">
                             <InputText type="password" id="password" class="input is-warning" @bind-Value="RegistrationModel.Password" placeholder="Password" />
                             <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.Password)" />
@@ -63,7 +63,7 @@ else
                     </div>
 
                     <div class="field">
-                        <label for="confirmPassword" class="label">Confirm Password</label>
+                        <label for="confirmPassword" class="label has-text-light">Confirm Password</label>
                         <div class="control mt-2">
                             <InputText type="password" id="confirmPassword" class="input is-warning" @bind-Value="RegistrationModel.ConfirmPassword" placeholder="Confirm Password" />
                             <ValidationMessage class="help is-danger" For="@(() => RegistrationModel!.ConfirmPassword)" />

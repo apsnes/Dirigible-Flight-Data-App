@@ -6,24 +6,47 @@
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
 
-<div class="card mb-5 pb-4 mt-5">
-    <div class="card-content">
-        <div class="media">
-            <div class="media-content">
-                <p class="title is-4 mb-2">Add Comment</p>
-                <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
-                    <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
-                    <button type="submit">Submit</button>
-                </EditForm>
+<div class="card">
+    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+        <p class="card-header-title">Add Comment</p>
+        <button class="card-header-icon" aria-label="more options">
+            @if (@isCardOpen)
+            {
+                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
+            }
+            else
+            {
+                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+            }
+        </button>
+    </header>
+
+    @if (isCardOpen)
+    {
+        <div class="card-content">
+            <div class="media">
+                <div class="media-content">
+                    <p class="title is-4 mb-2">Add Comment</p>
+                    <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
+                        <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
+                        <MainButton Text="Add Comment" />
+                    </EditForm>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>
 
 @code
 {
     [Parameter] public FlightResponse FlightResponse { get; set; }
     public NoteDto NoteDto { get; set; } = new();
+    private bool isCardOpen = false;
+
+    private void ToggleCard()
+    {
+        isCardOpen = !isCardOpen;
+    }
 
     public async Task HandleValidSubmit()
     {       

@@ -55,7 +55,6 @@ namespace FlightApp.Service
                     ReplyText = r.ReplyText,
                     TimeStamp = r.TimeStamp
                 }).ToList()
-                   
             }).ToList();
 
             //var res =_mapper.Map <List<NoteDto>>(_notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled));
