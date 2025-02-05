@@ -31,7 +31,7 @@
         var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
         var currUser = userResponse.Value;
 
-        NoteDto.UserEmail = currUser.Email;
+        NoteDto.UserId = currUser!.Id;
         NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
         NoteDto.FlightIata = FlightResponse.Flight.Iata;
         NoteDto.TimeStamp = DateTime.UtcNow;
@@ -39,6 +39,7 @@
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = client.PostAsync("notes", content).Result;
+
         if (response.IsSuccessStatusCode)
         {
             NoteDto = null;

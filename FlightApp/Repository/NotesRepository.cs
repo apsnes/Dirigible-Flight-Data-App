@@ -1,5 +1,6 @@
 ﻿using FlightApp.Database;
 using FlightApp.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlightApp.Repository
 {
@@ -36,7 +37,8 @@ namespace FlightApp.Repository
         {
             try
             {
-                var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).ToList();
+                var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).Include(n => n.User).ToList();
+                //var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled).ToList();
                 return res;
             }
             catch (Exception e)
