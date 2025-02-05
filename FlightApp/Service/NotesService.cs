@@ -3,6 +3,7 @@ using FlightApp.Entities;
 using FlightApp.Repository;
 using FlightAppLibrary.Models.Dtos;
 using Microsoft.AspNetCore.Components.Forms.Mapping;
+using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 
 namespace FlightApp.Service
@@ -33,7 +34,6 @@ namespace FlightApp.Service
         public List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled)
         {
             var notes = _notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled);
-
             if (notes != null && notes.Count > 0)
             {
                 var res = notes.Select(n => new NoteDto()
@@ -48,7 +48,14 @@ namespace FlightApp.Service
                         Id = n.User!.Id,
                         DisplayName = n.User.DisplayName ?? n.User.FirstName,
                         Karma = n.User.Karma,
-                    }
+                    },
+                    Replies = n.Replies.Select(r => new ReplyDto()
+                    {
+                        UserId = r.UserId,
+                        NoteId = r.NoteId,
+                        ReplyText = r.ReplyText,
+                        TimeStamp = r.TimeStamp
+                    }).ToList()
                 }).ToList();
                 return res;
             }

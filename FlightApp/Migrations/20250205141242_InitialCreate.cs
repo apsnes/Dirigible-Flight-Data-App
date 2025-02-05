@@ -184,6 +184,36 @@ namespace FlightApp.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+<<<<<<<< HEAD:FlightApp/Migrations/20250205141242_InitialCreate.cs
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Replies",
+                columns: table => new
+                {
+                    ReplyId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    NoteId = table.Column<int>(type: "int", nullable: false),
+                    ReplyText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Replies", x => x.ReplyId);
+                    table.ForeignKey(
+                        name: "FK_Replies_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Replies_Notes_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Notes",
+                        principalColumn: "NoteId",
+                        onDelete: ReferentialAction.Cascade);
+========
+>>>>>>>> e12a733f2f1b03b2d620ca2b3d8fc6072a01fab0:FlightApp/Migrations/20250205141938_InitialCreate.cs
                 });
 
             migrationBuilder.InsertData(
@@ -238,6 +268,16 @@ namespace FlightApp.Migrations
                 name: "IX_Notes_UserId",
                 table: "Notes",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Replies_NoteId",
+                table: "Replies",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Replies_UserId",
+                table: "Replies",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -259,10 +299,13 @@ namespace FlightApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Notes");
+                name: "Replies");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Notes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
