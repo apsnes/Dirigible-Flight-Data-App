@@ -189,7 +189,7 @@ namespace FlightApp.Service
                     user.Karma = userDto.Karma;
                     user.Pronouns = userDto.Pronouns;
 
-                  
+
                     await _userManager.UpdateAsync(user);
                     return new ResponseItem()
                     {
@@ -216,34 +216,81 @@ namespace FlightApp.Service
 
         }
 
-        public async Task<string> UpdatePassword(PasswordResetDto dto)
+        public async Task<ResponseItem> ResetPassword(PasswordResetDto dto)
         {
+            ResponseItem responseItem = new ResponseItem()
+            {
+                IsSuccess = false,
+                Message = ""
+            };
             try
             {
                 ApplicationUser? user = await _userManager.FindByEmailAsync(dto.Email);
                 if (user == null)
                 {
-                    
-                    return "User not found";
-                   
+
+                    responseItem.Message = "User not found";
+                    return responseItem;
+
                 }
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
                 if (result.Succeeded)
                 {
-                
-                    return "Success";
-                   
+                    responseItem.IsSuccess = true;
+                    responseItem.Message = "Success";
+                    return responseItem;
+
                 }
             }
             catch (Exception ex)
             {
-             
-               return ex.Message;
-            
+
+                responseItem.Message = ex.Message;
+                return responseItem;
+
             }
-          
-            return "An error occurred";
+
+            responseItem.Message = "an error occurred";
+            return responseItem;
+        }
+        public async Task<ResponseItem> UpdatePassword(string userId, PasswordUpdateDto dto)
+        {
+            ResponseItem responseItem = new ResponseItem()
+            {
+                IsSuccess = false,
+                Message = ""
+            };
+            try
+            {
+                ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+
+                    responseItem.Message = "User not found";
+                    return responseItem;
+
+                }
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (result.Succeeded)
+                {
+                    responseItem.IsSuccess = true;
+                    responseItem.Message = "Success";
+                    return responseItem;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                responseItem.Message = ex.Message;
+                return responseItem;
+
+            }
+
+            responseItem.Message = "an error occurred";
+            return responseItem;
         }
     }
 }
