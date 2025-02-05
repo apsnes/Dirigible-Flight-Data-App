@@ -23,7 +23,6 @@ else
         var client = ClientFactory.CreateClient("DirigibleApi");
         string url = $"Notes/flight?flight_iata={FlightResponse.Flight.Iata}&departure_time={FlightResponse.Departure.Scheduled.ToString()}";
         var response = await client.GetValueAsync<List<NoteDto>>(url);
-        //https://localhost:7246/api/Notes/flight?flight_iata=FR3208&departure_time=2/4/2025 8:30:00 AM
         Notes = response.Value;
     }  
 }

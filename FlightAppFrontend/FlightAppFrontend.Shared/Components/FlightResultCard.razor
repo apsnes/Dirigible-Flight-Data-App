@@ -6,13 +6,12 @@
             <div class="media">
                 <div class="media-left">
                     <figure class="image is-96x96 is-square">
-                        <img src=@ImageUrl;
-                        alt="Placeholder image" />
+                        <img src=@ImageUrl alt="Airline Logo" />
                     </figure>
                 </div>
                 <div class="media-content">
                     <p class="title is-4">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
-                    <p class="subtitle is-6">@FlightResponse!.Departure.Airport (@FlightResponse!.Departure.Iata) to @FlightResponse!.Arrival.Airport (@FlightResponse!.Arrival.Iata)</p>
+                    <p class="subtitle is-6">@FlightResponse!.Departure.Iata  <i class="fas fa-solid fa-plane" aria-hidden="true"></i>  @FlightResponse!.Arrival.Iata</p>
                     @if (@FlightResponse.Departure.Scheduled is DateTime dateTime)
                     {
                         <p class="subtitle is-6">@dateTime.ToString("HH:mm dd/MM/yyyy") </p>
@@ -24,11 +23,8 @@
 </a>
 
 @code{
-    [Parameter]
-    public FlightResponse? FlightResponse { get; set; }
-
+    [Parameter] public FlightResponse? FlightResponse { get; set; }
     protected string? Path { get; set; }
-
     protected string ImageUrl;
 
     protected override void OnInitialized()

@@ -184,6 +184,7 @@ namespace FlightApp.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+<<<<<<<< HEAD:FlightApp/Migrations/20250205141242_InitialCreate.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -211,6 +212,8 @@ namespace FlightApp.Migrations
                         principalTable: "Notes",
                         principalColumn: "NoteId",
                         onDelete: ReferentialAction.Cascade);
+========
+>>>>>>>> e12a733f2f1b03b2d620ca2b3d8fc6072a01fab0:FlightApp/Migrations/20250205141938_InitialCreate.cs
                 });
 
             migrationBuilder.InsertData(

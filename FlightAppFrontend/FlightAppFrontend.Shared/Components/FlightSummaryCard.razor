@@ -1,55 +1,54 @@
 ﻿@using FlightAppLibrary.Models.Response
 
-<div class="card mb-5 pb-4 mt-5">
+<div class="card mt-5 pb-1">
     <div class="card-content">
         <div class="media">
-            <div class="media-content">
-                <p class="title is-4">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
-                <p class="subtitle is-6">@FlightResponse!.Departure.Airport (@FlightResponse!.Departure.Iata) to @FlightResponse!.Arrival.Airport (@FlightResponse!.Arrival.Iata)</p>
-            </div>
-            <div class="media-right">
+            <div class="media-left">
                 <figure class="image is-96x96 is-square">
-                    <img src="@ImageUrl"
+                    <img src=@ImageUrl;
                     alt="Placeholder image" />
                 </figure>
             </div>
+            <div class="media-content">
+                <p class="title is-4 mb-3">@FlightResponse!.Airline.Name @FlightResponse!.Flight.Iata</p>
+                <p class="subtitle is-6">@FlightResponse!.Departure.Iata  <i class="fas fa-solid fa-plane" aria-hidden="true"></i>  @FlightResponse!.Arrival.Iata</p>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <p class="title is-5 mb-3">Departure Information</p>
+                <p class="is-6"><strong>Departing:</strong> @FlightResponse!.Departure.Airport</p>
+                <p class="is-6"><strong>Scheduled time:</strong> @ParseFlightDateTime(@FlightResponse!.Departure.Scheduled)</p>
+                <p class="is-6"><strong>Estiamted:</strong> @ParseFlightDateTime(@FlightResponse!.Departure.Estimated)</p>
+                <p class="is-6" style="color: @(ParseDelayInformation(FlightResponse!.Departure.Delay) != "None" ? "red" : "inherit");">
+                    <strong>Delay:</strong> @ParseDelayInformation(FlightResponse!.Departure.Delay)
+                </p>
+                <p class="is-6"><strong>Terminal:</strong> @FlightResponse!.Departure.Terminal</p>
+            </div>
+            <div class="column">
+                <p class="title is-5 mb-3">Arrival Information</p>
+                <p class="is-6"><strong>Arriving:</strong> @FlightResponse!.Arrival.Airport</p>
+                <p class="is-6"><strong>Scheduled time:</strong> @ParseFlightDateTime(@FlightResponse!.Arrival.Scheduled)</p>
+                <p class="is-6"><strong>Estiamted:</strong> @ParseFlightDateTime(@FlightResponse!.Arrival.Estimated)</p>
+                <p class="is-6" style="color: @(ParseDelayInformation(FlightResponse!.Arrival.Delay) != "None" ? "red" : "inherit");">
+                    <strong>Delay:</strong> @ParseDelayInformation(FlightResponse!.Arrival.Delay)
+                </p>
+                <p class="is-6"><strong>Terminal:</strong> @FlightResponse!.Arrival.Terminal</p>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="card mb-5 pb-4 mt-5">
-    <div class="columns">
-        <div class="column" id="arrivals__collumn">
-            <div class="card-content">
-                <p class="title is-4">Departure Information</p>
-                <p class="subtitle is-6">Departing: @FlightResponse!.Departure.Airport</p>
-                <p class="is-6">Scheduled time: @ParseFlightDateTime(@FlightResponse!.Departure.Scheduled)</p>
-                <p class="is-6">Estiamted: @ParseFlightDateTime(@FlightResponse!.Departure.Estimated)</p>
-                <p class="is-6">Delay: @ParseDelayInformation(@FlightResponse!.Departure.Delay)</p>
-                <p class="is-6">Terminal: @FlightResponse!.Departure.Terminal</p>
-            </div>
-        </div>
-        <div class="column" id="departures__collumn">
-            <div class="card-content">
-                <p class="title is-4">Arrival Information</p>
-                <p class="subtitle is-6">Arriving: @FlightResponse!.Arrival.Airport</p>
-                <p class="is-6">Scheduled time: @ParseFlightDateTime(@FlightResponse!.Arrival.Scheduled)</p>
-                <p class="is-6">Estiamted: @ParseFlightDateTime(@FlightResponse!.Arrival.Estimated)</p>
-                <p class="is-6">Delay: @ParseDelayInformation(@FlightResponse!.Arrival.Delay)</p>
-                <p class="is-6">Terminal: @FlightResponse!.Arrival.Terminal</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-@code {
-    [Parameter]
-    public FlightResponse? FlightResponse { get; set; }
-
+@code
+{
+    [Parameter] public FlightResponse? FlightResponse { get; set; }
+    protected string? Path { get; set; }
     protected string ImageUrl;
 
     protected override void OnInitialized()
     {
+        Path = $"/FlightSummary/{FlightResponse!.Flight.Iata}";
+
         ImageUrl = $"https://content.airhex.com/content/logos/airlines_{FlightResponse.Airline.Iata}_96_96_s.png";
     }
 
@@ -60,7 +59,7 @@
     }
 
     protected string ParseDelayInformation(int? delay){
-        if (delay == null) return "none";
+        if (delay == null) return "None";
         return ((int)delay).ToString();
     }
 }
