@@ -11,5 +11,6 @@ namespace FlightAppLibrary.Models
         public string? FlightIATA { get; set; }
         public string? DepartureIATA { get; set; }
         public string? ArrivalIATA { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

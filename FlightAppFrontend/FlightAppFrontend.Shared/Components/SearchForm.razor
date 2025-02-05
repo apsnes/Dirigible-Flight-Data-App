@@ -26,6 +26,13 @@
 
                 <AutoCompleteField Dictionary="AirportDictionary" Name="Arrival Airport" OnSetValue="SetArrival"/>
 
+                <div class="field">
+                    <label for="date" class="label">Date</label>
+                    <div class="control mt-2">
+                        <InputDate id="date" class="input is-warning" @bind-Value="SearchModel!.Date"/>
+                    </div>
+                </div>
+
                 <MainButton Text="Submit"/>
             </EditForm>
         </div>
@@ -41,7 +48,7 @@
     {
         if (String.IsNullOrEmpty(SearchModel.FlightIATA) &&
                 String.IsNullOrEmpty(SearchModel.DepartureIATA) &&
-                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Search terms must be valid"; return; }
+                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Please enter a flight number or departure/arrival airport"; return; }
 
         if(String.IsNullOrEmpty(SearchModel.FlightIATA) && SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
 
@@ -55,6 +62,7 @@
         if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"flight_iata={SearchModel!.FlightIATA}");
         if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departures={SearchModel!.DepartureIATA}");
         if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
+        parameters.Add($"date={SearchModel!.Date.ToString("dd/MM/yyyy")}");
 
         return String.Join("&", parameters);
     }
