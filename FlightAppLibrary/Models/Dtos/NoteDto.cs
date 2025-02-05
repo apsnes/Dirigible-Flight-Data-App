@@ -9,11 +9,14 @@ namespace FlightAppLibrary.Models.Dtos
         public string FlightIata { get; set; }
         [JsonPropertyName("scheduledDeparture")]
         public DateTime? ScheduledDeparture { get; set; }
-        [JsonPropertyName("userEmail")]
-        public string UserEmail { get; set; }
+        [JsonPropertyName("userId")]
+        public string UserId { get; set; }
         [JsonPropertyName("noteText")]
         public string NoteText { get; set; }
         [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set; }
+
+        [JsonPropertyName("user")]
+        public UserDTO User { get; set; }
     }
 }

@@ -13,7 +13,7 @@
                 <p class="title is-4 mb-2">Add Comment</p>
                 <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
                     <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
-                    <MainButton Text="Post Comment"/>
+                    <button type="submit">Submit</button>
                 </EditForm>
             </div>
         </div>
@@ -31,7 +31,7 @@
         var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
         var currUser = userResponse.Value;
 
-        NoteDto.UserEmail = currUser.Email;
+        NoteDto.UserId = currUser!.Id;
         NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
         NoteDto.FlightIata = FlightResponse.Flight.Iata;
         NoteDto.TimeStamp = DateTime.UtcNow;

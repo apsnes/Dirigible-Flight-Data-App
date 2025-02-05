@@ -7,6 +7,7 @@
                 <p class="title is-4 mb-2">Comments</p>
                 @foreach (var note in Notes)
                 {
+                    <p class="subtitle is-6"> @note.User.DisplayName</p>
                     <p class="subtitle is-6"> @note.TimeStamp</p>
                     <p>@note.NoteText</p>
                 }

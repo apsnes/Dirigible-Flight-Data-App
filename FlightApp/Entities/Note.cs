@@ -13,10 +13,9 @@ namespace FlightApp.Entities
         public DateTime ScheduledDeparture { get; set; }
 
 
-        [ForeignKey("Email")]
-        public string UserEmail { get; set; }
+        [ForeignKey("User")]
+        public string UserId { get; set; }
         public ApplicationUser? User { get; set; }
-
 
         public string NoteText { get; set; }
         public DateTime TimeStamp { get; set; }

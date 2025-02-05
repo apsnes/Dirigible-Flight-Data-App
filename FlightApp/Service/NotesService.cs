@@ -32,7 +32,24 @@ namespace FlightApp.Service
 
         public List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled)
         {
-            var res =_mapper.Map <List<NoteDto>>(_notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled));
+            var notes = _notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled);
+
+            var res = notes.Select(n => new NoteDto()
+            {
+                FlightIata = n.FlightIata,
+                ScheduledDeparture = n.ScheduledDeparture,
+                UserId = n.UserId,
+                NoteText = n.NoteText,
+                TimeStamp = n.TimeStamp,
+                User = new UserDTO()
+                {
+                    Id = n.User!.Id,
+                    DisplayName = n.User.DisplayName ?? n.User.FirstName,
+                    Karma = n.User.Karma,
+                }
+            }).ToList();
+
+            //var res =_mapper.Map <List<NoteDto>>(_notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled));
             return res;
         }
 
