@@ -1,5 +1,5 @@
 ﻿
-using Azure.Core;
+using AutoMapper;
 using FlightApp.Helpers;
 using FlightApp.Models;
 using FlightAppLibrary.Models.Dtos;
@@ -22,23 +22,27 @@ namespace FlightApp.Service
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApiAuthenticationSettings _authSettings;
+        private readonly IMapper _mapper;
 
         public AccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IOptions<ApiAuthenticationSettings> authSettings
+            IOptions<ApiAuthenticationSettings> authSettings,
+            IMapper mapper
            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _authSettings = authSettings.Value;
+            _mapper = mapper;
         }
 
         public async Task<SignUpResponseDTO> Register(SignUpRequestDTO signUpRequestDTO)
         {
-            var user = new ApplicationUser
+
+            var user = new ApplicationUser()
             {
                 UserName = signUpRequestDTO.Email,
                 Email = signUpRequestDTO.Email,
@@ -47,6 +51,7 @@ namespace FlightApp.Service
                 PhoneNumber = signUpRequestDTO.PhoneNumber,
                 EmailConfirmed = true
             };
+            //doesnt work
             var result = await _userManager.CreateAsync(user, signUpRequestDTO.Password);
             if (!result.Succeeded)
             {
@@ -100,18 +105,7 @@ namespace FlightApp.Service
                 {
                     IsAuthSuccessful = true,
                     Token = token,
-                    UserDTO = new UserDTO
-                    {
-                        Id = user.Id,
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        Pronouns = user.Pronouns,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        DisplayName = user.DisplayName,
-                        Karma = user.Karma,
-
-                    }
+                    UserDTO = _mapper.Map<UserDTO>(user)
                 };
 
 
@@ -154,18 +148,8 @@ namespace FlightApp.Service
             ApplicationUser? user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                UserDTO userDTO = new UserDTO()
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Pronouns = user.Pronouns,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    DisplayName = user.DisplayName,
-                    Karma = user.Karma,
-
-                };
+                UserDTO userDTO = new UserDTO();
+                userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
             }
             return null;
@@ -181,13 +165,7 @@ namespace FlightApp.Service
                 if (user != null)
                 {
 
-                    user.DisplayName = userDto.DisplayName;
-                    user.FirstName = userDto.FirstName;
-                    user.LastName = userDto.LastName;
-                    user.Email = userDto.Email;
-                    user.PhoneNumber = userDto.PhoneNumber;
-                    user.Karma = userDto.Karma;
-                    user.Pronouns = userDto.Pronouns;
+                    user = _mapper.Map<ApplicationUser>(userDto);
 
 
                     await _userManager.UpdateAsync(user);
@@ -292,5 +270,38 @@ namespace FlightApp.Service
             responseItem.Message = "an error occurred";
             return responseItem;
         }
+        public async Task<ResponseItem> AssignRoleToUser(string email, string role)
+        {
+            ResponseItem responseItem = new ResponseItem();
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                responseItem.IsSuccess = false;
+                responseItem.Message = "User not found";
+                return responseItem;
+
+            }
+
+            if (!await _roleManager.RoleExistsAsync(role.ToString()))
+            {
+                responseItem.IsSuccess = false;
+                responseItem.Message = "Role not found";
+                return responseItem;
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role.ToString());
+            if (!result.Succeeded)
+            {
+                responseItem.IsSuccess = false;
+                responseItem.Message = "Something went wrong";
+
+            }
+
+            responseItem.IsSuccess = true;
+            responseItem.Message = "Success";
+            return responseItem;
+
+        }
+
     }
 }
