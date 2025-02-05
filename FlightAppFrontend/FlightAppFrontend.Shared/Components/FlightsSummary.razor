@@ -3,7 +3,14 @@
 @using FlightAppLibrary.Models.Response
 
 <div class="mt-6">
-    <Title Text="Results:"/>
+    @if (FlightResponses is null || FlightResponses!.Count <= 0)
+    {
+        <Title Text="No Flights Found" />
+    }
+    else 
+    {
+        <Title Text="Results:" />
+    }
     <div class="columns">
         <div class="column is-half">
             @foreach (var response in @FlightResponses!)

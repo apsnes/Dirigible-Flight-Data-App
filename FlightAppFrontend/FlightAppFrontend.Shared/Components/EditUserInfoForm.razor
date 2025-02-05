@@ -65,6 +65,9 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
+    [Parameter]
+    public EventCallback OnUpdate { get; set; }
+
     public string? ErrorMessage;
 
     protected async Task HandleValidSubmit()
@@ -76,8 +79,8 @@
             var result = await client.PutAsync("Account/UpdateUser", content);
             if (result.IsSuccessStatusCode)
             {
-                await OnCancel.InvokeAsync();
-                NavigationManager.NavigateTo("/dashboard?updated=true");
+                await OnUpdate.InvokeAsync();
+                NavigationManager.NavigateTo("/dashboard");
             }
             else
             {

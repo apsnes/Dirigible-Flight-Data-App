@@ -42,7 +42,7 @@ else
             <div class="column is-half">
                 @if (Editing)
                 {
-                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" />
+                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/>
                 }
                 else
                 {
@@ -58,8 +58,7 @@ else
     [SupplyParameterFromQuery(Name = "login")]
     public bool Login { get; set; }
 
-    [SupplyParameterFromQuery(Name = "updated")]
-    public bool Updated { get; set; }
+    private bool Updated;
 
     private bool Editing;
 
@@ -103,6 +102,12 @@ else
                 NavigationManager.NavigateTo("/login");
             }
         }
+    }
+
+    public void SetUpdated()
+    {
+        Updated = true;
+        Editing = !Editing;
     }
 
     public void ToggleEditing()
