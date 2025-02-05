@@ -104,7 +104,18 @@ namespace FlightApp.Service
                 {
                     IsAuthSuccessful = true,
                     Token = token,
-                    UserDTO = _mapper.Map<UserDTO>(user)
+                    UserDTO = new UserDTO
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        Pronouns = user.Pronouns,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        DisplayName = user.DisplayName,
+                        Karma = user.Karma
+
+                    }
                 };
 
 
