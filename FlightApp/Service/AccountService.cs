@@ -51,7 +51,6 @@ namespace FlightApp.Service
                 PhoneNumber = signUpRequestDTO.PhoneNumber,
                 EmailConfirmed = true
             };
-            //doesnt work
             var result = await _userManager.CreateAsync(user, signUpRequestDTO.Password);
             if (!result.Succeeded)
             {
