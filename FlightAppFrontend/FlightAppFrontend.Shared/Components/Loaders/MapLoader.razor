@@ -27,12 +27,15 @@
             var mapBuilder = new UriBuilder(client.BaseAddress!.ToString());
             var mapQuery = HttpUtility.ParseQueryString(mapBuilder.Query);
             mapQuery["center"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}";
-            mapQuery["marker"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};type:awesome;color:%23ffff00;size:x-large;icon:paw";
             mapBuilder.Query = mapQuery.ToString();
-            MapUri = mapBuilder.Uri.ToString();
+            MapUri = mapBuilder.Uri.AbsoluteUri;
+            MapUri += $"&marker=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};icontype:awesome;shadow:no;color:%23ffff00;icon:plane";
+
+            // MapUri = mapBuilder.Uri.ToString();
+
 
             client.Dispose();
-            MapUri = $"https://maps.geoapify.com/v1/staticmap?style=positron&width=800&height=600&center=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}&zoom=11.7625&marker=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};type:circle;icontype:awesome;color:%23ffff00;icon:plane;shadow:no&apiKey=124b8857d6914329bfbec6152c9f04b3";
+
         }
         catch (Exception ex)
         {
