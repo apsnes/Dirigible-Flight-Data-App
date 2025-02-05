@@ -36,7 +36,7 @@ namespace FlightApp.Controllers
         public IActionResult AddReply([FromBody] ReplyDto replyDto)
         {
             var result = _repliesService.PostReply(replyDto);
-            return result == null ? BadRequest($"Unable to add note") : Ok(result);
+            return result == null ? BadRequest($"Unable to add reply") : Ok(result);
         }
     }
 }

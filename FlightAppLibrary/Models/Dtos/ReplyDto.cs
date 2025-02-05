@@ -9,16 +9,16 @@ namespace FlightAppLibrary.Models.Dtos
 {
     public class ReplyDto
     {
-        [JsonPropertyName("flightIata")]
+        [JsonPropertyName("userId")]
         public string UserId { get; set; }
         [JsonPropertyName("noteId")]
-        public int? NoteId { get; set; }
+        public int NoteId { get; set; }
         [JsonPropertyName("replyText")]
         public string ReplyText { get; set; }
         [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set; }
 
         [JsonPropertyName("user")]
-        public UserDTO User { get; set; }
+        public UserDTO? User { get; set; }
     }
 }

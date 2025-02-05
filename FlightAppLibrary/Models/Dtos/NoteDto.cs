@@ -17,13 +17,9 @@ namespace FlightAppLibrary.Models.Dtos
         public DateTime TimeStamp { get; set; }
 
         [JsonPropertyName("user")]
-        public UserDTO User { get; set; }
+        public UserDTO? User { get; set; }
 
         [JsonPropertyName("replies")]
-        public List<ReplyDto> Replies { get; set; }
-        public UserDTO User { get; set; }
-
-        [JsonPropertyName("replies")]
-        public List<ReplyDto> Replies { get; set; }
+        public List<ReplyDto>? Replies { get; set; }
     }
 }

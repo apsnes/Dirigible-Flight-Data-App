@@ -18,7 +18,7 @@ namespace FlightApp.Service
     {
         private readonly IRepliesRepository _repository;
         private IMapper _mapper;
-        public RepliesService(RepliesRepository repository, IMapper mapper)
+        public RepliesService(IRepliesRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -59,7 +59,14 @@ namespace FlightApp.Service
 
         public Reply PostReply(ReplyDto replyDto)
         {
-            var reply = _mapper.Map<Reply>(replyDto);
+            var reply = new Reply()
+            {
+                UserId = replyDto.UserId,
+                NoteId = replyDto.NoteId,
+                ReplyText = replyDto.ReplyText,
+                TimeStamp = replyDto.TimeStamp
+            };
+            //var reply = _mapper.Map<Reply>(replyDto);
             return _repository.AddReply(reply);
         }
     }

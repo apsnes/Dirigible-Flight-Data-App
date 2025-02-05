@@ -34,31 +34,32 @@ namespace FlightApp.Service
         public List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled)
         {
             var notes = _notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled);
-
-            var res = notes.Select(n => new NoteDto()
+            if (notes != null && notes.Count > 0)
             {
-                FlightIata = n.FlightIata,
-                ScheduledDeparture = n.ScheduledDeparture,
-                UserId = n.UserId,
-                NoteText = n.NoteText,
-                TimeStamp = n.TimeStamp,
-                User = new UserDTO()
+                var res = notes.Select(n => new NoteDto()
                 {
-                    Id = n.User!.Id,
-                    DisplayName = n.User.DisplayName ?? n.User.FirstName,
-                    Karma = n.User.Karma,
-                },
-                Replies = n.Replies.Select(r => new ReplyDto()
-                {
-                    UserId = r.UserId,
-                    NoteId = r.NoteId,
-                    ReplyText = r.ReplyText,
-                    TimeStamp = r.TimeStamp
-                }).ToList()
-            }).ToList();
-
-            //var res =_mapper.Map <List<NoteDto>>(_notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled));
-            return res;
+                    FlightIata = n.FlightIata,
+                    ScheduledDeparture = n.ScheduledDeparture,
+                    UserId = n.UserId,
+                    NoteText = n.NoteText,
+                    TimeStamp = n.TimeStamp,
+                    User = new UserDTO()
+                    {
+                        Id = n.User!.Id,
+                        DisplayName = n.User.DisplayName ?? n.User.FirstName,
+                        Karma = n.User.Karma,
+                    },
+                    Replies = n.Replies.Select(r => new ReplyDto()
+                    {
+                        UserId = r.UserId,
+                        NoteId = r.NoteId,
+                        ReplyText = r.ReplyText,
+                        TimeStamp = r.TimeStamp
+                    }).ToList()
+                }).ToList();
+                return res;
+            }
+            return new List<NoteDto>();
         }
 
 
