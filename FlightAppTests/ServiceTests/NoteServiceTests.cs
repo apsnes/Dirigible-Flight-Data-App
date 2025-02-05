@@ -40,6 +40,8 @@ namespace FlightAppTests.ServiceTests
         public void GetNotesByIataAndDateTime_Invokes_Once()
         {
             //Arrange
+            _mockRepository.Setup(x => x.GetNotesByIataAndDateTime(It.IsAny<string>(), It.IsAny<DateTime>())).Returns(new List<Note>());
+
             //Act
             _service.GetNotesByIataAndDateTime(It.IsAny<string>(), It.IsAny<DateTime>());
 
