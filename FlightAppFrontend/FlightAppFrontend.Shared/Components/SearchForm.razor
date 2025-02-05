@@ -13,7 +13,6 @@
 
             <EditForm FormName="SearchForm" Model="@SearchModel" OnValidSubmit="HandleValidSubmit" aria-label="Search Form">
                 <DataAnnotationsValidator />
-                <ValidationSummary />
 
                 <div class="field">
                     <label for="iata" class="label">Flight Number</label>
@@ -30,6 +29,7 @@
                     <label for="date" class="label">Date</label>
                     <div class="control mt-2">
                         <InputDate id="date" class="input is-warning" @bind-Value="SearchModel!.Date"/>
+                        <ValidationMessage class="help is-danger" For="@(() => SearchModel.Date)" />
                     </div>
                 </div>
 
@@ -62,7 +62,7 @@
         if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"flight_iata={SearchModel!.FlightIATA}");
         if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departures={SearchModel!.DepartureIATA}");
         if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
-        parameters.Add($"date={SearchModel!.Date.ToString("dd/MM/yyyy")}");
+        parameters.Add($"date={SearchModel!.Date.ToString("dd_MM_yyyy")}");
 
         return String.Join("&", parameters);
     }

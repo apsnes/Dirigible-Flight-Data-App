@@ -59,29 +59,31 @@ namespace FlightApp.Controllers
             string? flightIata = Request.Query.ContainsKey("flight_iata") ? Request.Query["flight_iata"] : string.Empty;
             string? date = Request.Query.ContainsKey("date") ? Request.Query["date"] : string.Empty;
 
-            List<FlightResponse> result = new();
+            List<FlightResponse> result = [];
 
             if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
             {
-                var result = _flightApiService.GetFlightsByRoute(departures, arrivals);
-                return result == null ? BadRequest("No flights found") : Ok(result);
+                result = _flightApiService.GetFlightsByRoute(departures, arrivals);
             }
             else if (!string.IsNullOrEmpty(arrivals))
             {
-                var result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
-                return result == null ? BadRequest("No flights found") : Ok(result);
+                result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
             }
             else if (!string.IsNullOrEmpty(departures))
             {
-                var result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
-                return result == null ? BadRequest("No flights found") : Ok(result);
+                result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
             }
             else if (!string.IsNullOrEmpty(flightIata))
             {
-                var result = _flightApiService.GetFlightByIata(flightIata);
-                return result == null ? BadRequest("No flight found") : Ok(new List<FlightResponse>() { result });
+                result = [_flightApiService.GetFlightByIata(flightIata)!];
             }
-            return BadRequest("No valid query parameters found.");
+
+            result = result
+                .Where(r => ((DateTime)r.Departure.Scheduled!).ToString("dd_MM_yyyy") == date)
+                .ToList();
+
+            if (result is null || result.Count <= 0) return BadRequest("No flights found.");
+            return Ok(result);
         }
     }
 }
