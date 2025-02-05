@@ -167,21 +167,23 @@ namespace FlightApp.Migrations
                 name: "Notes",
                 columns: table => new
                 {
-                    FlightIata = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NoteId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FlightIata = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ScheduledDeparture = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NoteText = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Notes", x => new { x.FlightIata, x.ScheduledDeparture });
+                    table.PrimaryKey("PK_Notes", x => x.NoteId);
                     table.ForeignKey(
                         name: "FK_Notes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
