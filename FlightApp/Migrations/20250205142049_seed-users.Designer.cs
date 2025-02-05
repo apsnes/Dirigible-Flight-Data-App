@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightApp.Migrations
 {
     [DbContext(typeof(FlightAppDbContext))]
-    [Migration("20250204145343_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250205142049_seed-users")]
+    partial class seedusers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,27 +27,31 @@ namespace FlightApp.Migrations
 
             modelBuilder.Entity("FlightApp.Entities.Note", b =>
                 {
-                    b.Property<string>("FlightIata")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("NoteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("ScheduledDeparture")
-                        .HasColumnType("datetime2");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NoteId"));
+
+                    b.Property<string>("FlightIata")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NoteText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ScheduledDeparture")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("FlightIata", "ScheduledDeparture");
+                    b.HasKey("NoteId");
 
                     b.HasIndex("UserId");
 
@@ -134,6 +138,48 @@ namespace FlightApp.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "06ed9993-e27e-42b6-a8bb-6ba7eeca5eb5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1c38c638-3a39-4476-bc78-c3f6c2f9f624",
+                            Email = "admin@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Hello",
+                            Karma = 0,
+                            LastName = "Hello",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKY7F0cAWyfwE7+zlk2ULxUlw6K+/zEHdfcDu5SEvnjaEeADMWtXwccoycbRC8QdBA==",
+                            PhoneNumber = "077123123123",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@example.com"
+                        },
+                        new
+                        {
+                            Id = "805e790a-5ae4-46b2-aec5-fa540b153f5d",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "9a62d086-5133-44df-9892-be328e97a3a7",
+                            Email = "customer@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Hello",
+                            Karma = 0,
+                            LastName = "Hello",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CUSTOMER@EXAMPLE.COM",
+                            NormalizedUserName = "CUSTOMER@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGrzF5Cxs+ge3N+voEFuxR+1Dw2fPF6j9onDeEAO1vU83yjNaE+0KGWIgf2miQF++w==",
+                            PhoneNumber = "077123123123",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "customer@example.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -262,6 +308,18 @@ namespace FlightApp.Migrations
                     b.HasIndex("Role");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "06ed9993-e27e-42b6-a8bb-6ba7eeca5eb5",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "805e790a-5ae4-46b2-aec5-fa540b153f5d",
+                            RoleId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -287,7 +345,9 @@ namespace FlightApp.Migrations
                 {
                     b.HasOne("FlightApp.Models.ApplicationUser", "User")
                         .WithMany("Notes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -2,6 +2,7 @@
 using FlightApp.Models;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -121,6 +122,17 @@ namespace FlightApp.Controllers
             return BadRequest(result);
 
 
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignRole([FromBody]RoleAssignmentItem roleItem)
+        {
+            var result = await _accountService.AssignRoleToUser(roleItem.Email,roleItem.Role);
+            if (result.IsSuccess == true)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
 
         }
 

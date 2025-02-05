@@ -23,5 +23,7 @@ namespace FlightApp.Database
             new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
             new IdentityRole { Id = "2", Name = "Customer", NormalizedName = "CUSTOMER" });
         }
+
+        
     }
 }

@@ -1,12 +1,13 @@
 ﻿@page "/"
-@layout UnauthorizedLayout
 @using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Layout
 @using FlightAppFrontend.Shared.Services
 @using FlightAppFrontend.Shared.Components
+@using Microsoft.AspNetCore.Authorization
 @inject IFormFactor FormFactor
 @inject TokenStateService TokenStateService
 @inject TokenService TokenService
+
 
 <PageTitle>Home</PageTitle>
 

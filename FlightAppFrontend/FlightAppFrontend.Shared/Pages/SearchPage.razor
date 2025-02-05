@@ -1,10 +1,21 @@
 @page "/search"
 @using FlightAppFrontend.Shared.Components
 @using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Layout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
 
 <PageTitle>Search</PageTitle>
 
- <div class="mt-5"> 
-    <SearchForm /> 
- </div> 
-
+<AuthorizeView>
+    <Authorized>
+        <div class="mt-5">
+            <SearchForm />
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <h1>Not Authorized</h1>
+    </NotAuthorized>
+</AuthorizeView>
+ 

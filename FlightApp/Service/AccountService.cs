@@ -292,5 +292,38 @@ namespace FlightApp.Service
             responseItem.Message = "an error occurred";
             return responseItem;
         }
+        public async Task<ResponseItem> AssignRoleToUser (string email, string role) 
+        {
+            ResponseItem responseItem = new ResponseItem();
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                responseItem.IsSuccess= false;
+                responseItem.Message = "User not found";
+                return responseItem;
+               
+            }
+
+            if (!await _roleManager.RoleExistsAsync(role.ToString()))
+            {
+                responseItem.IsSuccess = false;
+                responseItem.Message = "Role not found";
+                return responseItem;
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role.ToString());
+            if (!result.Succeeded)
+            {
+                responseItem.IsSuccess = false;
+                responseItem.Message = "Something went wrong";
+
+            }
+            
+            responseItem.IsSuccess = true;
+            responseItem.Message = "Success";
+            return responseItem;
+
+        }
+
     }
 }

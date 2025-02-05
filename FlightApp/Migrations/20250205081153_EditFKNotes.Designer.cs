@@ -199,13 +199,13 @@ namespace FlightApp.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("Role");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
@@ -262,12 +262,12 @@ namespace FlightApp.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("RoleId")
+                    b.Property<string>("Role")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.HasKey("UserId", "Role");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("Role");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -304,7 +304,7 @@ namespace FlightApp.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("Role")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -331,7 +331,7 @@ namespace FlightApp.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("Role")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

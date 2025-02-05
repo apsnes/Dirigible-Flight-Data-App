@@ -196,7 +196,7 @@ namespace FlightApp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
-                column: "RoleId");
+                column: "Role");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -218,7 +218,7 @@ namespace FlightApp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
-                column: "RoleId");
+                column: "Role");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",

@@ -5,24 +5,17 @@
 @inherits LayoutComponentBase
 @inject TokenService tokenService
 @inject AuthenticationStateProvider customAuthenticationStateProvider
-
 <div>
+
     <header>
         <NavMenu />
     </header>
 
     <div class="container hero is-fullheight pl-6 pr-6">
         <main class="body">
-            <AuthorizeView>
-                <Authorized>
-                @Body
-                </Authorized>
-                <NotAuthorized>
-                    <div class="has-text-centered">
-                        <TitleDanger Text="Unauthorized" />
-                    </div>
-                </NotAuthorized>
-            </AuthorizeView>
+
+            @Body
+
         </main>
 
         <footer class="mt-auto is-flex-align-items-flex-end">
@@ -33,6 +26,7 @@
 
 
 
+
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
@@ -40,7 +34,6 @@
 </div>
 
 @code {
-    private bool isLoaded = false;
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -51,21 +44,21 @@
     {
         if (firstRender)
         {
-           
+
             var token = await tokenService.LoadTokenAsync();
-            if(token!=null)
+            if (token != null)
             {
                 if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
                 {
                     customProvider.NotifyAuthenticationStateChanged();
-                    isLoaded = true;
-                    StateHasChanged();
                 }
                 _authState = await authenticationStateTask;
-         }
-         else{
+
+            }
+            else
+            {
                 Console.WriteLine("Token is null");
-         }
+            }
         }
     }
 }

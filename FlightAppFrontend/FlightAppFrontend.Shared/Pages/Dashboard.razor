@@ -1,4 +1,24 @@
 ﻿@page "/dashboard"
 @using FlightAppFrontend.Shared.Components.Loaders
+@using FlightAppFrontend.Shared.Layout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+<AuthorizeView>
+    <Authorized>
+        <DashboardLoader />
+    </Authorized>
+    <NotAuthorized>
+        <h1>Not Authorized</h1>
+    </NotAuthorized>
+</AuthorizeView>
 
-<DashboardLoader/>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <h1>User is Admin</h1>
+    </Authorized>
+    <NotAuthorized>
+        <h1>User is not Admin</h1>
+    </NotAuthorized>
+
+</AuthorizeView>
