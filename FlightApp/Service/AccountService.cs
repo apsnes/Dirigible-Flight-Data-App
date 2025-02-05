@@ -159,7 +159,18 @@ namespace FlightApp.Service
             if (user != null)
             {
                 UserDTO userDTO = new UserDTO();
-                userDTO = _mapper.Map<UserDTO>(user);
+                UserDTO userDTO = new UserDTO()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Pronouns = user.Pronouns,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    DisplayName = user.DisplayName,
+                    Karma = user.Karma,
+
+                };
                 return userDTO;
             }
             return null;
