@@ -27,6 +27,12 @@ builder.Services.AddHttpClient("AircraftPhotos", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AircraftPhotos")!))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
+builder.Services.AddHttpClient("MapData", client =>
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("MapData")!))
+    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+
+
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddSingleton<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
