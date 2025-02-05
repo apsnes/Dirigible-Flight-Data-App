@@ -1,11 +1,14 @@
 ﻿
+using Azure.Core;
 using FlightApp.Helpers;
 using FlightApp.Models;
 using FlightAppLibrary.Models.Dtos;
 using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -186,7 +189,7 @@ namespace FlightApp.Service
                     user.Karma = userDto.Karma;
                     user.Pronouns = userDto.Pronouns;
 
-                  
+
                     await _userManager.UpdateAsync(user);
                     return new ResponseItem()
                     {
@@ -211,6 +214,83 @@ namespace FlightApp.Service
             };
 
 
+        }
+
+        public async Task<ResponseItem> ResetPassword(PasswordResetDto dto)
+        {
+            ResponseItem responseItem = new ResponseItem()
+            {
+                IsSuccess = false,
+                Message = ""
+            };
+            try
+            {
+                ApplicationUser? user = await _userManager.FindByEmailAsync(dto.Email);
+                if (user == null)
+                {
+
+                    responseItem.Message = "User not found";
+                    return responseItem;
+
+                }
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (result.Succeeded)
+                {
+                    responseItem.IsSuccess = true;
+                    responseItem.Message = "Success";
+                    return responseItem;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                responseItem.Message = ex.Message;
+                return responseItem;
+
+            }
+
+            responseItem.Message = "an error occurred";
+            return responseItem;
+        }
+        public async Task<ResponseItem> UpdatePassword(string userId, PasswordUpdateDto dto)
+        {
+            ResponseItem responseItem = new ResponseItem()
+            {
+                IsSuccess = false,
+                Message = ""
+            };
+            try
+            {
+                ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+
+                    responseItem.Message = "User not found";
+                    return responseItem;
+
+                }
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (result.Succeeded)
+                {
+                    responseItem.IsSuccess = true;
+                    responseItem.Message = "Success";
+                    return responseItem;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                responseItem.Message = ex.Message;
+                return responseItem;
+
+            }
+
+            responseItem.Message = "an error occurred";
+            return responseItem;
         }
     }
 }
