@@ -59,7 +59,15 @@ namespace FlightApp.Service
         //-------POST REQUESTS----------
         public Note AddNote(NoteDto noteDto)
         {
-            var note = _mapper.Map<Note>(noteDto);
+            var note = new Note()
+            {
+                FlightIata = noteDto.FlightIata,
+                ScheduledDeparture = (DateTime)noteDto.ScheduledDeparture!,
+                UserId = noteDto.UserId,
+                NoteText = noteDto.NoteText,
+                TimeStamp = noteDto.TimeStamp,
+            };
+
             return _notesRepository.AddNote(note);
         }
     }
