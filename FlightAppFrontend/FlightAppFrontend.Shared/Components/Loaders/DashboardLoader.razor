@@ -33,6 +33,14 @@ else
         {
             <Title Text="Edit Details" />
         }
+        else if (UpdatingPassword)
+        {
+            <Title Text="Enter New Password" />
+        }
+        else if(PasswordUpdated)
+        {
+            <TitleSuccess Text="Password Updated" />
+        }
         else
         {
             <Title Text="Welcome Back!" />
@@ -44,10 +52,13 @@ else
                 {
                     <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/>
                 }
+                else if(UpdatingPassword)
+                {
+                    <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated"/>
+                }
                 else
                 {
-                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" />
-                    <UpdatePassword></UpdatePassword>
+                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/>
                 }
             </div>
         </div>
@@ -61,6 +72,10 @@ else
     private bool Updated;
 
     private bool Editing;
+
+    private bool UpdatingPassword;
+
+    private bool PasswordUpdated;
 
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
@@ -107,13 +122,29 @@ else
     public void SetUpdated()
     {
         Updated = true;
-        Editing = !Editing;
+        Editing = false;
+    }
+
+    public void SetPasswordUpdated()
+    {
+        PasswordUpdated = true;
+        UpdatingPassword = false;
     }
 
     public void ToggleEditing()
     {
+        Login = false;
+        UpdatingPassword = false;
         Editing = !Editing;
         if (Editing) Updated = false;
+    }
+
+    public void ToggleUpdatingPassword()
+    {
+        Login = false;
+        Editing = false;
+        UpdatingPassword = !UpdatingPassword;
+        if (UpdatingPassword) Updated = false;
     }
 
     protected void ResetError()
