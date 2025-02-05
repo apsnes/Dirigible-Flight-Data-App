@@ -35,7 +35,7 @@ else
                     <DataAnnotationsValidator />
 
                     <div class="field">
-                        <label for="email" class="label">Email</label>
+                        <label for="email" class="label has-text-light">Email</label>
                         <div class="control mt-2">
                             <InputText id="email" class="input is-warning" @bind-Value="LoginModel.UserName" placeholder="Email" />
                             <ValidationMessage class="help is-danger" For="@(() => LoginModel.UserName)"/>
@@ -43,7 +43,7 @@ else
                     </div>
 
                     <div class="field">
-                        <label for="password" class="label">Password</label>
+                        <label for="password" class="label has-text-light">Password</label>
                         <div class="control mt-2">
                             <InputText type="password" id="password" class="input is-warning" @bind-Value="LoginModel.Password" placeholder="Password" />
                             <ValidationMessage class="help is-danger" For="@(() => LoginModel!.Password)" />
@@ -53,16 +53,16 @@ else
                     <MainButton Text="Login" />
                 </EditForm>
                 <div class="mt-2">
-                    <a class="has-text-white is-underlined" href="/Registration">Register</a>
+                    <a class="has-text-light is-underlined" href="/Registration">Register</a>
                 </div>
             </div>
         </div>
         <AuthorizeView>
             <Authorized>
-                <p>@($"You are logged in {name}!")</p>
+                <p class="has-text-light">@($"You are logged in {name}!")</p>
             </Authorized>
             <NotAuthorized>
-                <p>You are not logged in.</p>
+                <p class="has-text-light">You are not logged in.</p>
             </NotAuthorized>
         </AuthorizeView>
     </div>

@@ -34,23 +34,25 @@ namespace FlightApp.Service
         {
             var notes = _notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled);
 
-            var res = notes.Select(n => new NoteDto()
+            if (notes != null && notes.Count > 0)
             {
-                FlightIata = n.FlightIata,
-                ScheduledDeparture = n.ScheduledDeparture,
-                UserId = n.UserId,
-                NoteText = n.NoteText,
-                TimeStamp = n.TimeStamp,
-                User = new UserDTO()
+                var res = notes.Select(n => new NoteDto()
                 {
-                    Id = n.User!.Id,
-                    DisplayName = n.User.DisplayName ?? n.User.FirstName,
-                    Karma = n.User.Karma,
-                }
-            }).ToList();
-
-            //var res =_mapper.Map <List<NoteDto>>(_notesRepository.GetNotesByIataAndDateTime(flightIata, dateTimeScheduled));
-            return res;
+                    FlightIata = n.FlightIata,
+                    ScheduledDeparture = n.ScheduledDeparture,
+                    UserId = n.UserId,
+                    NoteText = n.NoteText,
+                    TimeStamp = n.TimeStamp,
+                    User = new UserDTO()
+                    {
+                        Id = n.User!.Id,
+                        DisplayName = n.User.DisplayName ?? n.User.FirstName,
+                        Karma = n.User.Karma,
+                    }
+                }).ToList();
+                return res;
+            }
+            return new List<NoteDto>();
         }
 
 

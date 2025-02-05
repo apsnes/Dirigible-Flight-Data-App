@@ -1,22 +1,45 @@
 ﻿@using FlightAppLibrary.Models.Dtos
 
-<div class="card mb-5 pb-4 mt-5">
-    <div class="card-content">
-        <div class="media">
-            <div class="media-content">
-                <p class="title is-4 mb-2">Comments</p>
-                @foreach (var note in Notes)
-                {
-                    <p class="subtitle is-6"> @note.User.DisplayName</p>
-                    <p class="subtitle is-6"> @note.TimeStamp</p>
-                    <p>@note.NoteText</p>
-                }
+<div class="card">
+    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+        <p class="card-header-title">Flight Comments</p>
+        <button class="card-header-icon" aria-label="more options">
+            @if (@isCardOpen)
+            {
+                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
+            }
+            else
+            {
+                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+            }
+        </button>
+    </header>
+
+    @if (isCardOpen)
+    {
+        <div class="card-content">
+            <div class="media">
+                <div class="media-content">
+                    <p class="title is-4 mb-2">Comments</p>
+                    @foreach (var note in Notes)
+                    {
+                        <p class="subtitle is-6"> @note.User.DisplayName</p>
+                        <p class="subtitle is-6"> @note.TimeStamp</p>
+                        <p>@note.NoteText</p>
+                    }
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>
 
 @code
 {
     [Parameter] public List<NoteDto> Notes { get; set; }
+    private bool isCardOpen = false;
+
+    private void ToggleCard()
+    {
+        isCardOpen = !isCardOpen;
+    }
 }

@@ -1,29 +1,89 @@
 ﻿@using FlightAppLibrary.Models.Response
 
-<div class="card mb-5 pb-4 mt-5">
-    <div class="card-content">
-        <div class="media">
-            <div class="media-content">
-                <p class="title is-4 mb-2">Departure Weather</p>
-                <p class="is-6">@WeatherDeparture.Location.Name</p>
-                <p class="is-6">Temperature: @WeatherDeparture.CurrentWeather.TempC</p>
-                <p class="is-6">Condition: @WeatherDeparture.CurrentWeather.Condition.Text</p>
-                <img src="@WeatherDeparture.CurrentWeather.Condition.Icon" alt="Weather at departure airport"/>
+<div class="card">
+    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+        <p class="card-header-title is-6">Weather Information</p>
+        <button class="card-header-icon" aria-label="more options">
+            @if (@isCardOpen)
+            {
+                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
+            }
+            else
+            {
+                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+            }
+        </button>
+    </header>
+    @if (isCardOpen)
+    {
+        <div class="card-content">
+            <div class="media">
+                <div class="media-content">
+                    <p class="title is-4 mb-2">Departure Weather</p>
+                    <p class="is-6">Airport Location: @WeatherDeparture.Location.Name, @WeatherDeparture.Location.Country</p>
+                    <p class="is-6">Local Time: @WeatherDeparture.Location.Localtime</p>
+                    @if (isMetric)
+                    {
+                        <p class="is-6">Temperature: @WeatherDeparture.CurrentWeather.TempC °C</p>
+                        <p class="is-6">Wind Speed: @WeatherDeparture.GustKph Kph</p>
+                        <p class="is-6">Precipitation: @WeatherDeparture.PrecipMm mm</p>
+                    }
+                    else
+                    {
+                        <p class="is-6">Temperature: @WeatherDeparture.CurrentWeather.TempF °F</p>
+                        <p class="is-6">Wind Speed: @WeatherDeparture.GustMph Mph</p>
+                        <p class="is-6">Precipitation: @WeatherDeparture.PrecipIn Inches</p>
+                    }    
+                    <p class="is-6">Conditions: @WeatherDeparture.CurrentWeather.Condition.Text</p>
+                    <p class="is-6">Humidity: @WeatherDeparture.Humidity</p>
+                    <img src="@WeatherDeparture.CurrentWeather.Condition.Icon" alt="Weather at departure airport"/>
+                </div>
+                <br />
+                <div class="media-content">
+                    <p class="title is-4 mb-2">Arrival Weather</p>
+                    <p class="is-6">Airport Location: @WeatherArrival.Location.Name, @WeatherArrival.Location.Country</p>
+                    <p class="is-6">Local Time: @WeatherArrival.Location.Localtime</p>
+                    @if (isMetric)
+                    {
+                        <p class="is-6">Temperature: @WeatherArrival.CurrentWeather.TempC °C</p>
+                        <p class="is-6">Wind Speed: @WeatherArrival.GustKph Kph</p>
+                        <p class="is-6">Precipitation: @WeatherArrival.PrecipMm mm</p>
+                    }
+                    else
+                    {
+                        <p class="is-6">Temperature: @WeatherArrival.CurrentWeather.TempF °F</p>
+                        <p class="is-6">Wind Speed: @WeatherArrival.GustMph Mph</p>
+                        <p class="is-6">Precipitation: @WeatherArrival.PrecipIn Inches</p>
+                    }
+                    <p class="is-6">Conditions: @WeatherArrival.CurrentWeather.Condition.Text</p>
+                    <p class="is-6">Humidity: @WeatherArrival.Humidity</p>
+                    <img src="@WeatherArrival.CurrentWeather.Condition.Icon" alt="Weather at arrival airport" />
+                </div>
             </div>
-            <br />
-            <div class="media-content">
-                <p class="title is-4 mb-2">Arrival Weather</p>
-                <p class="is-6">@WeatherArrival.Location.Name</p>
-                <p class="is-6">Temperature: @WeatherArrival.CurrentWeather.TempC</p>
-                <p class="is-6">Condition: @WeatherArrival.CurrentWeather.Condition.Text</p>
-                <img src="@WeatherArrival.CurrentWeather.Condition.Icon" alt="Weather at arrival airport" />
-            </div>
+            <EditForm Model="isMetric">
+                <InputRadioGroup @bind-Value="isMetric">
+                    <InputRadio Value="true" /> Metric
+                    <InputRadio Value="false" class="ml-4" /> Imperial
+                </InputRadioGroup>
+            </EditForm>
         </div>
-    </div>
+    }
 </div>
 
 @code
 {
     [Parameter] public WeatherResponse WeatherArrival { get; set; }
     [Parameter] public WeatherResponse WeatherDeparture { get; set; }
+    private bool isCardOpen = false;
+    private bool isMetric = true;
+
+    private void ToggleCard()
+    {
+        isCardOpen = !isCardOpen;
+    }
+
+    private void ToggleMetric()
+    {
+        isMetric = !isMetric;
+    }
 }
