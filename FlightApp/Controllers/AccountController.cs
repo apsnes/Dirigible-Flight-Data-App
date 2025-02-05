@@ -2,6 +2,7 @@
 using FlightApp.Models;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -21,7 +22,7 @@ namespace FlightApp.Controllers
             _accountService = accountService;
         }
         [HttpPost]
-        public async Task<IActionResult> SignUp([FromBody]SignUpRequestDTO signUpRequestDTO)
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequestDTO signUpRequestDTO)
         {
             if (signUpRequestDTO == null || !ModelState.IsValid)
             {
@@ -36,7 +37,7 @@ namespace FlightApp.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> SignIn([FromBody]SignInRequestDTO signInRequestDTO) 
+        public async Task<IActionResult> SignIn([FromBody] SignInRequestDTO signInRequestDTO)
         {
             if (signInRequestDTO == null || !ModelState.IsValid)
             {
@@ -69,7 +70,7 @@ namespace FlightApp.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromBody]UserDTO userDto)
+        public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDto)
         {
             try
             {
@@ -84,23 +85,23 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPut]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordResetDto model)
         {
-          
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                var result = await _accountService.ResetPassword(model);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _accountService.ResetPassword(model);
             if (result.IsSuccess)
             {
                 return Ok(result);
             }
             return BadRequest(result);
 
-                
+
 
         }
         [Authorize]
@@ -113,7 +114,7 @@ namespace FlightApp.Controllers
                 return BadRequest(ModelState);
             }
             var userId = User.FindFirst("Id").Value;
-            var result = await _accountService.UpdatePassword(userId,model);
+            var result = await _accountService.UpdatePassword(userId, model);
             if (result.IsSuccess)
             {
                 return Ok(result);
@@ -121,6 +122,17 @@ namespace FlightApp.Controllers
             return BadRequest(result);
 
 
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignRole([FromBody] RoleAssignmentItem roleItem)
+        {
+            var result = await _accountService.AssignRoleToUser(roleItem.Email, roleItem.Role);
+            if (result.IsSuccess == true)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
 
         }
 
