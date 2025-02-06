@@ -107,11 +107,11 @@ builder.Services.AddRateLimiter(ops => ops
     RateLimitPartition.GetTokenBucketLimiter(httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
     partition => new TokenBucketRateLimiterOptions
     {
-        TokenLimit = 3,
+        TokenLimit = 7,
         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
         QueueLimit = 1,
         ReplenishmentPeriod = TimeSpan.FromSeconds(45),
-        TokensPerPeriod = 3,
+        TokensPerPeriod = 7,
         AutoReplenishment = true
     })));
 
