@@ -19,7 +19,7 @@
                 <p class="title is-5 mb-3">Departure Information</p>
                 <p class="is-6"><strong>Departing:</strong> @FlightResponse!.Departure.Airport</p>
                 <p class="is-6"><strong>Scheduled time:</strong> @ParseFlightDateTime(@FlightResponse!.Departure.Scheduled)</p>
-                <p class="is-6"><strong>Estiamted:</strong> @ParseFlightDateTime(@FlightResponse!.Departure.Estimated)</p>
+                <p class="is-6"><strong>Estimated:</strong> @ParseFlightDateTime(@FlightResponse!.Departure.Estimated)</p>
                 <p class="is-6" style="color: @(ParseDelayInformation(FlightResponse!.Departure.Delay) != "None" ? "red" : "inherit");">
                     <strong>Delay:</strong> @ParseDelayInformation(FlightResponse!.Departure.Delay)
                 </p>
@@ -29,7 +29,7 @@
                 <p class="title is-5 mb-3">Arrival Information</p>
                 <p class="is-6"><strong>Arriving:</strong> @FlightResponse!.Arrival.Airport</p>
                 <p class="is-6"><strong>Scheduled time:</strong> @ParseFlightDateTime(@FlightResponse!.Arrival.Scheduled)</p>
-                <p class="is-6"><strong>Estiamted:</strong> @ParseFlightDateTime(@FlightResponse!.Arrival.Estimated)</p>
+                <p class="is-6"><strong>Estimated:</strong> @ParseFlightDateTime(@FlightResponse!.Arrival.Estimated)</p>
                 <p class="is-6" style="color: @(ParseDelayInformation(FlightResponse!.Arrival.Delay) != "None" ? "red" : "inherit");">
                     <strong>Delay:</strong> @ParseDelayInformation(FlightResponse!.Arrival.Delay)
                 </p>
