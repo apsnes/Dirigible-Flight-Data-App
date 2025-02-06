@@ -85,6 +85,8 @@ builder.Services.AddScoped<IFlightApiRepository, FlightApiRepository>();
 builder.Services.AddScoped<IFlightService, FlightApiService>();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
 builder.Services.AddScoped<INotesService, NotesService>();
+builder.Services.AddScoped<IRepliesRepository, RepliesRepository>();
+builder.Services.AddScoped<IRepliesService, RepliesService>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -93,7 +95,8 @@ builder.Services.AddHealthChecks()
     .AddCheck<AviationApiHealthCheck>("AviationApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<WeatherApiHealthcheck>("WeatherApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
-    .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy);
+    .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
 var app = builder.Build();
 

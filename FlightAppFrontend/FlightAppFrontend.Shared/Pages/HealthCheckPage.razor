@@ -58,7 +58,7 @@
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
 
-            var response = await client.GetFromJsonAsync<HealthCheckResponseDto>("health");
+            var response = await client.GetFromJsonAsync<HealthCheckResponseDto>("/health");
 
             if (response != null) healthChecks = response.Checks;
         }

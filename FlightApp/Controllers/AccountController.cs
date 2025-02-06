@@ -100,9 +100,6 @@ namespace FlightApp.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
-
-
-
         }
         [Authorize]
         [HttpPut]
@@ -120,9 +117,6 @@ namespace FlightApp.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
-
-
-
         }
         [HttpPost]
         public async Task<IActionResult> AssignRole([FromBody] RoleAssignmentItem roleItem)
@@ -135,6 +129,5 @@ namespace FlightApp.Controllers
             return BadRequest(result);
 
         }
-
     }
 }

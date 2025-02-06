@@ -55,6 +55,36 @@ namespace FlightApp.Migrations
                     b.ToTable("Notes");
                 });
 
+            modelBuilder.Entity("FlightApp.Entities.Reply", b =>
+                {
+                    b.Property<int>("ReplyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReplyId"));
+
+                    b.Property<int>("NoteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReplyText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ReplyId");
+
+                    b.HasIndex("NoteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Replies");
+                });
+
             modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -295,6 +325,23 @@ namespace FlightApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FlightApp.Entities.Reply", b =>
+                {
+                    b.HasOne("FlightApp.Entities.Note", "Note")
+                        .WithMany("Replies")
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FlightApp.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Note");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -344,6 +391,11 @@ namespace FlightApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FlightApp.Entities.Note", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>

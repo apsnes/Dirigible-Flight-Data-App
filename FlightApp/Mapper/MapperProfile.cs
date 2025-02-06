@@ -10,7 +10,9 @@ namespace FlightApp.Mapper
         public MapperProfile()
         {
             CreateMap<Note, NoteDto>().ReverseMap();
+            CreateMap<Reply, ReplyDto>().ReverseMap();
             CreateMap<UserDTO, ApplicationUser>().ReverseMap();
+
         }
     }
 }

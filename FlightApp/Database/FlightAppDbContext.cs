@@ -11,6 +11,7 @@ namespace FlightApp.Database
     public class FlightAppDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Reply> Replies { get; set; }
 
         public FlightAppDbContext(DbContextOptions<FlightAppDbContext> options) : base(options) { }
 

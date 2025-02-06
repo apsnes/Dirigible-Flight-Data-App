@@ -4,7 +4,7 @@
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
         <p class="card-header-title">Flight Comments</p>
         <button class="card-header-icon" aria-label="more options">
-            @if (@isCardOpen)
+            @if (IsCardOpen)
             {
                 <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
             }
@@ -15,16 +15,14 @@
         </button>
     </header>
 
-    @if (isCardOpen)
+    @if (IsCardOpen)
     {
         <div class="card-content">
             <div class="media">
                 <div class="media-content">
                     @foreach (var note in Notes)
                     {
-                        <p class="subtitle is-6 is-underlined">@note.User.DisplayName @note.TimeStamp</p>
-                        <p>@note.NoteText</p>
-                        @* Replies to go here - foreach reply in note.Replies *@
+                        <IndividualNoteCard Note="note" />
                     }
                 </div>
             </div>
@@ -35,10 +33,10 @@
 @code
 {
     [Parameter] public List<NoteDto> Notes { get; set; }
-    private bool isCardOpen = false;
+    [Parameter] public bool IsCardOpen { get; set; }
 
     private void ToggleCard()
     {
-        isCardOpen = !isCardOpen;
+        IsCardOpen = !IsCardOpen;
     }
 }

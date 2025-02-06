@@ -5,6 +5,7 @@
 @using System.Text
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
 
 <div class="card">
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -60,11 +61,11 @@
 
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = client.PostAsync("notes", content).Result;
+        var response = await client.PostAsync("notes", content);
 
         if (response.IsSuccessStatusCode)
         {
-            NoteDto = null;
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
     }
 }
