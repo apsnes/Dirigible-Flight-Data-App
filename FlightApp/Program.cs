@@ -14,6 +14,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +100,18 @@ builder.Services.AddHealthChecks()
     .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
+
+builder.Services.AddRateLimiter(_ => _
+    .AddTokenBucketLimiter(policyName: "token", options =>
+    {
+        options.TokenLimit = 3;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 1;
+        options.ReplenishmentPeriod = TimeSpan.FromSeconds(55);
+        options.TokensPerPeriod = 1;
+        options.AutoReplenishment = true;
+    }));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -129,4 +143,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseRateLimiter();
 app.Run();
