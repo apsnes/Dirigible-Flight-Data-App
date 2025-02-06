@@ -1,0 +1,13 @@
+﻿@page "/Admin"
+@using FlightAppFrontend.Shared.Components.Loaders
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+<AuthorizeView>
+    <Authorized>
+        <DashboardLoader />
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to view this page.</p>
+    </NotAuthorized>
+</AuthorizeView>

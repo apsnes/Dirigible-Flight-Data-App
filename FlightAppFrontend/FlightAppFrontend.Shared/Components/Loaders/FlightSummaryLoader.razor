@@ -40,14 +40,14 @@ else
     {
         try
         {
-            var client = ClientFactory.CreateClient("DirigibleApi");
+             var client = ClientFactory.CreateClient("DirigibleApi");
 
-            // var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
-            var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+            var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
+            // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
 
-            FlightResponse = response[0];
-            // FlightResponse = response.Value;
-            // ErrorMessage = response.ErrorMessage;
+            // FlightResponse = response[0];
+            FlightResponse = response.Value;
+            ErrorMessage = response.ErrorMessage;
 
         }
         catch(Exception ex)

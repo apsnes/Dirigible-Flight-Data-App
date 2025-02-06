@@ -1,0 +1,64 @@
+@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Components
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+
+if (@User == null)
+{
+    <Loading />
+}
+else
+{
+    <PageTitle>Dashboard</PageTitle>
+
+    <div class="container mt-6">
+
+        <div class="columns">
+            <div class="column is-half">
+               
+                    <DashboardProfileCard AuthState="_authState" AppUser="User"/>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "login")]
+    public bool Login { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    private AuthenticationState? _authState;
+
+    private string email = "";
+
+    private UserDTO User { get; set; } = new UserDTO();
+
+    private string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var response = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+            User = response.Value!;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    protected void ResetError()
+    {
+        ErrorMessage = "";
+    }
+}
