@@ -16,6 +16,7 @@ using System.Text.Json;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,16 +102,18 @@ builder.Services.AddHealthChecks()
     .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
 
-builder.Services.AddRateLimiter(_ => _
-    .AddTokenBucketLimiter(policyName: "token", options =>
+builder.Services.AddRateLimiter(ops => ops
+    .AddPolicy("token", httpContext =>
+    RateLimitPartition.GetTokenBucketLimiter(httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+    partition => new TokenBucketRateLimiterOptions
     {
-        options.TokenLimit = 3;
-        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        options.QueueLimit = 1;
-        options.ReplenishmentPeriod = TimeSpan.FromSeconds(55);
-        options.TokensPerPeriod = 1;
-        options.AutoReplenishment = true;
-    }));
+        TokenLimit = 1,
+        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+        QueueLimit = 1,
+        ReplenishmentPeriod = TimeSpan.FromSeconds(100),
+        TokensPerPeriod = 1,
+        AutoReplenishment = true
+    })));
 
 var app = builder.Build();
 
