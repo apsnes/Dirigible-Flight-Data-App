@@ -53,8 +53,18 @@ namespace FlightAppTests.ServiceTests
         public void AddNote_Invokes_Once()
         {
             //Arrange
+            var note = new NoteDto()
+            {
+                FlightIata = "test",
+                ScheduledDeparture = DateTime.UtcNow,
+                UserId = "test",
+                NoteText = "test",
+                TimeStamp = DateTime.UtcNow,
+                Replies = []
+            };
+
             //Act
-            _service.AddNote(new NoteDto());
+            _service.AddNote(note);
 
             //Assert
             _mockRepository.Verify(x => x.AddNote(It.IsAny<Note>()), Times.Once);
