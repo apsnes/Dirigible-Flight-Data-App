@@ -20,6 +20,6 @@ namespace FlightApp.Entities
         public string NoteText { get; set; }
         public DateTime TimeStamp { get; set; }
 
-        public List<Reply>? Replies { get; set; }
+        public List<Reply>? Replies { get; set; } 
     }
 }

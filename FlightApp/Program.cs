@@ -99,7 +99,9 @@ builder.Services.AddHealthChecks()
     .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<WeatherApiHealthcheck>("WeatherApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
-    .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy);
+    .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<MapDataHealthCheck>("MapDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<AirLineLogosHealthCheck>("AirLineLogosHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
 
 builder.Services.AddRateLimiter(ops => ops
