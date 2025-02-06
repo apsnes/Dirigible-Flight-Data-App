@@ -1,9 +1,11 @@
 ﻿using Azure;
+using FlightApp.Helpers;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 
 namespace FlightApp.Controllers
@@ -13,9 +15,11 @@ namespace FlightApp.Controllers
     public class FlightApiController : ControllerBase
     {
         private readonly IFlightService _flightApiService;
-        public FlightApiController(IFlightService flightApiService)
+        private readonly IMemoryCache _cache;
+        public FlightApiController(IFlightService flightApiService, IMemoryCache memoryCache)
         {
             _flightApiService = flightApiService;
+            _cache = memoryCache;
         }
 
         [HttpGet("{iata}")]
@@ -34,6 +38,7 @@ namespace FlightApp.Controllers
         }
 
         [HttpGet("incident")]
+        [EnableRateLimiting("token")]
         public IActionResult GetIncidentFlights()
         {
             var result = _flightApiService.GetIncidentFlights();
@@ -64,25 +69,39 @@ namespace FlightApp.Controllers
             [FromQuery] int page_number,
             [FromQuery] int page_size)
         {
-            List<FlightResponse> result = [];
+            List<FlightResponse> result;      
 
-            if (!string.IsNullOrEmpty(flight_iata))
+            
+            string QueryKey = QueryHash.CreateKey(arrivals, departures, flight_iata, date, page_number, page_size);
+
+            if (!_cache.TryGetValue(QueryKey, out result))
             {
-                var flightByIata = _flightApiService.GetFlightByIata(flight_iata);
-                if (flightByIata != null) result = [flightByIata];
+
+                if (!string.IsNullOrEmpty(flight_iata))
+                {
+                    var flightByIata = _flightApiService.GetFlightByIata(flight_iata);
+                    if (flightByIata != null) result = [flightByIata];
+                }
+                else if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
+                {
+                    result = _flightApiService.GetFlightsByRoute(departures, arrivals);
+                }
+                else if (!string.IsNullOrEmpty(arrivals))
+                {
+                    result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
+                }
+                else if (!string.IsNullOrEmpty(departures))
+                {
+                    result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
+                }
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(7));
+
+                _cache.Set(QueryKey, result, cacheEntryOptions);
             }
-            else if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
-            {
-                result = _flightApiService.GetFlightsByRoute(departures, arrivals);
-            }
-            else if (!string.IsNullOrEmpty(arrivals))
-            {
-                result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
-            }
-            else if (!string.IsNullOrEmpty(departures))
-            {
-                result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
-            }
+
+            
 
             if (result != null && result!.Count > 0)
             {
