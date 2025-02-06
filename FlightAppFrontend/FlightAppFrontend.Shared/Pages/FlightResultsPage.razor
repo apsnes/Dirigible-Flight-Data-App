@@ -1,7 +1,7 @@
 @page "/results"
 @using FlightAppFrontend.Shared.Components.Loaders
 
-<FlightResultsLoader FlightIATA="@FlightIATA" DepartureIATA="@DepartureIATA" ArrivalIATA="@ArrivalIATA" Date="@Date"/>
+<FlightResultsLoader FlightIATA="@FlightIATA" DepartureIATA="@DepartureIATA" ArrivalIATA="@ArrivalIATA" Date="@Date" PageNumber="PageNumber" PageSize="PageSize"/>
 
 @code{
     [SupplyParameterFromQuery(Name="flight_iata")]
@@ -15,4 +15,10 @@
 
     [SupplyParameterFromQuery(Name = "date")]
     public string? Date { get; set; }
+
+    [SupplyParameterFromQuery(Name = "page_number")]
+    public int PageNumber { get; set; }
+
+    [SupplyParameterFromQuery(Name = "page_size")]
+    public int PageSize { get; set; }
 }
