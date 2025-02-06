@@ -9,6 +9,9 @@ namespace FlightApp.Repository
         List<Note> GetNotes();
         Note AddNote(Note note);
         List<Note> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled);
+        Note GetNoteById(int id);
+        List<Note> GetNotesByUserId(string userId);
+        Note DeleteNoteById(int id);
     }
 
     public class NotesRepository : INotesRepository
@@ -32,7 +35,36 @@ namespace FlightApp.Repository
                 return null;
             }
         }
-
+        public Note GetNoteById(int id)
+        {
+            try
+            {
+                return db.Notes.Where(n => n.NoteId == id)
+                    .Include(n => n.User)
+                    .Include(n => n.Replies)
+                    .FirstOrDefault()!;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+        public List<Note> GetNotesByUserId(string userId)
+        {
+            try
+            {
+                return db.Notes.Where(n => n.UserId == userId)
+                    .Include(n => n.User)
+                    .Include(n => n.Replies)
+                    .ToList()!;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
         public List<Note> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled)
         {
             try
@@ -50,13 +82,28 @@ namespace FlightApp.Repository
                 return null;
             }
         }
-
         // -----POST REQUESTS-----
         public Note AddNote(Note note)
         {
             try
             {
                 db.Notes.Add(note);
+                db.SaveChanges();
+                return note;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+        // -----DELETE REQUESTS-----
+        public Note DeleteNoteById(int id)
+        {
+            try
+            {
+                Note note = db.Notes.Where(n => n.NoteId == id).FirstOrDefault();
+                db.Notes.Remove(note);
                 db.SaveChanges();
                 return note;
             }

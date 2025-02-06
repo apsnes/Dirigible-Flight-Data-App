@@ -172,5 +172,59 @@ namespace FlightAppTests.ControllerTests
             //Assert
             _mockService.Verify(x => x.AddNote(It.IsAny<NoteDto>()), Times.Once);
         }
+
+        [Test]
+        public void GetNoteById_ValidResponse_Returns_OK()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetNoteById(It.IsAny<int>())).Returns(new NoteDto());
+
+            //Act
+            var result = _controller.GetNoteById(1);
+
+            //Assert
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetNoteById_InvalidResponse_Returns_BadRequest()
+        {
+            //Arrange
+            NoteDto? response = null;
+            _mockService.Setup(x => x.GetNoteById(It.IsAny<int>())).Returns(response);
+
+            //Act
+            var result = _controller.GetNoteById(1);
+
+            //Assert
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public void DeleteNoteById_ValidResponse_Returns_OK()
+        {
+            //Arrange
+            _mockService.Setup(x => x.DeleteNoteById(It.IsAny<int>())).Returns(new Note());
+
+            //Act
+            var result = _controller.DeleteNoteById(1);
+
+            //Assert
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void DeleteNoteById_InvalidResponse_Returns_BadRequest()
+        {
+            //Arrange
+            Note? response = null;
+            _mockService.Setup(x => x.DeleteNoteById(It.IsAny<int>())).Returns(response);
+
+            //Act
+            var result = _controller.DeleteNoteById(1);
+
+            //Assert
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
     }
 }

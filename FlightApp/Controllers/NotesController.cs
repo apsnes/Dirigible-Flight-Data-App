@@ -23,6 +23,20 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest("Unable to find any notes") : Ok(result);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetNoteById(int id)
+        {
+            var result = _notesService.GetNoteById(id);
+            return result == null ? BadRequest($"Unable to find note {id}") : Ok(result);
+        }
+
+        [HttpGet("user/{userId}")]
+        public IActionResult GetNotesByUserId(string userId)
+        {
+            var result = _notesService.GetNotesByUserId(userId);
+            return result == null ? BadRequest($"Unable to find any notes for user {userId}") : Ok(result);
+        }
+
         [HttpGet("flight")]
         public IActionResult GetNotesByIataAndDateTime()
         {
@@ -39,6 +53,14 @@ namespace FlightApp.Controllers
         {
             var result = _notesService.AddNote(noteDto);
             return result == null ? BadRequest($"Unable to add comment") : Ok(result);
+        }
+
+        //-----DELETE REQUESTS-----
+        [HttpDelete("{id}")]
+        public IActionResult DeleteNoteById(int id)
+        {
+            var result = _notesService.DeleteNoteById(id);
+            return result == null ? BadRequest($"Unable to delete note {id}") : Ok(result);
         }
     }
 }

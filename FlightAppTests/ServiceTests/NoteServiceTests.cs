@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FlightAppLibrary.Models.Dtos;
+using FlightApp.Models;
 
 namespace FlightAppTests.ServiceTests
 {
@@ -68,6 +69,55 @@ namespace FlightAppTests.ServiceTests
 
             //Assert
             _mockRepository.Verify(x => x.AddNote(It.IsAny<Note>()), Times.Once);
+        }
+
+        [Test]
+        public void GetNoteById_Invokes_Once()
+        {
+            //Arrange
+            var note = new Note()
+            {
+                NoteId = 1,
+                FlightIata = "test",
+                ScheduledDeparture = DateTime.UtcNow,
+                UserId = "test",
+                NoteText = "test",
+                TimeStamp = DateTime.UtcNow,
+                User = new ApplicationUser(),
+                Replies = []
+            };
+            _mockRepository.Setup(x => x.GetNoteById(It.IsAny<int>())).Returns(note);
+
+            //Act
+            _service.GetNoteById(It.IsAny<int>());
+
+            //Assert
+            _mockRepository.Verify(x => x.GetNoteById(It.IsAny<int>()), Times.Once);
+        }
+
+        [Test]
+        public void GetNotesByUserId_Invokes_Once()
+        {
+            //Arrange
+            _mockRepository.Setup(x => x.GetNotesByUserId(It.IsAny<string>())).Returns(new List<Note>());
+
+            //Act
+            _service.GetNotesByUserId(It.IsAny<string>());
+
+            //Assert
+            _mockRepository.Verify(x => x.GetNotesByUserId(It.IsAny<string>()), Times.Once);
+        }
+
+        [Test]
+        public void DeleteNoteById_Invokes_Once()
+        {
+            //Arrange
+
+            //Act
+            _service.DeleteNoteById(It.IsAny<int>());
+
+            //Assert
+            _mockRepository.Verify(x => x.DeleteNoteById(It.IsAny<int>()), Times.Once);
         }
     }
 }
