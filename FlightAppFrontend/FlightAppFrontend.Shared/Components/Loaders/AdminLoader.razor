@@ -12,7 +12,11 @@
 @inject IHttpClientFactory ClientFactory
 @inject IJsInteropService JsInteropService
 
-@if (User == null)
+@if (ErrorMessage != null)
+{
+    <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError" />
+}
+else if (@User == null)
 {
     <Loading />
 }
@@ -21,16 +25,45 @@ else
     <PageTitle>Dashboard</PageTitle>
 
     <div class="container mt-6">
+        @if (Login)
+        {
+            <TitleSuccess Text="Welcome Back!" />
+        }
+        else if (Updated)
+        {
+            <TitleSuccess Text="Updated Successfully!" />
+        }
+        else if (Editing)
+        {
+            <Title Text="Edit Details" />
+        }
+        else if (UpdatingPassword)
+        {
+            <Title Text="Enter New Password" />
+        }
+        else if (PasswordUpdated)
+        {
+            <TitleSuccess Text="Password Updated" />
+        }
+        else
+        {
+            <Title Text="Welcome Back!" />
+        }
 
         <div class="columns">
             <div class="column is-half">
-                <EditForm Model="User" OnSubmit="GetUser">
-                    <InputText type="email" @bind-Value="email">Email</InputText>
-                    <button type="submit" class="button is-primary">Get User</button>
-                </EditForm>
-
-                <AdminProfileCard AuthState="_authState" AppUser="User"/>
-
+                @if (Editing)
+                {
+                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
+                }
+                else if (UpdatingPassword)
+                {
+                    <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated" />
+                }
+                else
+                {
+                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword" />
+                }
             </div>
         </div>
     </div>
@@ -63,25 +96,6 @@ else
     private bool PasswordUpdated;
 
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender) {
-                        var token = JsInteropService.GetItem("jwtToken").Result;
-                    if (!string.IsNullOrEmpty(token))
-                    {
-                        var handler = new JwtSecurityTokenHandler();
-                        var jwtToken = handler.ReadJwtToken(token);
-
-                        var roleClaims = jwtToken.Claims.Where(c => c.Type == ClaimTypes.Role);
-                        isAdmin = roleClaims.Any(c => c.Value == "Admin");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Token is null");
-                    }
-                }
-    }
-
     protected void ResetError()
     {
         ErrorMessage = "";
@@ -89,12 +103,11 @@ else
     public async Task GetUser(){
         try
         {
-            if (isAdmin)
-            {
+           
                 var client = ClientFactory.CreateClient("DirigibleApi");
-                var response = await client.GetValueAsync<UserDTO>($"Account/GetUserByEmail/{email}");
+                var response = await client.GetValueAsync<UserDTO>($"Account/GetUserDetailsByEmail?email={email}");
                 User = response.Value!;
-            }
+           
         }
         catch (Exception ex)
         {
