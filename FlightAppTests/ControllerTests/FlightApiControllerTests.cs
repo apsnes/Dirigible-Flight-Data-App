@@ -3,6 +3,10 @@ using FlightAppLibrary.Models.Response;
 using FlightApp.Service;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Microsoft.Extensions.Caching.Memory;
+using FlightAppLibrary.Models.Dtos;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace FlightAppTests.ControllerTests
 {
@@ -10,11 +14,13 @@ namespace FlightAppTests.ControllerTests
     {
         private Mock<IFlightService> _mockService;
         private FlightApiController _controller;
+        private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
+        
         [SetUp]
         public void Setup()
         {
             _mockService = new Mock<IFlightService>();
-            _controller = new FlightApiController(_mockService.Object);
+            _controller = new FlightApiController(_mockService.Object, _cache);
         }
 
         [Test]
@@ -24,7 +30,7 @@ namespace FlightAppTests.ControllerTests
             _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(new FlightResponse());
 
             //Act
-            var result = _controller.GetFlightByIata("test");
+            var result = _controller.GetFlightByIata("test1");
 
             //Assert
             Assert.That(result, Is.TypeOf<OkObjectResult>());
@@ -37,7 +43,7 @@ namespace FlightAppTests.ControllerTests
             _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(response);
 
             //Act
-            var result = _controller.GetFlightByIata("test");
+            var result = _controller.GetFlightByIata("test2");
 
             //Assert
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
@@ -48,10 +54,10 @@ namespace FlightAppTests.ControllerTests
         {
             //Arrange
             //Act
-            _controller.GetFlightByIata("test");
+            _controller.GetFlightByIata("test3");
 
             //Assert
-            _mockService.Verify(x => x.GetFlightByIata("test"), Times.Once);
+            _mockService.Verify(x => x.GetFlightByIata("test3"), Times.Once);
         }
 
         [Test]
@@ -204,6 +210,98 @@ namespace FlightAppTests.ControllerTests
 
             //Assert
             Assert.That(result, Is.TypeOf<BadRequestResult>());
+        }
+
+        [Test]
+        public void GetFlightByIata_InvokesOnceForIdenticalRequests()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(new FlightResponse());
+
+            //Act
+            _controller.GetFlightByIata("BA001");
+            _controller.GetFlightByIata("BA001");
+
+
+
+            //Assert
+            _mockService.Verify(x => x.GetFlightByIata(It.IsAny<string>()), Times.Once);
+
+        }
+
+        [Test]
+        public void GetFlightByIata_InvokesTwiceForDifferentRequests()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetFlightByIata(It.IsAny<string>())).Returns(new FlightResponse());
+
+            //Act
+            _controller.GetFlightByIata("BA002");
+            _controller.GetFlightByIata("BA003");
+
+
+
+            //Assert
+            _mockService.Verify(x => x.GetFlightByIata(It.IsAny<string>()), Times.Exactly(2));
+
+        }
+
+        [Test]
+        public void GetSearchResults_InvokesOnceForIdenticalRequests()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetFlightsByDepartureAirportActive(It.IsAny<string>())).Returns(new List<FlightResponse>());
+
+            //Act
+            _controller.GetSearchResults(null,departures: "LHR", null, null, page_number: 0, page_size: 0);
+            _controller.GetSearchResults(null, departures: "LHR", null, null, page_number: 0, page_size: 0);
+            _controller.GetSearchResults(null, departures: "LHR", null, null, page_number: 0, page_size: 0);
+            _controller.GetSearchResults(null, departures: "LHR", null, null, page_number: 0, page_size: 0);
+
+
+            //Assert
+            _mockService.Verify(x => x.GetFlightsByDepartureAirportActive(It.IsAny<string>()), Times.Once);
+            _mockService.Verify(x => x.GetFlightsByArrivalIataActive(It.IsAny<string>()), Times.Never);
+
+        }
+
+        [Test]
+        public void GetSearchResults_InvokesTwiceForDifferentRequests()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetFlightsByDepartureAirportActive(It.IsAny<string>())).Returns(new List<FlightResponse>());
+
+            //Act
+            _controller.GetSearchResults(null, "MAN", null, null, 0, 0);
+            _controller.GetSearchResults(null, "DFW", null, null, 0, 0);
+
+
+            //Assert
+            _mockService.Verify(x => x.GetFlightsByDepartureAirportActive(It.IsAny<string>()), Times.Exactly(2));
+        }
+
+        [Test]
+        public void GetIncidetFlights_InvokesAtMostOnceForIdenticalRequests()
+        {
+            //Arrange
+            _mockService.Setup(x => x.GetIncidentFlights());
+
+            //Act
+            _controller.GetIncidentFlights();
+            _controller.GetIncidentFlights();
+            _controller.GetIncidentFlights();
+            _controller.GetIncidentFlights();
+
+
+            //Assert
+            _mockService.Verify(x => x.GetIncidentFlights(), Times.AtMost(1));
+
+        }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            _cache.Dispose();
         }
     }
 }

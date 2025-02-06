@@ -46,6 +46,7 @@ else
             // ErrorMessage = response.ErrorMessage;
 
             var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+
             FlightResponse = response[0];
         }
         catch(Exception ex)
