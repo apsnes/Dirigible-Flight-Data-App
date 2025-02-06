@@ -1,4 +1,9 @@
-﻿@using FlightAppLibrary.Models.Dtos
+﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory ClientFactory
 
 <div class="card">
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -16,7 +21,20 @@
     </header>
     @if (isCardOpen)
     {
-        @* Replies to go here - foreach reply in note.Replies *@
+        @foreach (var reply in Note.Replies!)
+        {
+            <div class="media">
+                <div class="media-content">
+                    <p class="is-6">@reply.User!.DisplayName, @reply.TimeStamp.ToString(): @reply.ReplyText</p>
+                </div>
+            </div>
+        }
+        <EditForm FormName="AddNote" Model="@ReplyDto" OnValidSubmit="HandleValidSubmit">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <InputText class="input" @bind-Value="ReplyDto.ReplyText" placeholder="Reply text" />
+                <div><MainButton Text="Add Reply" /></div>
+            </div>
+        </EditForm>
     }
 </div>
 
@@ -24,9 +42,32 @@
 {
     [Parameter] public NoteDto Note { get; set; }
     private bool isCardOpen = false;
+    private ReplyDto ReplyDto { get; set; } = new();
 
     private void ToggleCard()
     {
         isCardOpen = !isCardOpen;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+        var currUser = userResponse.Value;
+
+        ReplyDto.UserId = currUser!.Id!;
+        ReplyDto.NoteId = Note.NoteId;
+        ReplyDto.TimeStamp = DateTime.UtcNow;
+        ReplyDto.User = currUser;
+
+        var json = JsonSerializer.Serialize(ReplyDto);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("replies", content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Note.Replies!.Add(ReplyDto);
+            ReplyDto = new ReplyDto();
+        }
     }
 }

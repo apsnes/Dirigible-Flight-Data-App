@@ -42,6 +42,7 @@
         NoteDto.FlightIata = FlightResponse.Flight.Iata;
         NoteDto.TimeStamp = DateTime.UtcNow;
         NoteDto.User = currUser;
+        NoteDto.Replies = new();
 
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");

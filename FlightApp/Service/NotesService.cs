@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FlightApp.Entities;
+using FlightApp.Models;
 using FlightApp.Repository;
 using FlightAppLibrary.Models.Dtos;
 using Microsoft.AspNetCore.Components.Forms.Mapping;
@@ -38,6 +39,7 @@ namespace FlightApp.Service
             {
                 var res = notes.Select(n => new NoteDto()
                 {
+                    NoteId = n.NoteId,
                     FlightIata = n.FlightIata,
                     ScheduledDeparture = n.ScheduledDeparture,
                     UserId = n.UserId,
@@ -46,20 +48,36 @@ namespace FlightApp.Service
                     User = new UserDTO()
                     {
                         Id = n.User!.Id,
+                        Pronouns = n.User.Pronouns,
+                        FirstName = n.User.FirstName,
+                        LastName = n.User.LastName,
                         DisplayName = n.User.DisplayName ?? n.User.FirstName,
-                        Karma = n.User.Karma,
+                        Email = n.User.Email!,
+                        PhoneNumber = n.User.PhoneNumber,
+                        Karma = n.User.Karma
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
                         UserId = r.UserId,
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,
-                        TimeStamp = r.TimeStamp
+                        TimeStamp = r.TimeStamp,
+                        User = new UserDTO()
+                        {
+                            Id = r.User!.Id,
+                            Pronouns = r.User.Pronouns,
+                            FirstName = r.User.FirstName,
+                            LastName = r.User.LastName,
+                            DisplayName = r.User.DisplayName ?? r.User.FirstName,
+                            Email = r.User.Email!,
+                            PhoneNumber = r.User.PhoneNumber,
+                            Karma = r.User.Karma
+                        }
                     }).ToList()
                 }).ToList();
                 return res;
             }
-            return new List<NoteDto>();
+            return [];
         }
 
 
@@ -73,6 +91,7 @@ namespace FlightApp.Service
                 UserId = noteDto.UserId,
                 NoteText = noteDto.NoteText,
                 TimeStamp = noteDto.TimeStamp,
+                Replies = new()
             };
 
             return _notesRepository.AddNote(note);
