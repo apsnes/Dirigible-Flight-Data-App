@@ -1,6 +1,8 @@
 @page "/results"
 @using FlightAppFrontend.Shared.Components.Loaders
 
+<PageTitle>Search Results</PageTitle>
+
 <FlightResultsLoader FlightIATA="@FlightIATA" DepartureIATA="@DepartureIATA" ArrivalIATA="@ArrivalIATA" Date="@Date" PageNumber="PageNumber" PageSize="PageSize"/>
 
 @code{
