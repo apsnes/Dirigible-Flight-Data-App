@@ -66,7 +66,8 @@ namespace FlightApp.Controllers
 
             if (!string.IsNullOrEmpty(flight_iata))
             {
-                result = [_flightApiService.GetFlightByIata(flight_iata)!];
+                var flightByIata = _flightApiService.GetFlightByIata(flight_iata);
+                if (flightByIata != null) result = [flightByIata];
             }
             else if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
             {
@@ -81,16 +82,19 @@ namespace FlightApp.Controllers
                 result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
             }
 
-            result = result
+            if(result != null && result!.Count > 0)
+            {
+                result = result!
                 .Where(r => r.Flight.Codeshared is null && !string.IsNullOrEmpty(r.Flight.Iata))
                 .Where(r => ((DateTime)r.Departure.Scheduled!).ToString("dd_MM_yyyy") == date)
                 .ToList();
 
-            if (page_number > 0 && page_size > 0)
-            {
-                result = result.Skip(page_number - 1 * page_size)
-                .Take(page_size)
-                .ToList();
+                if (page_number > 0 && page_size > 0)
+                {
+                    result = result.Skip(page_number - 1 * page_size)
+                    .Take(page_size)
+                    .ToList();
+                }
             }
 
             if (result is null || result.Count <= 0) return BadRequest("No flights found.");
