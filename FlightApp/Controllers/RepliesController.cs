@@ -23,7 +23,7 @@ namespace FlightApp.Controllers
             return result == new List<Reply>() ? BadRequest("Unable to find any replies") : Ok(result);
         }
 
-        [HttpGet("user/{userId")]
+        [HttpGet("user/{userId}")]
         public IActionResult GetRepliesByUserId(string userId)
         {
             var result = _repliesService.GetRepliesByUserId(userId);
