@@ -3,6 +3,34 @@ namespace FlightAppFrontend.Shared.Services
 {
     public static class UserService
     {
+        public static readonly List<string> Avatars =
+        [
+            "_content/FlightAppFrontend.Shared/Images/Avatars/1.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/2.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/3.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/4.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/5.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/6.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/7.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/8.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/9.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/10.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/11.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/12.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/13.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/14.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/15.png",
+            "_content/FlightAppFrontend.Shared/Images/Avatars/16.png"
+        ];
+
+        public static readonly List<string> Pronouns =
+        [
+            "",
+            "(She/Her)",
+            "(He/Him)",
+            "(They/Them)"
+        ];
+
         public static string UserRank(int karma)
         {
             if(karma > 10)

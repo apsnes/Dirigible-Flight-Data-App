@@ -46,13 +46,13 @@ else
         {      
             var client = ClientFactory.CreateClient("DirigibleApi");
             var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/search?{CreateQueryString()}");
-
-            // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
-
-            // FlightResponses = response.ToList();
-
             FlightResponses = response.Value;
             ErrorMessage = response.ErrorMessage;
+
+            // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+            // FlightResponses = response.ToList();
+
+
         }
         catch (Exception ex)
         {
