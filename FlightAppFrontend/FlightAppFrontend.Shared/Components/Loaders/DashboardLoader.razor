@@ -21,33 +21,33 @@ else
     <PageTitle>Dashboard</PageTitle>
 
     <div class="container mt-6">
-        @if (Login)
-        {
-            <TitleSuccess Text="Welcome Back!" />
-        }
-        else if (Updated)
-        {
-            <TitleSuccess Text="Updated Successfully!" />
-        }
-        else if (Editing)
-        {
-            <Title Text="Edit Details" />
-        }
-        else if (UpdatingPassword)
-        {
-            <Title Text="Enter New Password" />
-        }
-        else if(PasswordUpdated)
-        {
-            <TitleSuccess Text="Password Updated" />
-        }
-        else
-        {
-            <Title Text="Welcome Back!" />
-        }
-
         <div class="columns">
             <div class="column is-half">
+                @if (Login)
+                {
+                    <TitleSuccess Text="Welcome Back!" />
+                }
+                else if (Updated)
+                {
+                    <TitleSuccess Text="Updated Successfully!" />
+                }
+                else if (Editing)
+                {
+                    <Title Text="Edit Details" />
+                }
+                else if (UpdatingPassword)
+                {
+                    <Title Text="Enter New Password" />
+                }
+                else if(PasswordUpdated)
+                {
+                    <TitleSuccess Text="Password Updated" />
+                }
+                else
+                {
+                    <Title Text="Welcome Back!" />
+                }
+
                 @if (Editing)
                 {
                     <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/>
@@ -60,6 +60,9 @@ else
                 {
                     <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/>
                 }
+            </div>
+            <div class="column">
+                <ActivityPanel/>
             </div>
         </div>
     </div>
