@@ -11,13 +11,9 @@
         else 
         {
             <Title Text="Results:" />
-            @foreach (var response in @FlightResponses!)
-            {
-                @if (response.Flight.Codeshared is null && !string.IsNullOrEmpty(response.Flight.Iata))
-                {
-                    <FlightResultCard FlightResponse="response" />
-                }
-            }
+            <Virtualize Items="@FlightResponses" Context="response">
+                <FlightResultCard FlightResponse="response" />
+            </Virtualize> 
         }
     </div>
 </div>

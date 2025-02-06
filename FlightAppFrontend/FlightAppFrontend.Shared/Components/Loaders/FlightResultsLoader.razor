@@ -45,7 +45,7 @@ else
         try
         {      
             var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/results?{CreateQueryString()}");
+            var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/search?{CreateQueryString()}");
 
             // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
 

@@ -53,8 +53,8 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest() : Ok(result);
         }
 
-        [HttpGet("results")]
-        public IActionResult GetResults(
+        [HttpGet("search")]
+        public IActionResult GetSearchResults(
             [FromQuery] string? arrivals, 
             [FromQuery] string? departures, 
             [FromQuery] string? flight_iata, 
@@ -83,9 +83,6 @@ namespace FlightApp.Controllers
 
             result = result
                 .Where(r => r.Flight.Codeshared is null && !string.IsNullOrEmpty(r.Flight.Iata))
-                .ToList();
-
-            result = result
                 .Where(r => ((DateTime)r.Departure.Scheduled!).ToString("dd_MM_yyyy") == date)
                 .ToList();
 
