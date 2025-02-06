@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using FlightApp.Entities;
-using FlightApp.Models;
 using FlightApp.Repository;
 using FlightAppLibrary.Models.Dtos;
-using Microsoft.AspNetCore.Components.Forms.Mapping;
-using Microsoft.AspNetCore.SignalR;
-using System.Collections.Generic;
 
 namespace FlightApp.Service
 {
@@ -14,6 +10,9 @@ namespace FlightApp.Service
         List<Note> GetNotes();
         Note AddNote(NoteDto noteDto);
         List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled);
+        NoteDto GetNoteById(int id);
+        List<NoteDto> GetNotesByUserId(string userId);
+        Note DeleteNoteById(int id);
     }
 
     public class NotesService : INotesService
@@ -30,6 +29,98 @@ namespace FlightApp.Service
         public List<Note> GetNotes()
         {
             return _notesRepository.GetNotes();
+        }
+
+        public NoteDto GetNoteById(int id)
+        {
+            Note note = _notesRepository.GetNoteById(id);
+            NoteDto noteDto = new NoteDto()
+            {
+                NoteId = note.NoteId,
+                FlightIata = note.FlightIata,
+                ScheduledDeparture = note.ScheduledDeparture,
+                UserId = note.UserId,
+                NoteText = note.NoteText,
+                TimeStamp = note.TimeStamp,
+                User = new UserDTO()
+                {
+                    Id = note.User!.Id,
+                    Pronouns = note.User.Pronouns,
+                    FirstName = note.User.FirstName,
+                    LastName = note.User.LastName,
+                    DisplayName = note.User.DisplayName ?? note.User.FirstName,
+                    Email = note.User.Email!,
+                    PhoneNumber = note.User.PhoneNumber,
+                    Karma = note.User.Karma
+                },
+                Replies = note.Replies.Select(r => new ReplyDto()
+                {
+                    UserId = r.UserId,
+                    NoteId = r.NoteId,
+                    ReplyText = r.ReplyText,
+                    TimeStamp = r.TimeStamp,
+                    User = new UserDTO()
+                    {
+                        Id = r.User!.Id,
+                        Pronouns = r.User.Pronouns,
+                        FirstName = r.User.FirstName,
+                        LastName = r.User.LastName,
+                        DisplayName = r.User.DisplayName ?? r.User.FirstName,
+                        Email = r.User.Email!,
+                        PhoneNumber = r.User.PhoneNumber,
+                        Karma = r.User.Karma
+                    }
+                }).ToList()
+            };
+            return noteDto;
+        }
+
+        public List<NoteDto> GetNotesByUserId(string userId)
+        {
+            List<Note> notes = _notesRepository.GetNotesByUserId(userId);
+            if (notes != null && notes.Count > 0)
+            {
+                var res = notes.Select(n => new NoteDto()
+                {
+                    NoteId = n.NoteId,
+                    FlightIata = n.FlightIata,
+                    ScheduledDeparture = n.ScheduledDeparture,
+                    UserId = n.UserId,
+                    NoteText = n.NoteText,
+                    TimeStamp = n.TimeStamp,
+                    User = new UserDTO()
+                    {
+                        Id = n.User!.Id,
+                        Pronouns = n.User.Pronouns,
+                        FirstName = n.User.FirstName,
+                        LastName = n.User.LastName,
+                        DisplayName = n.User.DisplayName ?? n.User.FirstName,
+                        Email = n.User.Email!,
+                        PhoneNumber = n.User.PhoneNumber,
+                        Karma = n.User.Karma
+                    },
+                    Replies = n.Replies.Select(r => new ReplyDto()
+                    {
+                        UserId = r.UserId,
+                        NoteId = r.NoteId,
+                        ReplyText = r.ReplyText,
+                        TimeStamp = r.TimeStamp,
+                        User = new UserDTO()
+                        {
+                            Id = r.User!.Id,
+                            Pronouns = r.User.Pronouns,
+                            FirstName = r.User.FirstName,
+                            LastName = r.User.LastName,
+                            DisplayName = r.User.DisplayName ?? r.User.FirstName,
+                            Email = r.User.Email!,
+                            PhoneNumber = r.User.PhoneNumber,
+                            Karma = r.User.Karma
+                        }
+                    }).ToList()
+                }).ToList();
+                return res;
+            }
+            return [];
         }
 
         public List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled)
@@ -80,7 +171,6 @@ namespace FlightApp.Service
             return [];
         }
 
-
         //-------POST REQUESTS----------
         public Note AddNote(NoteDto noteDto)
         {
@@ -95,6 +185,12 @@ namespace FlightApp.Service
             };
 
             return _notesRepository.AddNote(note);
+        }
+
+        //-------DELETE REQUESTS----------
+        public Note DeleteNoteById(int id)
+        {
+            return _notesRepository.DeleteNoteById(id);
         }
     }
 }
