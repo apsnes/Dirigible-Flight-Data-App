@@ -9,6 +9,7 @@ namespace FlightApp.Repository
         Reply AddReply(Reply reply);
         List<Reply> GetReplies();
         List<Reply> GetRepliesByNoteId(int noteId);
+        List<Reply> GetRepliesByUserId(string userId);
     }
 
     public class RepliesRepository : IRepliesRepository
@@ -20,7 +21,6 @@ namespace FlightApp.Repository
         }
 
         // ------GET REQUESTS------
-
         public List<Reply> GetReplies()
         {
             try
@@ -33,7 +33,6 @@ namespace FlightApp.Repository
                 return new List<Reply>();
             }
         }
-
         public List<Reply> GetRepliesByNoteId(int noteId)
         {
             try
@@ -46,11 +45,19 @@ namespace FlightApp.Repository
                 return new List<Reply>();
             }
         }
-
-
-
+        public List<Reply> GetRepliesByUserId(string userId)
+        {
+            try
+            {
+                return db.Replies.Include(r => r.User).Where(r => r.UserId == userId).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return new List<Reply>();
+            }
+        }
         // -----POST REQUESTS-----
-
         public Reply AddReply(Reply reply)
         {
             try
