@@ -19,8 +19,9 @@
                     <figure class="image is-128x128 is-square">
                         <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
                     </figure>
+                    <button type="button" class="button is-warning mt-5" aria-label="change-avatar" @onclick="() => ToggleIsActive()">Change Avatar</button>
                 </div>
-                <div class="media-content">
+                <div class="media-content ml-3">
                     <div class="field">
                         <div class="control mt-2">
                             <label for="name" class="label">Name</label>
@@ -51,13 +52,13 @@
                         <div class="control mt-2">
                             <label for="pronouns" class="label">Pronouns (Optional)</label>
                             <div class="select">
-                            <InputSelect id="pronouns" @bind-Value="@AppUser.Pronouns" class="dropdown is-active">
-                                @foreach (string pronoun in UserService.Pronouns)
-                                {
-                                    <option>@pronoun</option>
-                                }
-                            </InputSelect>
-                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
+                                <InputSelect id="pronouns" @bind-Value="@AppUser.Pronouns" class="dropdown is-active">
+                                    @foreach (string pronoun in UserService.Pronouns)
+                                    {
+                                        <option>@pronoun</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
                             </div>
                         </div>
                     </div>
@@ -69,6 +70,20 @@
             <button type="button" class="card-footer-item has-text-danger" @onclick="() => Cancel()">Cancel</button>
         </footer>
     </EditForm>
+
+    <div class="modal @IsActive">
+        <div class="modal-card">
+            <section class="modal-card-body">
+                @foreach (var avatar in UserService.Avatars)
+                {
+                    <button type="button" aria-label="choose-avatar" @onclick="() => ToggleIsActive()">
+                        <img class="image is-128x128 is-rounded" src="@avatar" alt="user-avatar" />
+                    </button>
+                }
+            </section>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @onclick="() => ToggleIsActive()"></button>
+    </div>
 </div>
 
 @code {
@@ -88,6 +103,8 @@
     public EventCallback OnUpdate { get; set; }
 
     public string? ErrorMessage;
+
+    private string? IsActive = "";
 
     protected async Task HandleValidSubmit()
     {
@@ -114,6 +131,11 @@
     protected void HandleInvalidSubmit()
     {
 
+    }
+
+    protected void ToggleIsActive()
+    {
+        IsActive = IsActive == "" ? "is-active" : "";
     }
 
     protected async Task Cancel()

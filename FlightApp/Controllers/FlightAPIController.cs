@@ -85,7 +85,7 @@ namespace FlightApp.Controllers
             if(result != null && result!.Count > 0)
             {
                 result = result!
-                //.Where(r => r.Flight.Codeshared is null && !string.IsNullOrEmpty(r.Flight.Iata))
+                .Where(r => !string.IsNullOrEmpty(r.Flight.Iata))
                 .Where(r => ((DateTime)r.Departure.Scheduled!).ToString("dd_MM_yyyy") == date)
                 .ToList();
 
