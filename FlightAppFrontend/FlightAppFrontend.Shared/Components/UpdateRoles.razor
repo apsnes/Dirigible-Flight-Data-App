@@ -7,7 +7,7 @@
 @inject IJsInteropService JsInteropService
 
 <div class="card mb-5 pb-4">
-    <EditForm FormName="RolesForm" Model="roleChangeModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Roles Form">
+    <EditForm FormName="RolesForm" Model="roleModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Roles Form">
         <DataAnnotationsValidator />
         <div class="card-content">
             <div class="media">
@@ -18,20 +18,13 @@
                 </div>
                 <div class="media-content">
                 <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError" />
-                   @*  <div class="field">
-                        <label for="password" class="label">Password</label>
+                    <div class="field">
+                        <label for="role" class="label">Role to Toggle</label>
                         <div class="control mt-2">
-                            <InputText type="password" id="password" class="input" @bind-Value="passwordChangeModel.Password" placeholder="Password" />
-                            <ValidationMessage class="help is-danger" For="@(() => passwordChangeModel.Password)" />
+                            <InputText type="text" id="role" class="input" @bind-Value="roleModel.Role" placeholder="Role" />
+                            <ValidationMessage class="help is-danger" For="@(() => roleModel.Role)" />
                         </div>
-                    </div> *@
-                    @* <div class="field">
-                        <label for="confirmPassword" class="label">Confirm Password</label>
-                        <div class="control mt-2">
-                            <InputText type="password" id="confirmPassword" class="input" @bind-Value="passwordChangeModel.ConfirmPassword" placeholder="Confirm Password" />
-                            <ValidationMessage class="help is-danger" For="@(() => passwordChangeModel.ConfirmPassword)" />
-                        </div>
-                    </div> *@
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,7 +38,10 @@
 @code {
 
     private RolesUpdateDto roleChangeModel = new RolesUpdateDto();
+    private RoleModelDto roleModel = new RoleModelDto();
     private string? ErrorMessage;
+    [Parameter]
+    public UserDTO? AppUser { get; set; }
 
     [Parameter]
     public EventCallback OnCancel { get; set; }
@@ -55,19 +51,16 @@
 
     private async void HandleValidSubmit()
     {
-        // var client = DirigibleApi.CreateClient("DirigibleApi");
-        // var content = new StringContent(JsonSerializer.Serialize(passwordChangeModel), Encoding.UTF8, "application/json");
-        // var result = await client.PutAsync("Account/UpdatePassword", content);
-        // if (result.IsSuccessStatusCode)
-        // {
-        //     await OnUpdate.InvokeAsync();
-        // }
-        // else{
-        //     ErrorMessage = "Password update failed";
-        // }
-        // passwordChangeModel.Password = "";
-        // passwordChangeModel.ConfirmPassword = "";
-        // StateHasChanged();
+        var client = DirigibleApi.CreateClient("DirigibleApi");
+        var response = await client.PostAsJsonAsync("Account/UpdateUserRoles", new RolesUpdateDto() { UserId = AppUser.Id, Role = roleModel.Role });
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Success");
+        }
+        else
+        {
+            Console.WriteLine("Roles update failed");
+        }
     }
 
     protected async void Cancel()

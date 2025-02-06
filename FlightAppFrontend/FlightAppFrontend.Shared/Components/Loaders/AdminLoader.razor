@@ -45,6 +45,14 @@ else
         {
             <TitleSuccess Text="Password Updated" />
         }
+        else if (UpdatingRoles)
+        {
+            <Title Text="Enter Role" />
+        }
+        else if (RolesUpdated)
+        {
+            <TitleSuccess Text="Role updated" />
+        }
         else
         {
             <Title Text="Welcome Back!" />
@@ -60,9 +68,13 @@ else
                 {
                     <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated" />
                 }
+                else if (UpdatingRoles)
+                {
+                    <UpdateRoles OnCancel="ToggleUpdatingRoles" AppUser="User" OnUpdate="SetRolesUpdated" />
+                }
                 else
                 {
-                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword" />
+                    <AdminProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword" />
                 }
             </div>
         </div>
@@ -94,6 +106,9 @@ else
     private bool UpdatingPassword;
 
     private bool PasswordUpdated;
+    private bool UpdatingRoles;
+    private bool RolesUpdated;
+    private RoleModelDto roleModel = new RoleModelDto();
 
 
     protected void ResetError()
@@ -103,15 +118,29 @@ else
     public async Task GetUser(){
         try
         {
-           
-                var client = ClientFactory.CreateClient("DirigibleApi");
-                var response = await client.GetValueAsync<UserDTO>($"Account/GetUserDetailsByEmail?email={email}");
-                User = response.Value!;
-           
+
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var response = await client.GetValueAsync<UserDTO>($"Account/GetUserDetailsByEmail?email={email}");
+            User = response.Value!;
+
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
+        }
+    }
+    public async Task UpdateRoles()
+    {
+        
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var response = await client.PostAsJsonAsync("Account/UpdateUserRoles", new RolesUpdateDto(){UserId = User.Id, Role = roleModel.Role});
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Success");
+        }
+        else
+        {
+            Console.WriteLine("Roles update failed");
         }
     }
     public void SetUpdated()
@@ -141,5 +170,16 @@ else
         UpdatingPassword = !UpdatingPassword;
         if (UpdatingPassword) PasswordUpdated = false;
     }
-
+    public void SetRolesUpdated()
+    {
+        RolesUpdated = true;
+        UpdatingRoles = false;
+    }
+    public void ToggleUpdatingRoles()
+    {
+        Login = false;
+        Editing = false;
+        UpdatingRoles = !UpdatingRoles;
+        if (UpdatingRoles) RolesUpdated = false;
+    }
 }

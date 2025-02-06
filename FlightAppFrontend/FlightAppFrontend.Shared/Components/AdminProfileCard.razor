@@ -24,6 +24,7 @@
     <footer class="card-footer">
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => ChangePassword()">Change Password</button>
+        <button type="button" class="card-footer-item has-text-warning" @onclick="() => UpdateRoles()">Update Roles</button>
     </footer>
 </div>
 
@@ -43,6 +44,8 @@
     [Parameter]
     public EventCallback OnChangePassword { get; set; }
     [Parameter]
+    public EventCallback OnUpdateRoles { get; set; }
+    [Parameter]
     public string Password { get; set; }
     [Parameter]
     public string ConfirmPassword { get; set; }
@@ -57,5 +60,9 @@
     protected async Task ChangePassword()
     {
         await OnChangePassword.InvokeAsync();
+    }
+    protected async Task UpdateRoles()
+    {
+        await OnUpdateRoles.InvokeAsync();
     }
 }

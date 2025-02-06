@@ -138,12 +138,31 @@ namespace FlightApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AssignRole([FromBody] RoleAssignmentItem roleItem)
         {
-            var result = await _accountService.AssignRoleToUser(roleItem.Email, roleItem.Role);
-            if (result.IsSuccess == true)
+        
+
+
+                var result = await _accountService.AssignRoleToUser(roleItem.Email, roleItem.Role);
+                if (result.IsSuccess == true)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRoles([FromBody] RolesUpdateDto roleUpdate)
+        {
+            try
             {
+
+                var result = await _accountService.UpdateUserRoles(roleUpdate.Role, roleUpdate.UserId);
                 return Ok(result);
             }
-            return BadRequest(result);
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
 
         }
     }
