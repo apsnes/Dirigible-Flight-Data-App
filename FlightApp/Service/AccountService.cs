@@ -105,6 +105,18 @@ namespace FlightApp.Service
                     IsAuthSuccessful = true,
                     Token = token,
                     UserDTO = _mapper.Map<UserDTO>(user)
+                    //UserDTO = new UserDTO
+                    //{
+                    //    Id = user.Id,
+                    //    Email = user.Email,
+                    //    PhoneNumber = user.PhoneNumber,
+                    //    Pronouns = user.Pronouns,
+                    //    FirstName = user.FirstName,
+                    //    LastName = user.LastName,
+                    //    DisplayName = user.DisplayName,
+                    //    Karma = user.Karma
+
+                    //}
                 };
 
 
@@ -147,6 +159,19 @@ namespace FlightApp.Service
             ApplicationUser? user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
+
+                //UserDTO userDTO = new UserDTO()
+                //{
+                //    Id = user.Id,
+                //    Email = user.Email,
+                //    PhoneNumber = user.PhoneNumber,
+                //    Pronouns = user.Pronouns,
+                //    FirstName = user.FirstName,
+                //    LastName = user.LastName,
+                //    DisplayName = user.DisplayName,
+                //    Karma = user.Karma,
+
+                //};
                 UserDTO userDTO = new UserDTO();
                 userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
@@ -164,8 +189,14 @@ namespace FlightApp.Service
                 if (user != null)
                 {
 
+                    //user.DisplayName = userDto.DisplayName;
+                    //user.FirstName = userDto.FirstName;
+                    //user.LastName = userDto.LastName;
+                    //user.Email = userDto.Email;
+                    //user.PhoneNumber = userDto.PhoneNumber;
+                    //user.Karma = userDto.Karma;
+                    //user.Pronouns = userDto.Pronouns;
                     user = _mapper.Map<ApplicationUser>(userDto);
-
 
                     await _userManager.UpdateAsync(user);
                     return new ResponseItem()
