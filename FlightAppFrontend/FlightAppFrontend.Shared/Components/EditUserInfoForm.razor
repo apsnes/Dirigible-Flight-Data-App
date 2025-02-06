@@ -38,6 +38,13 @@
 
                     <div class="field">
                         <div class="control mt-2">
+                            <InputText id="email" class="input" @bind-Value="AppUser!.Email" placeholder="Email" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.Email)" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control mt-2">
                             <InputText id="pronouns" class="input" @bind-Value="AppUser!.Pronouns" placeholder="Pronouns (optional)" />
                             <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
                         </div>

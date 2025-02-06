@@ -11,7 +11,7 @@ namespace FlightAppLibrary.Models.Dtos
     public class UserDTO
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [JsonPropertyName("title")]
         public string? Pronouns { get; set; }
 
