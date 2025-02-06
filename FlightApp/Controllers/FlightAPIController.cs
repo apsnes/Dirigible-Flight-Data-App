@@ -26,8 +26,18 @@ namespace FlightApp.Controllers
         //[Authorize(Roles = "Customer")]
         public IActionResult GetFlightByIata(string iata)
         {
-            var result = _flightApiService.GetFlightByIata(iata);
-            return result == null ? BadRequest("Could not find flight.") : Ok(result);
+            string queryKey = iata;
+            FlightResponse result;
+
+            if(!_cache.TryGetValue(queryKey, out result))
+            {
+                result = _flightApiService.GetFlightByIata(iata);
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
+
+                _cache.Set(queryKey, result, cacheEntryOptions);
+            }
+             return result == null ? BadRequest("Could not find flight.") : Ok(result);
         }
 
         [HttpGet("arrivals/{arr_iata}")]
@@ -40,17 +50,17 @@ namespace FlightApp.Controllers
         [HttpGet("incident")]
         public IActionResult GetIncidentFlights()
         {
-            string QueryKey = "incident";
+            string queryKey = "incident";
             List<FlightResponse> result;
-            if (!_cache.TryGetValue(QueryKey, out result))
+            if (!_cache.TryGetValue(queryKey, out result))
             {
                 result = _flightApiService.GetIncidentFlights();
                 if(result != null)
                 {
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(7));
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
 
-                    _cache.Set(QueryKey, result, cacheEntryOptions);
+                    _cache.Set(queryKey, result, cacheEntryOptions);
                 }
             }
             return result == null ? BadRequest() : Ok(result);
@@ -83,9 +93,9 @@ namespace FlightApp.Controllers
             List<FlightResponse> result;      
 
             
-            string QueryKey = QueryHash.CreateKey(arrivals, departures, flight_iata, date, page_number, page_size);
+            string queryKey = QueryHash.CreateKey(arrivals, departures, flight_iata, date, page_number, page_size);
 
-            if (!_cache.TryGetValue(QueryKey, out result))
+            if (!_cache.TryGetValue(queryKey, out result))
             {
 
                 if (!string.IsNullOrEmpty(flight_iata))
@@ -107,9 +117,9 @@ namespace FlightApp.Controllers
                 }
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(7));
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
 
-                _cache.Set(QueryKey, result, cacheEntryOptions);
+                _cache.Set(queryKey, result, cacheEntryOptions);
             }
 
             
