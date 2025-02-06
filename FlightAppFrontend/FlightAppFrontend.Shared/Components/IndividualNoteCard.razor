@@ -1,8 +1,17 @@
-﻿@using FlightAppLibrary.Models.Dtos
+﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory ClientFactory
 
 <div class="card">
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
-        <p class="card-header-title is-6">@Note.User!.DisplayName, @Note.TimeStamp.ToString(): @Note.NoteText</p>
+        <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
+            <span class="has-text-weight-bold">@Note.User!.DisplayName</span>
+            <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
+            <span>@Note.NoteText</span>
+        </div>
         <button class="card-header-icon" aria-label="more options">
             @if (@isCardOpen)
             {
@@ -12,11 +21,25 @@
             {
                 <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
             }
-        </button>        
+        </button>
     </header>
+
     @if (isCardOpen)
     {
-        @* Replies to go here - foreach reply in note.Replies *@
+        @foreach (var reply in Note.Replies!)
+        {
+            <div class="media">
+                <div class="media-content ml-5">
+                    <div style="display: inline-block">
+                        @* User pfofile picture here? *@
+                        <p class=" is-size-6 ml-5"><strong>@reply.User!.DisplayName</strong></p>
+                    </div>
+                    <p class="is-size-7 ml-5">@reply.TimeStamp.ToString()</p>
+                    <p class="is-size-6 ml-5">@reply.ReplyText</p>
+                </div>
+            </div>
+        }
+        <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" />
     }
 </div>
 
@@ -28,5 +51,11 @@
     private void ToggleCard()
     {
         isCardOpen = !isCardOpen;
+    }
+
+    private void HandleReplyAdded(ReplyDto replyDto)
+    {
+        if (replyDto.User.DisplayName == null) replyDto.User.DisplayName = replyDto.User.FirstName;
+        Note.Replies!.Add(replyDto);
     }
 }
