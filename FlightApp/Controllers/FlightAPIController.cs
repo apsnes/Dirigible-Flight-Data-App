@@ -38,10 +38,21 @@ namespace FlightApp.Controllers
         }
 
         [HttpGet("incident")]
-        [EnableRateLimiting("token")]
         public IActionResult GetIncidentFlights()
         {
-            var result = _flightApiService.GetIncidentFlights();
+            string QueryKey = "incident";
+            List<FlightResponse> result;
+            if (!_cache.TryGetValue(QueryKey, out result))
+            {
+                result = _flightApiService.GetIncidentFlights();
+                if(result != null)
+                {
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(7));
+
+                    _cache.Set(QueryKey, result, cacheEntryOptions);
+                }
+            }
             return result == null ? BadRequest() : Ok(result);
         }
 
