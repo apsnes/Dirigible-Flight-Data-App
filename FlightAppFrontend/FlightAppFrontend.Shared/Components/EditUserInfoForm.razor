@@ -1,5 +1,6 @@
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Text.Json
@@ -22,15 +23,17 @@
                 <div class="media-content">
                     <div class="field">
                         <div class="control mt-2">
-                            <InputText id="first-name" class="input" @bind-Value="AppUser!.FirstName" placeholder="First Name" />
+                            <label for="name" class="label">Name</label>
+                            <InputText id="name" class="input" @bind-Value="AppUser!.FirstName" placeholder="First Name" />
                             <ValidationMessage class="help is-danger" For="@(() => AppUser!.FirstName)" />
-                            <InputText id="last-name" class="input" @bind-Value="AppUser!.LastName" placeholder="Last Name" />
+                            <InputText id="name" class="input" @bind-Value="AppUser!.LastName" placeholder="Last Name" />
                             <ValidationMessage class="help is-danger" For="@(() => AppUser!.LastName)" />
                         </div>
                     </div>
 
                     <div class="field">
                         <div class="control mt-2">
+                            <label for="display-name" class="label">Display Name</label>
                             <InputText id="display-name" class="input" @bind-Value="AppUser!.DisplayName" placeholder="Display Name" />
                             <ValidationMessage class="help is-danger" For="@(() => AppUser!.DisplayName)" />
                         </div>
@@ -38,6 +41,7 @@
 
                     <div class="field">
                         <div class="control mt-2">
+                            <label for="email" class="label">Email</label>
                             <InputText id="email" class="input" @bind-Value="AppUser!.Email" placeholder="Email" />
                             <ValidationMessage class="help is-danger" For="@(() => AppUser!.Email)" />
                         </div>
@@ -45,8 +49,16 @@
 
                     <div class="field">
                         <div class="control mt-2">
-                            <InputText id="pronouns" class="input" @bind-Value="AppUser!.Pronouns" placeholder="Pronouns (optional)" />
+                            <label for="pronouns" class="label">Pronouns (Optional)</label>
+                            <div class="select">
+                            <InputSelect id="pronouns" @bind-Value="@AppUser.Pronouns" class="dropdown is-active">
+                                @foreach (string pronoun in UserService.Pronouns)
+                                {
+                                    <option>@pronoun</option>
+                                }
+                            </InputSelect>
                             <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
+                            </div>
                         </div>
                     </div>
                 </div>

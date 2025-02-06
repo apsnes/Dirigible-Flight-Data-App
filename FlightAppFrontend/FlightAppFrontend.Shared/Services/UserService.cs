@@ -3,6 +3,15 @@ namespace FlightAppFrontend.Shared.Services
 {
     public static class UserService
     {
+
+        public static readonly List<string> Pronouns =
+        [
+            "",
+            "(She/Her)",
+            "(He/Him)",
+            "(They/Them)"
+        ];
+
         public static string UserRank(int karma)
         {
             if(karma > 10)
