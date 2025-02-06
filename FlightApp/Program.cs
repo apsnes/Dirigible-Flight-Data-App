@@ -14,6 +14,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,7 +99,25 @@ builder.Services.AddHealthChecks()
     .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<WeatherApiHealthcheck>("WeatherApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<OpenCageDataHealthCheck>("OpenCageDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
-    .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy);
+    .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<MapDataHealthCheck>("MapDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
+    .AddCheck<AirLineLogosHealthCheck>("AirLineLogosHealthCheck", failureStatus: HealthStatus.Unhealthy);
+
+
+builder.Services.AddRateLimiter(ops => ops
+    .AddPolicy("token", httpContext =>
+    RateLimitPartition.GetTokenBucketLimiter(httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+    partition => new TokenBucketRateLimiterOptions
+    {
+        TokenLimit = 7,
+        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+        QueueLimit = 1,
+        ReplenishmentPeriod = TimeSpan.FromSeconds(45),
+        TokensPerPeriod = 7,
+        AutoReplenishment = true
+    })));
+
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
@@ -129,4 +150,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseRateLimiter();
 app.Run();

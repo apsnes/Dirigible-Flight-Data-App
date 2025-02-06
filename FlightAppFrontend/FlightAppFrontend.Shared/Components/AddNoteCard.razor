@@ -5,41 +5,24 @@
 @using System.Text
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
-@inject NavigationManager NavigationManager
 
-<div class="card">
-    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
-        <p class="card-header-title">Add Comment</p>
-        <button class="card-header-icon" aria-label="more options">
-            @if (@isCardOpen)
-            {
-                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
-            }
-            else
-            {
-                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
-            }
-        </button>
-    </header>
-
-    @if (isCardOpen)
-    {
-        <div class="card-content">
-            <div class="media">
-                <div class="media-content">
-                    <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
-                        <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
-                        <MainButton Text="Add Comment" />
-                    </EditForm>
+<div class="card-content">
+    <div class="media">
+        <div class="media-content">
+            <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
+                    <div><MainButton Text="Add Comment" /></div>
                 </div>
-            </div>
+            </EditForm>
         </div>
-    }
+    </div>
 </div>
 
 @code
 {
     [Parameter] public FlightResponse FlightResponse { get; set; }
+    [Parameter] public EventCallback<NoteDto> OnNoteAdded { get; set; }
     public NoteDto NoteDto { get; set; } = new();
     private bool isCardOpen = false;
 
@@ -58,6 +41,8 @@
         NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
         NoteDto.FlightIata = FlightResponse.Flight.Iata;
         NoteDto.TimeStamp = DateTime.UtcNow;
+        NoteDto.User = currUser;
+        NoteDto.Replies = new();
 
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -65,7 +50,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            NavigationManager.NavigateTo(NavigationManager.Uri, true);
+            await OnNoteAdded.InvokeAsync(NoteDto);
         }
     }
 }

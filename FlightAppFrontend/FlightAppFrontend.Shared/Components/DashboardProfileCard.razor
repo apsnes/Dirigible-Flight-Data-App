@@ -9,13 +9,15 @@
         <div class="media">
             <div class="media-left">
                 <figure class="image is-128x128 is-square">
-                    <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
+                    <img class="image" src="_content/FlightAppFrontend.Shared/Images/Avatars/3.png" alt="user-avatar" />
                 </figure>
             </div>
             <div class="media-content">
                 <p class="is-size-3 has-text-weight-bold"><strong>@($"{AppUser!.FirstName} {AppUser!.LastName}")</strong></p>
                 <p class="is-size-4">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
-                <p>@UserService.UserRank(AppUser.Karma)</p>
+                <p class="is-size-4">@Password <small>@Password</small></p>
+                <p class="is-size-4">@ConfirmPassword <small>@ConfirmPassword</small></p>
+
             </div>
         </div>
     </div>
@@ -40,6 +42,13 @@
 
     [Parameter]
     public EventCallback OnChangePassword { get; set; }
+
+    [Parameter]
+    public string Password { get; set; }
+    [Parameter]
+    public string ConfirmPassword { get; set; }
+
+
 
     protected async Task Edit()
     {

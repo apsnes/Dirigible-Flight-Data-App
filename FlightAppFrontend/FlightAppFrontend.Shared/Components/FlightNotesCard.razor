@@ -1,4 +1,5 @@
 ﻿@using FlightAppLibrary.Models.Dtos
+@using FlightAppLibrary.Models.Response
 
 <div class="card">
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -18,6 +19,7 @@
     @if (IsCardOpen)
     {
         <div class="card-content">
+            <AddNoteCard FlightResponse="FlightResponse" OnNoteAdded="HandleNotesChanged" />
             <div class="media">
                 <div class="media-content">
                     @foreach (var note in Notes)
@@ -33,10 +35,17 @@
 @code
 {
     [Parameter] public List<NoteDto> Notes { get; set; }
-    [Parameter] public bool IsCardOpen { get; set; }
+    [Parameter] public FlightResponse FlightResponse { get; set; }
+    private bool IsCardOpen = false;
 
     private void ToggleCard()
     {
         IsCardOpen = !IsCardOpen;
+    }
+
+    private void HandleNotesChanged(NoteDto note)
+    {
+        if (note.User!.DisplayName == null) note.User.DisplayName = note.User.FirstName;
+        Notes.Add(note);
     }
 }

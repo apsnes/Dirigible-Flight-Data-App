@@ -5,6 +5,8 @@ namespace FlightAppLibrary.Models.Dtos
 {
     public class NoteDto
     {
+        [JsonPropertyName("noteId")]
+        public int NoteId { get; set; }
         [JsonPropertyName("flightIata")]
         public string FlightIata { get; set; }
         [JsonPropertyName("scheduledDeparture")]

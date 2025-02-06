@@ -12,6 +12,7 @@ namespace FlightApp.Service
         List<Reply> GetReplies();
         List<ReplyDto> GetRepliesByNoteId(int noteId);
         Reply PostReply(ReplyDto replyDto);
+        List<ReplyDto> GetRepliesByUserId(string userId);
     }
 
     public class RepliesService : IRepliesService
@@ -24,16 +25,11 @@ namespace FlightApp.Service
             _mapper = mapper;
         }
 
-
-
         //-------GetRequests----------
-
         public List<Reply> GetReplies()
         {
             return _repository.GetReplies();
         }
-
-
         public List<ReplyDto> GetRepliesByNoteId(int noteId)
         {
             var replies = _repository.GetRepliesByNoteId(noteId);
@@ -54,9 +50,27 @@ namespace FlightApp.Service
 
             return res;
         }
+        public List<ReplyDto> GetRepliesByUserId(string userId)
+        {
+            var replies = _repository.GetRepliesByUserId(userId);
 
+            var res = replies.Select(r => new ReplyDto()
+            {
+                UserId = r.UserId,
+                NoteId = r.NoteId,
+                ReplyText = r.ReplyText,
+                TimeStamp = r.TimeStamp,
+                User = new UserDTO()
+                {
+                    Id = r.User!.Id,
+                    DisplayName = r.User.DisplayName ?? r.User.FirstName,
+                    Karma = r.User.Karma,
+                }
+            }).ToList();
+
+            return res;
+        }
         //-------PostRequests----------
-
         public Reply PostReply(ReplyDto replyDto)
         {
             var reply = new Reply()

@@ -1,8 +1,11 @@
 ﻿using Azure;
+using FlightApp.Helpers;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 
 namespace FlightApp.Controllers
@@ -12,17 +15,29 @@ namespace FlightApp.Controllers
     public class FlightApiController : ControllerBase
     {
         private readonly IFlightService _flightApiService;
-        public FlightApiController(IFlightService flightApiService)
+        private readonly IMemoryCache _cache;
+        public FlightApiController(IFlightService flightApiService, IMemoryCache memoryCache)
         {
             _flightApiService = flightApiService;
+            _cache = memoryCache;
         }
 
         [HttpGet("{iata}")]
         //[Authorize(Roles = "Customer")]
         public IActionResult GetFlightByIata(string iata)
         {
-            var result = _flightApiService.GetFlightByIata(iata);
-            return result == null ? BadRequest("Could not find flight.") : Ok(result);
+            string queryKey = iata;
+            FlightResponse result;
+
+            if(!_cache.TryGetValue(queryKey, out result))
+            {
+                result = _flightApiService.GetFlightByIata(iata);
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
+
+                _cache.Set(queryKey, result, cacheEntryOptions);
+            }
+             return result == null ? BadRequest("Could not find flight.") : Ok(result);
         }
 
         [HttpGet("arrivals/{arr_iata}")]
@@ -35,7 +50,19 @@ namespace FlightApp.Controllers
         [HttpGet("incident")]
         public IActionResult GetIncidentFlights()
         {
-            var result = _flightApiService.GetIncidentFlights();
+            string queryKey = "incident";
+            List<FlightResponse> result;
+            if (!_cache.TryGetValue(queryKey, out result))
+            {
+                result = _flightApiService.GetIncidentFlights();
+                if(result != null)
+                {
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
+
+                    _cache.Set(queryKey, result, cacheEntryOptions);
+                }
+            }
             return result == null ? BadRequest() : Ok(result);
         }
 
@@ -54,6 +81,7 @@ namespace FlightApp.Controllers
         }
 
         [HttpGet("search")]
+        [EnableRateLimiting("token")]
         public IActionResult GetSearchResults(
             [FromQuery] string? arrivals, 
             [FromQuery] string? departures, 
@@ -62,35 +90,53 @@ namespace FlightApp.Controllers
             [FromQuery] int page_number,
             [FromQuery] int page_size)
         {
-            List<FlightResponse> result = [];
+            List<FlightResponse> result;      
 
-            if (!string.IsNullOrEmpty(flight_iata))
+            
+            string queryKey = QueryHash.CreateKey(arrivals, departures, flight_iata, date, page_number, page_size);
+
+            if (!_cache.TryGetValue(queryKey, out result))
             {
-                result = [_flightApiService.GetFlightByIata(flight_iata)!];
-            }
-            else if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
-            {
-                result = _flightApiService.GetFlightsByRoute(departures, arrivals);
-            }
-            else if (!string.IsNullOrEmpty(arrivals))
-            {
-                result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
-            }
-            else if (!string.IsNullOrEmpty(departures))
-            {
-                result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
+
+                if (!string.IsNullOrEmpty(flight_iata))
+                {
+                    var flightByIata = _flightApiService.GetFlightByIata(flight_iata);
+                    if (flightByIata != null) result = [flightByIata];
+                }
+                else if (!string.IsNullOrEmpty(arrivals) && !string.IsNullOrEmpty(departures))
+                {
+                    result = _flightApiService.GetFlightsByRoute(departures, arrivals);
+                }
+                else if (!string.IsNullOrEmpty(arrivals))
+                {
+                    result = _flightApiService.GetFlightsByArrivalIataActive(arrivals);
+                }
+                else if (!string.IsNullOrEmpty(departures))
+                {
+                    result = _flightApiService.GetFlightsByDepartureAirportActive(departures);
+                }
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
+
+                _cache.Set(queryKey, result, cacheEntryOptions);
             }
 
-            result = result
-                .Where(r => r.Flight.Codeshared is null && !string.IsNullOrEmpty(r.Flight.Iata))
+            
+
+            if (result != null && result!.Count > 0)
+            {
+                result = result!
+                .Where(r => !string.IsNullOrEmpty(r.Flight.Iata))
                 .Where(r => ((DateTime)r.Departure.Scheduled!).ToString("dd_MM_yyyy") == date)
                 .ToList();
 
-            if (page_number > 0 && page_size > 0)
-            {
-                result = result.Skip(page_number - 1 * page_size)
-                .Take(page_size)
-                .ToList();
+                if (page_number > 0 && page_size > 0)
+                {
+                    result = result.Skip(page_number - 1 * page_size)
+                    .Take(page_size)
+                    .ToList();
+                }
             }
 
             if (result is null || result.Count <= 0) return BadRequest("No flights found.");

@@ -11,7 +11,7 @@ namespace FlightAppLibrary.Models.Dtos
     public class UserDTO
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [JsonPropertyName("title")]
         public string? Pronouns { get; set; }
 
@@ -25,6 +25,8 @@ namespace FlightAppLibrary.Models.Dtos
         public string? DisplayName { get; set; }
 
         [JsonPropertyName("email")]
+        [Required(ErrorMessage = "Email is required")]
+        [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", ErrorMessage = "Invalid Email Format")]
         public string Email { get; set; }
         [JsonPropertyName("phoneNumber")]
         public string? PhoneNumber { get; set; }
