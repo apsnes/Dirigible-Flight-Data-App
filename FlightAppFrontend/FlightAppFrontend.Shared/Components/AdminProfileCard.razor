@@ -19,10 +19,10 @@
             </div>
         </div>
     </div>
-    @* <footer class="card-footer">
-        <button type="button" class="card-footer-item has-text-warning" @onclick="() => #">Edit Details</button>
+    <footer class="card-footer">
+        <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => ChangePassword()">Change Password</button>
-    </footer> *@
+    </footer>
 </div>
 
 @code{
@@ -35,19 +35,19 @@
     [Parameter]
     public UserDTO? AppUser { get; set; }
 
-    // [Parameter]
-    // public EventCallback OnEdit { get; set; }
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
 
-    // [Parameter]
-    // public EventCallback OnChangePassword { get; set; }
+    [Parameter]
+    public EventCallback OnChangePassword { get; set; }
 
-    // protected async Task Edit()
-    // {
-    //     await OnEdit.InvokeAsync();
-    // }
+    protected async Task Edit()
+    {
+        await OnEdit.InvokeAsync();
+    }
 
-    // protected async Task ChangePassword()
-    // {
-    //     await OnChangePassword.InvokeAsync();
-    // }
+    protected async Task ChangePassword()
+    {
+        await OnChangePassword.InvokeAsync();
+    }
 }

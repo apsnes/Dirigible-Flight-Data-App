@@ -2,13 +2,17 @@
 @using FlightAppFrontend.Shared.Components
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.IdentityModel.Tokens.Jwt
+@using System.Security.Claims
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
+@inject IJsInteropService JsInteropService
 
-if (@User == null)
+@if (User == null)
 {
     <Loading />
 }
@@ -20,48 +24,109 @@ else
 
         <div class="columns">
             <div class="column is-half">
-            <EditForm>
-                <InputText typeof="email" @bind = "email">Email</InputText>
-            </EditForm>
-               
-                    <DashboardProfileCard AuthState="_authState" AppUser="User"/>
-                }
+                <EditForm Model="User" OnSubmit="GetUser">
+                    <InputText type="email" @bind-Value="email">Email</InputText>
+                    <button type="submit" class="button is-primary">Get User</button>
+                </EditForm>
+
+                <AdminProfileCard AuthState="_authState" AppUser="User"/>
+
             </div>
         </div>
     </div>
 }
 
+
 @code {
-    [SupplyParameterFromQuery(Name = "login")]
-    public bool Login { get; set; }
+
 
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     private AuthenticationState? _authState;
+    private bool isAdmin = false;
 
     private string email = "";
 
     private UserDTO User { get; set; } = new UserDTO();
 
     private string? ErrorMessage;
+    [SupplyParameterFromQuery(Name = "login")]
+    public bool Login { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private bool Updated;
+
+    private bool Editing;
+
+    private bool UpdatingPassword;
+
+    private bool PasswordUpdated;
+
+
+    protected override void OnAfterRender(bool firstRender)
     {
-        try
-        {
-            var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
-            User = response.Value!;
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
+        if (firstRender) {
+                        var token = JsInteropService.GetItem("jwtToken").Result;
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        var handler = new JwtSecurityTokenHandler();
+                        var jwtToken = handler.ReadJwtToken(token);
+
+                        var roleClaims = jwtToken.Claims.Where(c => c.Type == ClaimTypes.Role);
+                        isAdmin = roleClaims.Any(c => c.Value == "Admin");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Token is null");
+                    }
+                }
     }
 
     protected void ResetError()
     {
         ErrorMessage = "";
     }
+    public async Task GetUser(){
+        try
+        {
+            if (isAdmin)
+            {
+                var client = ClientFactory.CreateClient("DirigibleApi");
+                var response = await client.GetValueAsync<UserDTO>($"Account/GetUserByEmail/{email}");
+                User = response.Value!;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+    public void SetUpdated()
+    {
+        Updated = true;
+        Editing = false;
+    }
+
+    public void SetPasswordUpdated()
+    {
+        PasswordUpdated = true;
+        UpdatingPassword = false;
+    }
+
+    public void ToggleEditing()
+    {
+        Login = false;
+        UpdatingPassword = false;
+        Editing = !Editing;
+        if (Editing) Updated = false;
+    }
+
+    public void ToggleUpdatingPassword()
+    {
+        Login = false;
+        Editing = false;
+        UpdatingPassword = !UpdatingPassword;
+        if (UpdatingPassword) PasswordUpdated = false;
+    }
+
 }

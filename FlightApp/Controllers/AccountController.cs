@@ -67,6 +67,23 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("email")]
+        [Authorize]
+        public async Task<IActionResult> GetUserDetailsByEmail(string email)
+        {
+            try
+            {
+                
+                string userIdValue = email;
+                UserDTO? user = await _accountService.GetUserDetails(userIdValue);
+                if (user == null) return BadRequest();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPut]
         [Authorize]
