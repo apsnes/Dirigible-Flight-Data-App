@@ -1,6 +1,8 @@
 @page "/FlightSummary/{IATA}"
 @using FlightAppFrontend.Shared.Components.Loaders
 
+<PageTitle>Flight @IATA</PageTitle>
+
 <FlightSummaryLoader IATA="@IATA"/>
 
 @code {
