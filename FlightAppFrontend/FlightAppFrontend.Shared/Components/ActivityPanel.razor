@@ -1,0 +1,65 @@
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
+@inject IHttpClientFactory ClientFactory
+
+<nav class="panel is-warning">
+    <p class="panel-heading has-text-centered">Activity</p>
+    <p class="panel-tabs">
+        <a class="has-text-white is-clickable @CommentsActive" @onclick="()=>ActivateComments()">Comments</a>
+        <a class="has-text-white is-clickable @MessagesActive" @onclick="()=>ActivateMessages()">Messages</a>
+    </p>
+    @if (!String.IsNullOrEmpty(CommentsActive))
+    {
+        @if (Notes == null)
+        {
+            <Loading />
+        }
+        else
+        {
+            foreach (var note in Notes!)
+            {
+                <div class="box">
+                    <a class="panel-block" href="@($"/FlightSummary/{@note.FlightIata}")">
+                        <p><strong>@note.FlightIata</strong> @note.NoteText @note.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
+                    </a>
+                </div>
+            }
+        }
+    }
+    else if (!String.IsNullOrEmpty(MessagesActive))
+    {
+        <a class="panel-block">
+            Message
+        </a>
+        <a class="panel-block">
+            Message
+        </a>
+    }
+</nav>
+
+@code {
+    private string CommentsActive = "";
+    private string MessagesActive = "";
+
+    public List<NoteDto>? Notes { get; set; }
+
+    private async Task ActivateComments()
+    {
+        MessagesActive = "";
+        CommentsActive = "is-active";
+
+        if(Notes is null)
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var response = await client.GetValueAsync<List<NoteDto>>("Notes");
+            Notes = response.Value!;
+        }
+    }
+
+    private void ActivateMessages()
+    {
+        CommentsActive = "";
+        MessagesActive = "is-active";
+    }
+}
