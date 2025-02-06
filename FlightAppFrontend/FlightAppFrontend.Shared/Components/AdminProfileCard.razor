@@ -9,7 +9,7 @@
         <div class="media">
             <div class="media-left">
                 <figure class="image is-128x128 is-square">
-                    <img class="image" src="_content/FlightAppFrontend.Shared/Images/Avatars/3.png" alt="user-avatar" />
+                    <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
                 </figure>
             </div>
             <div class="media-content">
@@ -24,10 +24,11 @@
     <footer class="card-footer">
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => ChangePassword()">Change Password</button>
+        <button type="button" class="card-footer-item has-text-warning" @onclick="() => UpdateRoles()">Update Roles</button>
     </footer>
 </div>
 
-@code{
+@code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
@@ -42,7 +43,8 @@
 
     [Parameter]
     public EventCallback OnChangePassword { get; set; }
-
+    [Parameter]
+    public EventCallback OnUpdateRoles { get; set; }
     [Parameter]
     public string Password { get; set; }
     [Parameter]
@@ -58,5 +60,9 @@
     protected async Task ChangePassword()
     {
         await OnChangePassword.InvokeAsync();
+    }
+    protected async Task UpdateRoles()
+    {
+        await OnUpdateRoles.InvokeAsync();
     }
 }

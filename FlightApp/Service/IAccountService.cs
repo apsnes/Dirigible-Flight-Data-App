@@ -12,5 +12,7 @@ namespace FlightApp.Service
         Task<ResponseItem> UpdateUser(string userId, UserDTO userDto);
         Task<ResponseItem> UpdatePassword(string userId, PasswordUpdateDto dto);
         Task<ResponseItem> AssignRoleToUser(string email, string role);
+        Task<UserDTO> GetUserDetailsByEmail(string email);
+        Task<ResponseItem> UpdateUserRoles(string role, string userId);
     }
 }
