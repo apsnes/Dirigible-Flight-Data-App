@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FlightAppLibrary.Models.Dtos;
 using FlightApp.Entities;
+using FlightApp.Models;
 
 namespace FlightApp.Mapper
 {
@@ -9,6 +10,7 @@ namespace FlightApp.Mapper
         public MapperProfile()
         {
             CreateMap<Note, NoteDto>().ReverseMap();
+            CreateMap<UserDTO, ApplicationUser>().ReverseMap();
         }
     }
 }
