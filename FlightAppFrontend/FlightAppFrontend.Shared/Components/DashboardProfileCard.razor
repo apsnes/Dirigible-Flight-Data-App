@@ -15,7 +15,9 @@
             <div class="media-content">
                 <p class="is-size-3 has-text-weight-bold"><strong>@($"{AppUser!.FirstName} {AppUser!.LastName}")</strong></p>
                 <p class="is-size-4">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
-                <p>@UserService.UserRank(AppUser.Karma)</p>
+                <p class="is-size-4">@Password <small>@Password</small></p>
+                <p class="is-size-4">@ConfirmPassword <small>@ConfirmPassword</small></p>
+
             </div>
         </div>
     </div>
@@ -40,6 +42,12 @@
 
     [Parameter]
     public EventCallback OnChangePassword { get; set; }
+    [Parameter]
+    public string Password { get; set; }
+    [Parameter]
+    public string ConfirmPassword { get; set; }
+
+
 
     protected async Task Edit()
     {
