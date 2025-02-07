@@ -134,7 +134,8 @@ namespace FlightApp.Service
             {
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim("Id", user.Id)
+                new Claim("Id", user.Id),
+                //new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
             var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(user.Email));
             foreach (var role in roles)
