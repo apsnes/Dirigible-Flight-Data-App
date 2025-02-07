@@ -6,20 +6,14 @@
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
 
-<div class="card-content">
-    <div class="media">
-        <div class="media-content">
-            <EditForm FormName="AddNote" Model="@CommentText" OnValidSubmit="HandleValidSubmit">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <DataAnnotationsValidator />
-                    <InputText class="input" @bind-Value="CommentText.Text" placeholder="Comment text" />
-                    <ValidationMessage class="help is-danger" For="@(() => CommentText.Text)" />
-                    <div><MainButton Text="Add Comment" /></div>
-                </div>
-            </EditForm>
-        </div>
+<EditForm FormName="AddNote" Model="@CommentText" OnValidSubmit="HandleValidSubmit">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <DataAnnotationsValidator />
+        <InputText class="input" @bind-Value="CommentText.Text" placeholder="Comment text" />
+        <ValidationMessage class="help is-danger" For="@(() => CommentText.Text)" />
+        <div><MainButton Text="Add Comment" /></div>
     </div>
-</div>
+</EditForm>
 
 @code
 {
