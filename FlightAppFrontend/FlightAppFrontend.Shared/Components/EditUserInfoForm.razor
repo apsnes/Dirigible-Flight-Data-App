@@ -130,6 +130,7 @@
     protected void SetAvatar(string path)
     {
         AppUser!.Avatar = path;
+        ToggleIsActive();
     }
 
     protected void HandleInvalidSubmit()
