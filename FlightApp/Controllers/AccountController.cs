@@ -16,11 +16,11 @@ namespace FlightApp.Controllers
     public class AccountController : ControllerBase
     {
         private IAccountService _accountService;
-
         public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }
+
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequestDTO signUpRequestDTO)
         {
@@ -34,8 +34,8 @@ namespace FlightApp.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
-
         }
+
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] SignInRequestDTO signInRequestDTO)
         {
@@ -50,6 +50,7 @@ namespace FlightApp.Controllers
             }
             return Ok(result);
         }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetUserDetails()
@@ -67,13 +68,13 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetUserDetailsByEmail(string email)
         {
             try
-            {
-                
+            {            
                 string userIdValue = email;
                 UserDTO? user = await _accountService.GetUserDetailsByEmail(userIdValue);
                 if (user == null) return BadRequest();
@@ -118,6 +119,7 @@ namespace FlightApp.Controllers
             }
             return BadRequest(result);
         }
+
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdatePassword([FromBody] PasswordUpdateDto model)
@@ -135,19 +137,16 @@ namespace FlightApp.Controllers
             }
             return BadRequest(result);
         }
+
         [HttpPost]
         public async Task<IActionResult> AssignRole([FromBody] RoleAssignmentItem roleItem)
         {
-        
-
-
                 var result = await _accountService.AssignRoleToUser(roleItem.Email, roleItem.Role);
                 if (result.IsSuccess == true)
                 {
                     return Ok(result);
                 }
                 return BadRequest(result);
-
         }
 
         [HttpPost]
@@ -155,7 +154,6 @@ namespace FlightApp.Controllers
         {
             try
             {
-
                 var result = await _accountService.UpdateUserRoles(roleUpdate.Role, roleUpdate.UserId);
                 return Ok(result);
             }
@@ -163,7 +161,6 @@ namespace FlightApp.Controllers
             {
                 return BadRequest();
             }
-
         }
     }
 }
