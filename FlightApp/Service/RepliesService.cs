@@ -60,6 +60,14 @@ namespace FlightApp.Service
                 NoteId = r.NoteId,
                 ReplyText = r.ReplyText,
                 TimeStamp = r.TimeStamp,
+                Note = new NoteDto()
+                {
+                    NoteId = r.NoteId,
+                    FlightIata = r.Note.FlightIata,
+                    UserId = r.Note.UserId,
+                    NoteText = r.Note.NoteText,
+                    TimeStamp = r.Note.TimeStamp,
+                },
                 User = new UserDTO()
                 {
                     Id = r.User!.Id,

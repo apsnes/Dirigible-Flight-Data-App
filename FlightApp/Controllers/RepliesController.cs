@@ -1,6 +1,7 @@
 ﻿using FlightApp.Entities;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightApp.Controllers
@@ -23,11 +24,14 @@ namespace FlightApp.Controllers
             return result == new List<Reply>() ? BadRequest("Unable to find any replies") : Ok(result);
         }
 
-        [HttpGet("user/{userId}")]
-        public IActionResult GetRepliesByUserId(string userId)
+        [HttpGet("user")]
+        [Authorize]
+        public IActionResult GetRepliesByUser()
         {
-            var result = _repliesService.GetRepliesByUserId(userId);
-            return result == new List<ReplyDto>() ? BadRequest($"Unable to find any replies for user {userId}") : Ok(result);
+            var userId = User.FindFirst("Id");
+            string userIdValue = userId!.Value;
+            var result = _repliesService.GetRepliesByUserId(userIdValue);
+            return result == new List<ReplyDto>() ? BadRequest($"Unable to find any replies for user {userIdValue}") : Ok(result);
         }
 
         [HttpGet("flight")]

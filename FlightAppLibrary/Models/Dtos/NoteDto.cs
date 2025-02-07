@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using FlightAppLibrary.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FlightAppLibrary.Models.Dtos
 {
-    public class NoteDto
+    public class NoteDto : IDisplayComment
     {
         [JsonPropertyName("noteId")]
         public int NoteId { get; set; }
