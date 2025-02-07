@@ -3,6 +3,7 @@
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
+@using FlightAppLibrary.Models.Enums
 @inject IHttpClientFactory ClientFactory
 
 <div class="card">
@@ -11,6 +12,7 @@
             <span class="has-text-weight-bold">@Note.User!.DisplayName</span>
             <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
             <span>@Note.NoteText</span>
+            <button type="button" class="button @IsColour mt-5" aria-label="upvote" @onclick="() => UpVote()">Upvote</button>
         </div>
         <button class="card-header-icon" aria-label="more options">
             @if (@isCardOpen)
@@ -47,6 +49,7 @@
 {
     [Parameter] public NoteDto Note { get; set; }
     private bool isCardOpen = false;
+    private string IsColour = "is-warning";
 
     private void ToggleCard()
     {
@@ -57,5 +60,26 @@
     {
         if (replyDto.User.DisplayName == null) replyDto.User.DisplayName = replyDto.User.FirstName;
         Note.Replies!.Add(replyDto);
+    }
+
+    public async Task UpVote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+
+        var vote = new VoteDto()
+            {
+                Value = 1,
+                CommentId = Note.NoteId,
+                CommentType = CommentType.Note
+            };
+
+        var json = JsonSerializer.Serialize(vote);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("votes", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            IsColour = "is-success";
+        }
     }
 }
