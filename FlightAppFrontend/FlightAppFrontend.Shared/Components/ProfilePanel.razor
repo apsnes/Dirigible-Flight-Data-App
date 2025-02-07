@@ -29,6 +29,9 @@
 </nav>
 
 @code {
+    [Parameter]
+    public UserDTO? User { get; set; }
+
     public List<DisplayComment>? Comments { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -36,8 +39,8 @@
         if (Comments is null)
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
-            var notesResponse = await client.GetValueAsync<List<NoteDto>>("Notes/user");
-            var repliesResponse = await client.GetValueAsync<List<ReplyDto>>("Replies/user");
+            var notesResponse = await client.GetValueAsync<List<NoteDto>>($"Notes/user/{User!.Id}");
+            var repliesResponse = await client.GetValueAsync<List<ReplyDto>>($"Replies/user/{User!.Id}");
 
             Comments = [];
 
