@@ -1,5 +1,7 @@
-﻿@using FlightAppLibrary.Models.Dtos
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
 @using FlightAppLibrary.Models.Response
+@inject IHttpClientFactory ClientFactory
 
 <div class="card">
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -43,7 +45,7 @@
         IsCardOpen = !IsCardOpen;
     }
 
-    private void HandleNotesChanged(NoteDto note)
+    private async Task HandleNotesChanged(NoteDto note)
     {
         if (note.User!.DisplayName == null) note.User.DisplayName = note.User.FirstName;
         Notes.Add(note);
