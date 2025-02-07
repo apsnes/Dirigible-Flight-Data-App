@@ -52,7 +52,7 @@
         if(Notes is null)
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<List<NoteDto>>("Notes");
+            var response = await client.GetValueAsync<List<NoteDto>>("Notes/user");
             Notes = response.Value!;
         }
     }
