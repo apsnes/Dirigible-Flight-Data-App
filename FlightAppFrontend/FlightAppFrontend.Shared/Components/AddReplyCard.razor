@@ -8,9 +8,11 @@
 <div class="card-content">
     <div class="media">
         <div class="media-content">
-            <EditForm FormName="AddReply" Model="@ReplyDto" OnValidSubmit="HandleValidSubmit">
+            <EditForm FormName="AddReply" Model="@CommentText" OnValidSubmit="HandleValidSubmit">
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <InputText class="input" @bind-Value="ReplyDto.ReplyText" placeholder="Reply text" />
+                    <DataAnnotationsValidator/>
+                    <InputText class="input" @bind-Value="CommentText.Text" placeholder="Reply text" />
+                    <ValidationMessage class="help is-danger" For="@(() => CommentText.Text)" />
                     <div><MainButton Text="Add Reply" /></div>
                 </div>
             </EditForm>
@@ -23,6 +25,8 @@
     [Parameter] public NoteDto Note { get; set; }
     [Parameter] public EventCallback<ReplyDto> OnReplyAdded { get; set; }
     public ReplyDto ReplyDto { get; set; } = new();
+    public CommentTextDto CommentText { get; set; } = new();
+
 
     private async Task HandleValidSubmit()
     {
@@ -30,6 +34,7 @@
         var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
         var currUser = userResponse.Value;
 
+        ReplyDto.ReplyText = CommentText.Text;
         ReplyDto.UserId = currUser!.Id!;
         ReplyDto.NoteId = Note.NoteId;
         ReplyDto.TimeStamp = DateTime.UtcNow;
