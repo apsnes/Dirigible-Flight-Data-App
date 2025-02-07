@@ -18,12 +18,16 @@ namespace FlightApp.Controllers
         //-----POST REQUESTS-----
         [HttpPost]
         [Authorize]
-        public IActionResult AddVote([FromBody] VoteDto voteDto)
+        public IActionResult PostVote([FromBody] VoteDto voteDto)
         {
-            var userId = User.FindFirst("Id");
-            string userIdValue = userId!.Value;
-            var result = _votesService.PostVote(voteDto, userIdValue);
-            return result == null ? BadRequest($"Unable to vote") : Ok(result);
+            if(User != null)
+            {
+                var userId = User.FindFirst("Id");
+                string userIdValue = userId!.Value;
+                var result = _votesService.AddVote(voteDto, userIdValue);
+                return result == null ? BadRequest($"Unable to vote") : Ok(result);
+            }
+            return BadRequest($"User info may not be correct");
         }
     }
 }
