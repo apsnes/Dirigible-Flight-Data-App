@@ -9,7 +9,7 @@
 <div class="card">
     <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
         <figure class="image is-64x64 ml-2 mt-2 is-square">
-            <a href="@($"/profile/{Note.User.Id}")">
+            <a href="@($"/profile/{Note.User!.Id}")">
                 <img src="@Note.User!.Avatar" alt="User Avatar" />
             </a>
         </figure>
