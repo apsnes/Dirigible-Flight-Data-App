@@ -139,7 +139,7 @@ namespace FlightAppTests.ControllerTests
         public void AddNote_ValidResponse_Returns_OK()
         {
             //Arrange
-            _mockService.Setup(x => x.AddNote(It.IsAny<NoteDto>())).Returns(new Note());
+            _mockService.Setup(x => x.AddNote(It.IsAny<NoteDto>())).Returns(new NoteDto());
 
             //Act
             var result = _controller.AddNote(new NoteDto());
@@ -152,7 +152,7 @@ namespace FlightAppTests.ControllerTests
         public void AddNote_InvalidResponse_Returns_BadRequest()
         {
             //Arrange
-            Note? response = null;
+            NoteDto? response = null;
             _mockService.Setup(x => x.AddNote(It.IsAny<NoteDto>())).Returns(response);
 
             //Act

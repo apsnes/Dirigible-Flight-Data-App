@@ -45,7 +45,7 @@
         IsCardOpen = !IsCardOpen;
     }
 
-    private async Task HandleNotesChanged(NoteDto note)
+    private void HandleNotesChanged(NoteDto note)
     {
         if (note.User!.DisplayName == null) note.User.DisplayName = note.User.FirstName;
         Notes.Add(note);
