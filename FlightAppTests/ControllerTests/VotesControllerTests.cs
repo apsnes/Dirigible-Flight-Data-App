@@ -2,16 +2,8 @@
 using FlightApp.Entities;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlightAppTests.ControllerTests
 {
