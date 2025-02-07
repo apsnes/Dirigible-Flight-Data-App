@@ -43,7 +43,7 @@ namespace FlightApp.Service
                 CommentType = voteDto.CommentType
             };
 
-            return _votesRepository.AddVote(vote).Result;
+            return _votesRepository.AddVote(vote, voteDto.CommenterId).Result;
         }
     }
 }

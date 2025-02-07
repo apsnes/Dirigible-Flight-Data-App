@@ -9,6 +9,9 @@ namespace FlightAppLibrary.Models.Dtos
         [JsonPropertyName("value")]
         public int Value { get; set; }
 
+        [JsonPropertyName("commenterId")]
+        public string CommenterId { get; set; }
+
         [JsonPropertyName("commentId")]
         public int CommentId { get; set; }
 

@@ -7,7 +7,7 @@ namespace FlightApp.Repository
 {
     public interface IVotesRepository
     {
-        public Task<Vote?> AddVote(Vote vote);
+        public Task<Vote?> AddVote(Vote vote, string commenterId);
     }
 
     public class VotesRepository : IVotesRepository
@@ -21,7 +21,7 @@ namespace FlightApp.Repository
             _userManager = userManager;
         }
 
-        public async Task<Vote?> AddVote(Vote vote)
+        public async Task<Vote?> AddVote(Vote vote, string commenterId)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace FlightApp.Repository
 
                 _db.Votes.Add(vote);
 
-                ApplicationUser? user = await _userManager.FindByIdAsync(vote.UserId!);
+                ApplicationUser? user = await _userManager.FindByIdAsync(commenterId);
                 if (user != null)
                 {
                     user.Karma += vote.Value;

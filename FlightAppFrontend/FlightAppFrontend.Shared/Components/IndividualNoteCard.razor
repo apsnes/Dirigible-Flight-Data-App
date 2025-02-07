@@ -69,6 +69,7 @@
         var vote = new VoteDto()
             {
                 Value = 1,
+                CommenterId = Note.UserId,
                 CommentId = Note.NoteId,
                 CommentType = CommentType.Note
             };
