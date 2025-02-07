@@ -103,6 +103,22 @@ namespace FlightApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPut("{userId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserByAdmin([FromBody] UserDTO userDto, string userId)
+        {
+            try
+            {
+                string userIdValue = userId;
+                var result = await _accountService.UpdateUser(userIdValue, userDto);
+                if (!result.IsSuccess) return BadRequest(result.Message);
+                return Ok(result.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPut]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordResetDto model)

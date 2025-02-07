@@ -341,6 +341,7 @@ namespace FlightApp.Service
             ResponseItem responseItem = new ResponseItem();
             var user = await _userManager.FindByIdAsync(userId);
             var UserHasRole = await _userManager.IsInRoleAsync(user, role);
+            Console.WriteLine($"value is {UserHasRole}");
             if (!UserHasRole)
             {
                 var result = await AssignRoleToUser(user.Email, role);
