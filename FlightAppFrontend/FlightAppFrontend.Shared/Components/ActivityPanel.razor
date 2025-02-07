@@ -58,8 +58,15 @@
 
             Comments = [];
 
-            Comments.AddRange(notesResponse.Value!.Select(n => n.ToDisplayComment()));
-            Comments.AddRange(repliesResponse.Value!.Select(n => n.ToDisplayComment()));
+            if (notesResponse.Value is List<NoteDto> notes)
+            {
+                Comments.AddRange(notes.Select(n => n.ToDisplayComment()));
+            }
+            if (repliesResponse.Value is List<ReplyDto> replies)
+            {
+                Comments.AddRange(replies.Select(n => n.ToDisplayComment()));
+            }
+
             Comments = Comments.OrderByDescending(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
         }
     }

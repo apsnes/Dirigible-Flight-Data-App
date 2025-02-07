@@ -1,0 +1,30 @@
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppLibrary.Models.Dtos
+
+<div class="card mb-5 pb-4">
+    <div class="card-content">
+        <div class="media">
+            <div class="media-left">
+                <ProfileAvatar AvatarPath="@User!.Avatar" />
+            </div>
+            <div class="media-content">
+                <p class="is-size-3 has-text-weight-bold"><strong>@($"{User!.FirstName} {User!.LastName}")</strong></p>
+                <p class="is-size-4">@User!.DisplayName <small>@User!.Pronouns</small></p>
+
+            </div>
+        </div>
+    </div>
+    <footer class="card-footer">
+        <button type="button" class="card-footer-item has-text-danger" @onclick="() => ReportUser()">Report User</button>
+    </footer>
+</div>
+
+@code{
+    [Parameter]
+    public UserDTO? User { get; set; }
+
+    protected void ReportUser()
+    {
+
+    }
+}

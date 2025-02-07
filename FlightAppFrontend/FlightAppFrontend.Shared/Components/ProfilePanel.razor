@@ -1,0 +1,56 @@
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models
+@using FlightAppLibrary.Models.Dtos
+@inject IHttpClientFactory ClientFactory
+
+<nav class="panel is-warning">
+    <p class="panel-heading has-text-centered">Comment History</p>
+
+    @if (Comments == null)
+    {
+        <Loading />
+    }
+    else if(Comments.Count == 0)
+    {
+        <h1>Nothing to see here...</h1>
+    }
+    else
+    {
+        foreach (var comment in Comments!)
+        {
+            <div class="box">
+                <a class="panel-block" href="@($"/FlightSummary/{comment.FlightIata}")">
+                    <p><strong>@comment.FlightIata</strong> @comment.Text @comment.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
+                </a>
+            </div>
+        }
+    }
+</nav>
+
+@code {
+    public List<DisplayComment>? Comments { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Comments is null)
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var notesResponse = await client.GetValueAsync<List<NoteDto>>("Notes/user");
+            var repliesResponse = await client.GetValueAsync<List<ReplyDto>>("Replies/user");
+
+            Comments = [];
+
+            if(notesResponse.Value is List<NoteDto> notes)
+            {
+                Comments.AddRange(notes.Select(n => n.ToDisplayComment()));
+            }
+            if (repliesResponse.Value is List<ReplyDto> replies)
+            {
+                Comments.AddRange(replies.Select(n => n.ToDisplayComment()));
+            }
+
+            Comments = Comments.OrderByDescending(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
+        }
+    }
+}
