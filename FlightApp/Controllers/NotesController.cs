@@ -1,6 +1,7 @@
 ﻿using FlightApp.Entities;
 using FlightApp.Service;
 using FlightAppLibrary.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightApp.Controllers
@@ -30,10 +31,13 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest($"Unable to find note {id}") : Ok(result);
         }
 
-        [HttpGet("user/{userId}")]
-        public IActionResult GetNotesByUserId(string userId)
+        [HttpGet("user")]
+        [Authorize]
+        public IActionResult GetNotesByUser()
         {
-            var result = _notesService.GetNotesByUserId(userId);
+            var userId = User.FindFirst("Id");
+            string userIdValue = userId!.Value;
+            var result = _notesService.GetNotesByUserId(userIdValue);
             return result == null ? BadRequest($"Unable to find any notes for user {userId}") : Ok(result);
         }
 
