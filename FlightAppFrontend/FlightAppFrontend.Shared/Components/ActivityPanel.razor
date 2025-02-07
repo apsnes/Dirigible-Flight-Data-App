@@ -7,8 +7,8 @@
 <nav class="panel is-warning">
     <p class="panel-heading has-text-centered">Activity</p>
     <p class="panel-tabs">
+        <a class="has-text-white is-clickable @NotificationsActive" @onclick="()=>ActivateNotifications()">Notifications</a>
         <a class="has-text-white is-clickable @CommentsActive" @onclick="()=>ActivateComments()">Comments</a>
-        <a class="has-text-white is-clickable @MessagesActive" @onclick="()=>ActivateMessages()">Messages</a>
     </p>
     @if (!String.IsNullOrEmpty(CommentsActive))
     {
@@ -28,26 +28,25 @@
             }
         }
     }
-    else if (!String.IsNullOrEmpty(MessagesActive))
+    else if (!String.IsNullOrEmpty(NotificationsActive))
     {
-        <a class="panel-block">
-            Message
-        </a>
-        <a class="panel-block">
-            Message
-        </a>
+        <div class="box">
+            <button tyoe="button" class="panel-block">
+                <p>Notification</p>
+            </button>
+        </div>
     }
 </nav>
 
 @code {
     private string CommentsActive = "";
-    private string MessagesActive = "";
+    private string NotificationsActive = "";
 
     public List<DisplayComment>? Comments { get; set; }
 
     private async Task ActivateComments()
     {
-        MessagesActive = "";
+        NotificationsActive = "";
         CommentsActive = "is-active";
 
         if(Comments is null)
@@ -71,9 +70,9 @@
         }
     }
 
-    private void ActivateMessages()
+    private void ActivateNotifications()
     {
         CommentsActive = "";
-        MessagesActive = "is-active";
+        NotificationsActive = "is-active";
     }
 }
