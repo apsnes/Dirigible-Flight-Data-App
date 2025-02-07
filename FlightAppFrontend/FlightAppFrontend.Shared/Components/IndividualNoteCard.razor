@@ -6,7 +6,7 @@
 @inject IHttpClientFactory ClientFactory
 
 <div class="card">
-    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+    <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
         <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
             <span class="has-text-weight-bold">@Note.User!.DisplayName</span>
             <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
@@ -32,7 +32,7 @@
     {
         @foreach (var reply in Note.Replies!)
         {
-            <div class="media">
+            <div class="media" style="position: relative;">
                 <div class="media-content ml-5">
                     <p class=" is-size-6 ml-5"><strong>@reply.User!.DisplayName</strong></p>
                     <p class="is-size-7 ml-5">@reply.TimeStamp.ToString()</p>
@@ -40,7 +40,7 @@
                     @if (reply.UserId == CurrentUser.Id)
                     {
                         <div class="media-right">
-                            <button class="button is-danger mr-5" @onclick="() => DeleteReply(reply)">Delete</button>
+                            <button class="button is-danger" style="position: absolute; top: 0; right: 0; margin-right: 80px; margin-top: 25px;" @onclick="() => DeleteReply(reply)">Delete</button>
                         </div>
                     }
                 </div>
