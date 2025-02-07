@@ -15,15 +15,13 @@
             <div class="media-content">
                 <p class="is-size-3 has-text-weight-bold"><strong>@($"{AppUser!.FirstName} {AppUser!.LastName}")</strong></p>
                 <p class="is-size-4">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
-                <p class="is-size-4">@Password <small>@Password</small></p>
-                <p class="is-size-4">@ConfirmPassword <small>@ConfirmPassword</small></p>
+              
 
             </div>
         </div>
     </div>
     <footer class="card-footer">
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => Edit()">Edit Details</button>
-        <button type="button" class="card-footer-item has-text-warning" @onclick="() => ChangePassword()">Change Password</button>
         <button type="button" class="card-footer-item has-text-warning" @onclick="() => UpdateRoles()">Update Roles</button>
     </footer>
 </div>
@@ -42,13 +40,8 @@
     public EventCallback OnEdit { get; set; }
 
     [Parameter]
-    public EventCallback OnChangePassword { get; set; }
-    [Parameter]
     public EventCallback OnUpdateRoles { get; set; }
-    [Parameter]
-    public string Password { get; set; }
-    [Parameter]
-    public string ConfirmPassword { get; set; }
+    
 
 
 
@@ -57,10 +50,7 @@
         await OnEdit.InvokeAsync();
     }
 
-    protected async Task ChangePassword()
-    {
-        await OnChangePassword.InvokeAsync();
-    }
+    
     protected async Task UpdateRoles()
     {
         await OnUpdateRoles.InvokeAsync();

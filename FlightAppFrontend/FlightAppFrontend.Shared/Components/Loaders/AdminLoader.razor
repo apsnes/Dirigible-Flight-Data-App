@@ -23,7 +23,17 @@ else if (@User == null)
 else
 {
     <PageTitle>Dashboard</PageTitle>
-    
+    <div class=" container mt-6">
+        <div class="columns">
+            <div class="column is-half">
+        <EditForm Model="User" OnValidSubmit="GetUser">
+            <label>Email of user to edit</label>
+            <InputText @bind-Value="email">Email</InputText>
+            <button type="submit" class="button is-success">Submit</button>
+        </EditForm>
+        </div>
+        </div>
+    </div>
         
     <div class="container mt-6">
         @if (Login)
@@ -38,22 +48,15 @@ else
         {
             <Title Text="Edit Details" />
         }
-        else if (UpdatingPassword)
-        {
-            <Title Text="Enter New Password" />
-        }
-        else if (PasswordUpdated)
-        {
-            <TitleSuccess Text="Password Updated" />
-        }
-        @* else if (UpdatingRoles)
+    
+        else if (UpdatingRoles)
         {
             <Title Text="Enter Role" />
         }
         else if (RolesUpdated)
         {
             <TitleSuccess Text="Role updated" />
-        } *@
+        }
         else
         {
             <Title Text="Welcome Back!" />
@@ -65,29 +68,21 @@ else
                 {
                     <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
                 }
-                else if (UpdatingPassword)
-                {
-                    <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated" />
-                }
-                @* else if (UpdatingRoles)
+            
+                else if (UpdatingRoles)
                 {
                     <UpdateRoles OnCancel="ToggleUpdatingRoles" AppUser="User" OnUpdate="SetRolesUpdated" />
-                } *@
+                }
                 else
                 {
-                    <AdminProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword" />
+                    
+                    <AdminProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnUpdateRoles ="ToggleUpdatingRoles" />
                 }
             </div>
         </div>
         
     </div>
-    <div>
-    <EditForm Model="User" OnValidSubmit="GetUser">
-        <label>Email</label>
-        <InputText @bind-Value="email">Email</InputText>
-    </EditForm>
-    <UpdateRoles AppUser="User" />
-    </div>
+    
 }
 
 
@@ -111,11 +106,8 @@ else
 
     private bool Editing;
 
-    private bool UpdatingPassword;
-
-    private bool PasswordUpdated;
-    // private bool UpdatingRoles;
-    // private bool RolesUpdated;
+    private bool UpdatingRoles;
+    private bool RolesUpdated;
     private RolesUpdateDto roleModel = new RolesUpdateDto();
 
 
@@ -143,37 +135,26 @@ else
         Editing = false;
     }
 
-    public void SetPasswordUpdated()
-    {
-        PasswordUpdated = true;
-        UpdatingPassword = false;
-    }
+  
 
     public void ToggleEditing()
     {
         Login = false;
-        UpdatingPassword = false;
         Editing = !Editing;
         if (Editing) Updated = false;
     }
 
-    public void ToggleUpdatingPassword()
+ 
+    public void SetRolesUpdated()
+    {
+        RolesUpdated = true;
+        UpdatingRoles = false;
+    }
+    public void ToggleUpdatingRoles()
     {
         Login = false;
         Editing = false;
-        UpdatingPassword = !UpdatingPassword;
-        if (UpdatingPassword) PasswordUpdated = false;
+        UpdatingRoles = !UpdatingRoles;
+        if (UpdatingRoles) RolesUpdated = false;
     }
-    // public void SetRolesUpdated()
-    // {
-    //     RolesUpdated = true;
-    //     UpdatingRoles = false;
-    // }
-    // public void ToggleUpdatingRoles()
-    // {
-    //     Login = false;
-    //     Editing = false;
-    //     UpdatingRoles = !UpdatingRoles;
-    //     if (UpdatingRoles) RolesUpdated = false;
-    // }
 }
