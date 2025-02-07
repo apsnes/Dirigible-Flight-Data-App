@@ -12,5 +12,6 @@ namespace FlightApp.Models
         public int Karma {  get; set; }
         public string? DisplayName { get; set; }
         public List<Note> Notes { get; set; }
+        public string Avatar { get; set; } = "_content/FlightAppFrontend.Shared/Images/Avatars/3.png";
     }
 }
