@@ -21,19 +21,22 @@
     {
         try
         {
-            var client = ClientFactory.CreateClient("MapData");
+            if(FlightResponse.Live != null)
+            {
+                var client = ClientFactory.CreateClient("MapData");
 
-            var mapBuilder = new UriBuilder(client.BaseAddress!.ToString());
-            var mapQuery = HttpUtility.ParseQueryString(mapBuilder.Query);
-            mapQuery["center"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}";
-            mapBuilder.Query = mapQuery.ToString();
-            MapUri = mapBuilder.Uri.AbsoluteUri;
-            MapUri += $"&marker=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};icontype:awesome;shadow:no;color:%23ffff00;icon:plane";
+                var mapBuilder = new UriBuilder(client.BaseAddress!.ToString());
+                var mapQuery = HttpUtility.ParseQueryString(mapBuilder.Query);
+                mapQuery["center"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}";
+                mapBuilder.Query = mapQuery.ToString();
+                MapUri = mapBuilder.Uri.AbsoluteUri;
+                MapUri += $"&marker=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};icontype:awesome;shadow:no;color:%23ffff00;icon:plane";
 
-            // MapUri = mapBuilder.Uri.ToString();
+                // MapUri = mapBuilder.Uri.ToString();
 
 
-            client.Dispose();
+                client.Dispose();
+            }
 
         }
         catch (Exception ex)
