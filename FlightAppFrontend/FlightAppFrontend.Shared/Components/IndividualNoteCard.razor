@@ -66,7 +66,6 @@
     [Parameter] public UserDTO CurrentUser { get; set; }
     [Parameter] public EventCallback<NoteDto> OnNoteDeleted { get; set; }
     private bool isCardOpen = false;
-    private string IsColour = "is-warning";
 
     private void ToggleCard()
     {
@@ -118,7 +117,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            IsColour = "is-success";
+            
         }
     }
 
@@ -140,7 +139,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            IsColour = "is-success";
+            
         }
     }
 }
