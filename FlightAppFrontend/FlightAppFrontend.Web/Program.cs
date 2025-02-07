@@ -34,7 +34,7 @@ builder.Services.AddHttpClient("MapData", client =>
 
 
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
-builder.Services.AddSingleton<TokenStateService>();
+builder.Services.AddScoped<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
