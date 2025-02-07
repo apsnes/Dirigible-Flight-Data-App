@@ -56,7 +56,7 @@ else
 
     protected async Task GetPhoto()
     {
-        if(FlightResponse != null)
+        if (FlightResponse.Aircraft!= null && FlightResponse.Aircraft.Registration != null)
         {
             try
             {
@@ -64,21 +64,14 @@ else
 
                 var photoResponse = await client.GetValueAsync<PhotosArray>($"{FlightResponse.Aircraft.Registration}");
 
-
                 AircraftPhoto = photoResponse.Value.Photos[0];
                 PhotoErrorMessage = photoResponse.ErrorMessage;
-
             }
             catch (Exception ex)
             {
                 AircraftPhoto = null;
             }
         }
-        else
-        {
-            AircraftPhoto = null;
-        }
+        else AircraftPhoto = null;
     }
-
-
 }

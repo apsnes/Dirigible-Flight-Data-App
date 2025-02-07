@@ -103,7 +103,6 @@ builder.Services.AddHealthChecks()
     .AddCheck<MapDataHealthCheck>("MapDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<AirLineLogosHealthCheck>("AirLineLogosHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
-
 builder.Services.AddRateLimiter(ops => ops
     .AddPolicy("token", httpContext =>
     RateLimitPartition.GetTokenBucketLimiter(httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
@@ -146,6 +145,7 @@ app.UseHealthChecks("/health", new HealthCheckOptions
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 });
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

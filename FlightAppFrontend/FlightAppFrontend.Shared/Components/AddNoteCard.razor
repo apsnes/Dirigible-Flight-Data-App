@@ -47,10 +47,13 @@
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync("notes", content);
+        var result = response.Content;
 
         if (response.IsSuccessStatusCode)
         {
+            NoteDto = await response.Content.ReadFromJsonAsync<NoteDto>();
             await OnNoteAdded.InvokeAsync(NoteDto);
+            NoteDto = new();
         }
     }
 }

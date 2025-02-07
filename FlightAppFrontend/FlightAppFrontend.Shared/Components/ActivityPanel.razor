@@ -1,5 +1,6 @@
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models
 @using FlightAppLibrary.Models.Dtos
 @inject IHttpClientFactory ClientFactory
 
@@ -11,17 +12,17 @@
     </p>
     @if (!String.IsNullOrEmpty(CommentsActive))
     {
-        @if (Notes == null)
+        @if (Comments == null)
         {
             <Loading />
         }
         else
         {
-            foreach (var note in Notes!)
+            foreach (var comment in Comments!)
             {
                 <div class="box">
-                    <a class="panel-block" href="@($"/FlightSummary/{@note.FlightIata}")">
-                        <p><strong>@note.FlightIata</strong> @note.NoteText @note.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
+                    <a class="panel-block" href="@($"/FlightSummary/{comment.FlightIata}")">
+                        <p><strong>@comment.FlightIata</strong> @comment.Text @comment.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
                     </a>
                 </div>
             }
@@ -42,18 +43,24 @@
     private string CommentsActive = "";
     private string MessagesActive = "";
 
-    public List<NoteDto>? Notes { get; set; }
+    public List<DisplayComment>? Comments { get; set; }
 
     private async Task ActivateComments()
     {
         MessagesActive = "";
         CommentsActive = "is-active";
 
-        if(Notes is null)
+        if(Comments is null)
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<List<NoteDto>>("Notes/user");
-            Notes = response.Value!;
+            var notesResponse = await client.GetValueAsync<List<NoteDto>>("Notes/user");
+            var repliesResponse = await client.GetValueAsync<List<ReplyDto>>("Replies/user");
+
+            Comments = [];
+
+            Comments.AddRange(notesResponse.Value!.Select(n => n.ToDisplayComment()));
+            Comments.AddRange(repliesResponse.Value!.Select(n => n.ToDisplayComment()));
+            Comments = Comments.OrderBy(c => c.TimeStamp.Date).ThenBy(c => c.TimeStamp.TimeOfDay).ToList();
         }
     }
 

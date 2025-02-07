@@ -8,7 +8,7 @@ namespace FlightApp.Service
     public interface INotesService
     {
         List<Note> GetNotes();
-        Note AddNote(NoteDto noteDto);
+        NoteDto AddNote(NoteDto noteDto);
         List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled);
         NoteDto GetNoteById(int id);
         List<NoteDto> GetNotesByUserId(string userId);
@@ -178,7 +178,7 @@ namespace FlightApp.Service
         }
 
         //-------POST REQUESTS----------
-        public Note AddNote(NoteDto noteDto)
+        public NoteDto AddNote(NoteDto noteDto)
         {
             var note = new Note()
             {
@@ -190,7 +190,10 @@ namespace FlightApp.Service
                 Replies = new()
             };
 
-            return _notesRepository.AddNote(note);
+            var res = _notesRepository.AddNote(note);
+            if (res == null) return null;
+            noteDto.NoteId = res.NoteId;
+            return noteDto;
         }
 
         //-------DELETE REQUESTS----------

@@ -53,9 +53,9 @@
         isCardOpen = !isCardOpen;
     }
 
-    private void HandleReplyAdded(ReplyDto replyDto)
+    public void HandleReplyAdded(ReplyDto ReplyDto)
     {
-        if (replyDto.User.DisplayName == null) replyDto.User.DisplayName = replyDto.User.FirstName;
-        Note.Replies!.Add(replyDto);
+        if (ReplyDto.User.DisplayName == null) ReplyDto.User.DisplayName = ReplyDto.User.FirstName;
+        Note.Replies!.Add(ReplyDto);
     }
 }
