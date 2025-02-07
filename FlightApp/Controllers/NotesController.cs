@@ -66,5 +66,13 @@ namespace FlightApp.Controllers
             var result = _notesService.DeleteNoteById(id);
             return result == null ? BadRequest($"Unable to delete note {id}") : Ok(result);
         }
+
+        [HttpGet("/user/{userId}")]
+        [Authorize]
+        public IActionResult GetNotesByUserId(string userId)
+        {
+            var result = _notesService.GetNotesByUserId(userId);
+            return result == null ? BadRequest($"Unable to find any notes for user {userId}") : Ok(result);
+        }
     }
 }

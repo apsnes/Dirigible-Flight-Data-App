@@ -9,7 +9,9 @@
 <div class="card">
     <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
         <figure class="image is-64x64 ml-2 mt-2 is-square">
-            <img src="@Note.User!.Avatar" alt="User Avatar" />
+            <a href="@($"/profile/{Note.User!.Id}")">
+                <img src="@Note.User!.Avatar" alt="User Avatar" />
+            </a>
         </figure>
         
         <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
