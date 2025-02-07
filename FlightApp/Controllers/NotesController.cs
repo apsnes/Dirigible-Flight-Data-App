@@ -38,7 +38,7 @@ namespace FlightApp.Controllers
             var userId = User.FindFirst("Id");
             string userIdValue = userId!.Value;
             var result = _notesService.GetNotesByUserId(userIdValue);
-            return result == null ? BadRequest($"Unable to find any notes for user {userId}") : Ok(result);
+            return result == null ? BadRequest($"Unable to find any notes for user {userIdValue}") : Ok(result);
         }
 
         [HttpGet("flight")]

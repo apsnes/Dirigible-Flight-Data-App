@@ -49,7 +49,11 @@ namespace FlightApp.Repository
         {
             try
             {
-                return db.Replies.Include(r => r.User).Where(r => r.UserId == userId).ToList();
+                return db.Replies
+                    .Include(r => r.Note)
+                    .Include(r => r.User)
+                    .Where(r => r.UserId == userId)
+                    .ToList();
             }
             catch (Exception e)
             {
