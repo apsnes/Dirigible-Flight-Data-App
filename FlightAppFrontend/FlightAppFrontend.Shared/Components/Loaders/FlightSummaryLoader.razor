@@ -40,13 +40,13 @@ else
     {
         try
         {
-            var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
-            FlightResponse = response.Value;
-            ErrorMessage = response.ErrorMessage;
+            // var client = ClientFactory.CreateClient("DirigibleApi");
+            // var response = await client.GetValueAsync<FlightResponse>($"FlightApi/{IATA}");
+            // FlightResponse = response.Value;
+            // ErrorMessage = response.ErrorMessage;
 
-            // var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
-            // FlightResponse = response[0];
+            var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+            FlightResponse = response[0];
         }
         catch(Exception ex)
         {
@@ -56,7 +56,7 @@ else
 
     protected async Task GetPhoto()
     {
-        if(FlightResponse != null)
+        if (FlightResponse.Aircraft!= null && FlightResponse.Aircraft.Registration != null)
         {
             try
             {
@@ -64,21 +64,14 @@ else
 
                 var photoResponse = await client.GetValueAsync<PhotosArray>($"{FlightResponse.Aircraft.Registration}");
 
-
                 AircraftPhoto = photoResponse.Value.Photos[0];
                 PhotoErrorMessage = photoResponse.ErrorMessage;
-
             }
             catch (Exception ex)
             {
                 AircraftPhoto = null;
             }
         }
-        else
-        {
-            AircraftPhoto = null;
-        }
+        else AircraftPhoto = null;
     }
-
-
 }
