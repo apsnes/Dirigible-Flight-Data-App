@@ -1,0 +1,18 @@
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppLibrary.Models.Dtos
+
+<div class="container mt-6">
+    <div class="columns is-7">
+        <div class="column is-half">
+            <ProfileCard User="User"/>
+        </div>
+        <div class="column">
+            <ProfilePanel User="User"/>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public UserDTO? User { get; set; }
+}

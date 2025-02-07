@@ -57,5 +57,13 @@ namespace FlightApp.Controllers
             var result = _repliesService.DeleteReplyById(id);
             return result == null ? BadRequest($"Unable to delete reply with id {id}") : Ok(result);
         }
+
+        [HttpGet("user/{userId}")]
+        [Authorize]
+        public IActionResult GetRepliesByUserId(string userId)
+        {
+            var result = _repliesService.GetRepliesByUserId(userId);
+            return result == new List<ReplyDto>() ? BadRequest($"Unable to find any replies for user {userId}") : Ok(result);
+        }
     }
 }

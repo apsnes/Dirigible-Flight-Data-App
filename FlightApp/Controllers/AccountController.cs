@@ -178,5 +178,21 @@ namespace FlightApp.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("{userId}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserDetailsByUserId(string userId)
+        {
+            try
+            {
+                UserDTO? user = await _accountService.GetUserDetails(userId);
+                if (user == null) return BadRequest();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
