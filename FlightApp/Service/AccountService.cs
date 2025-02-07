@@ -115,8 +115,8 @@ namespace FlightApp.Service
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         DisplayName = user.DisplayName,
-                        Karma = user.Karma
-
+                        Karma = user.Karma,
+                        Avatar = user.Avatar
                     }
                 };
 
@@ -171,7 +171,7 @@ namespace FlightApp.Service
                     LastName = user.LastName,
                     DisplayName = user.DisplayName,
                     Karma = user.Karma,
-
+                    Avatar = user.Avatar
                 };
                 //UserDTO userDTO = new UserDTO();
                 //userDTO = _mapper.Map<UserDTO>(user);
@@ -196,7 +196,7 @@ namespace FlightApp.Service
                     LastName = user.LastName,
                     DisplayName = user.DisplayName,
                     Karma = user.Karma,
-
+                    Avatar= user.Avatar
                 };
                 //UserDTO userDTO = new UserDTO();
                 //userDTO = _mapper.Map<UserDTO>(user);
@@ -209,12 +209,9 @@ namespace FlightApp.Service
         {
             try
             {
-
-
                 ApplicationUser? user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-
                     user.DisplayName = userDto.DisplayName;
                     user.FirstName = userDto.FirstName;
                     user.LastName = userDto.LastName;
@@ -222,6 +219,7 @@ namespace FlightApp.Service
                     user.PhoneNumber = userDto.PhoneNumber;
                     user.Karma = userDto.Karma;
                     user.Pronouns = userDto.Pronouns;
+                    user.Avatar = userDto.Avatar;
                     //user = _mapper.Map<ApplicationUser>(userDto);
 
                     await _userManager.UpdateAsync(user);
@@ -239,15 +237,12 @@ namespace FlightApp.Service
                     IsSuccess = false,
                     Message = ex.Message
                 };
-
             }
             return new ResponseItem()
             {
                 IsSuccess = false,
                 Message = "Something went wrong"
             };
-
-
         }
 
         public async Task<ResponseItem> ResetPassword(PasswordResetDto dto)
@@ -282,9 +277,7 @@ namespace FlightApp.Service
 
                 responseItem.Message = ex.Message;
                 return responseItem;
-
             }
-
             responseItem.Message = "an error occurred";
             return responseItem;
         }

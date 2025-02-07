@@ -51,7 +51,8 @@ namespace FlightApp.Service
                     DisplayName = note.User.DisplayName ?? note.User.FirstName,
                     Email = note.User.Email!,
                     PhoneNumber = note.User.PhoneNumber,
-                    Karma = note.User.Karma
+                    Karma = note.User.Karma,
+                    Avatar = note.User.Avatar,
                 },
                 Replies = note.Replies.Select(r => new ReplyDto()
                 {
@@ -68,7 +69,8 @@ namespace FlightApp.Service
                         DisplayName = r.User.DisplayName ?? r.User.FirstName,
                         Email = r.User.Email!,
                         PhoneNumber = r.User.PhoneNumber,
-                        Karma = r.User.Karma
+                        Karma = r.User.Karma,
+                        Avatar = r.User.Avatar,
                     }
                 }).ToList()
             };
@@ -97,7 +99,8 @@ namespace FlightApp.Service
                         DisplayName = n.User.DisplayName ?? n.User.FirstName,
                         Email = n.User.Email!,
                         PhoneNumber = n.User.PhoneNumber,
-                        Karma = n.User.Karma
+                        Karma = n.User.Karma,
+                        Avatar = n.User.Avatar
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
@@ -114,7 +117,8 @@ namespace FlightApp.Service
                             DisplayName = r.User.DisplayName ?? r.User.FirstName,
                             Email = r.User.Email!,
                             PhoneNumber = r.User.PhoneNumber,
-                            Karma = r.User.Karma
+                            Karma = r.User.Karma,
+                            Avatar = r.User.Avatar
                         }
                     }).ToList()
                 }).ToList();
@@ -145,7 +149,8 @@ namespace FlightApp.Service
                         DisplayName = n.User.DisplayName ?? n.User.FirstName,
                         Email = n.User.Email!,
                         PhoneNumber = n.User.PhoneNumber,
-                        Karma = n.User.Karma
+                        Karma = n.User.Karma,
+                        Avatar = n.User.Avatar
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
@@ -162,7 +167,8 @@ namespace FlightApp.Service
                             DisplayName = r.User.DisplayName ?? r.User.FirstName,
                             Email = r.User.Email!,
                             PhoneNumber = r.User.PhoneNumber,
-                            Karma = r.User.Karma
+                            Karma = r.User.Karma,
+                            Avatar = r.User.Avatar
                         }
                     }).ToList()
                 }).ToList();

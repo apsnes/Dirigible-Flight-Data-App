@@ -32,5 +32,8 @@ namespace FlightAppLibrary.Models.Dtos
         public string? PhoneNumber { get; set; }
         [JsonPropertyName("karma")]
         public int Karma { get; set; }
+
+        [JsonPropertyName("avatar")]
+        public string Avatar { get; set; }
     }
 }

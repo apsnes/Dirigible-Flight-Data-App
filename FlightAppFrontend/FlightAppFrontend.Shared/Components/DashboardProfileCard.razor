@@ -1,4 +1,5 @@
-﻿@using FlightAppFrontend.Shared.Extensions
+﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
 @using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using Microsoft.AspNetCore.Components.Authorization
@@ -8,9 +9,7 @@
     <div class="card-content">
         <div class="media">
             <div class="media-left">
-                <figure class="image is-128x128 is-square">
-                    <img class="image" src="_content/FlightAppFrontend.Shared/Images/Avatars/3.png" alt="user-avatar" />
-                </figure>
+                <ProfileAvatar AvatarPath="@AppUser!.Avatar"/>
             </div>
             <div class="media-content">
                 <p class="is-size-3 has-text-weight-bold"><strong>@($"{AppUser!.FirstName} {AppUser!.LastName}")</strong></p>
