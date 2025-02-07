@@ -60,7 +60,7 @@
 
             Comments.AddRange(notesResponse.Value!.Select(n => n.ToDisplayComment()));
             Comments.AddRange(repliesResponse.Value!.Select(n => n.ToDisplayComment()));
-            Comments = Comments.OrderBy(c => c.TimeStamp.Date).ThenBy(c => c.TimeStamp.TimeOfDay).ToList();
+            Comments = Comments.OrderByDescending(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
         }
     }
 

@@ -4,6 +4,7 @@ using FlightApp.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightApp.Migrations
 {
     [DbContext(typeof(FlightAppDbContext))]
-    partial class FlightAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250207120406_Upvote")]
+    partial class Upvote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -384,13 +387,11 @@ namespace FlightApp.Migrations
                 {
                     b.HasOne("FlightApp.Entities.Note", "Note")
                         .WithMany()
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .HasForeignKey("NoteId");
 
                     b.HasOne("FlightApp.Entities.Reply", "Reply")
                         .WithMany()
-                        .HasForeignKey("ReplyId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .HasForeignKey("ReplyId");
 
                     b.HasOne("FlightApp.Models.ApplicationUser", "User")
                         .WithMany()

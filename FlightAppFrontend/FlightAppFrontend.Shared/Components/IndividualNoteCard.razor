@@ -3,6 +3,7 @@
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
+@using FlightAppLibrary.Models.Enums
 @inject IHttpClientFactory ClientFactory
 
 <div class="card">
@@ -65,6 +66,7 @@
     [Parameter] public UserDTO CurrentUser { get; set; }
     [Parameter] public EventCallback<NoteDto> OnNoteDeleted { get; set; }
     private bool isCardOpen = false;
+    private string IsColour = "is-warning";
 
     private void ToggleCard()
     {
@@ -95,6 +97,50 @@
         if (response.IsSuccessStatusCode)
         {
             Note.Replies.Remove(replyDto);
+        }
+    }
+
+    public async Task UpVote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+
+        var vote = new VoteDto()
+            {
+                Value = 1,
+                CommenterId = Note.UserId,
+                CommentId = Note.NoteId,
+                CommentType = CommentType.Note
+            };
+
+        var json = JsonSerializer.Serialize(vote);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("votes", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            IsColour = "is-success";
+        }
+    }
+
+    public async Task DownVote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+
+        var vote = new VoteDto()
+            {
+                Value = -1,
+                CommenterId = Note.UserId,
+                CommentId = Note.NoteId,
+                CommentType = CommentType.Note
+            };
+
+        var json = JsonSerializer.Serialize(vote);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("votes", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            IsColour = "is-success";
         }
     }
 }
