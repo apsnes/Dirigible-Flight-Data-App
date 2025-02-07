@@ -51,6 +51,7 @@
         if (response.IsSuccessStatusCode)
         {
             await OnNoteAdded.InvokeAsync(NoteDto);
+            NoteDto = new();
         }
     }
 }
