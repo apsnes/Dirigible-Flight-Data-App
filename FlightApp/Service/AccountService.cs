@@ -364,6 +364,7 @@ namespace FlightApp.Service
             var user = await _userManager.FindByIdAsync(userId);
 
             var UserHasRole = await _userManager.IsInRoleAsync(user, role);
+            Console.WriteLine($"value is {UserHasRole}");
             if (!UserHasRole)
             {
 

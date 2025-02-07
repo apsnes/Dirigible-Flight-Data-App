@@ -26,7 +26,7 @@ else
     <div class=" container mt-6">
         <div class="columns">
             <div class="column is-half">
-        <EditForm Model="User" OnValidSubmit="GetUser">
+        <EditForm Model="email" OnValidSubmit="GetUser">
             <label>Email of user to edit</label>
             <InputText @bind-Value="email">Email</InputText>
             <button type="submit" class="button is-success">Submit</button>
@@ -34,7 +34,7 @@ else
         </div>
         </div>
     </div>
-        
+        @if(emailEntered){
     <div class="container mt-6">
         @if (Login)
         {
@@ -66,7 +66,7 @@ else
             <div class="column is-half">
                 @if (Editing)
                 {
-                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
+                    <AdminEditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
                 }
             
                 else if (UpdatingRoles)
@@ -82,7 +82,7 @@ else
         </div>
         
     </div>
-    
+    }
 }
 
 
@@ -95,6 +95,7 @@ else
     private AuthenticationState? _authState;
 
     private string email = "";
+    private bool emailEntered = false;
 
     private UserDTO User { get; set; } = new UserDTO();
 
@@ -122,6 +123,7 @@ else
             var client = ClientFactory.CreateClient("DirigibleApi");
             var response = await client.GetValueAsync<UserDTO>($"Account/GetUserDetailsByEmail?email={email}");
             User = response.Value!;
+            emailEntered = true;
 
         }
         catch (Exception ex)

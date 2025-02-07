@@ -1,0 +1,159 @@
+@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Services
+@using FlightAppLibrary.Models.Dtos
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory DirigibleApi
+@inject NavigationManager NavigationManager
+
+<ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
+
+<div class="card mb-5 pb-4">
+    <EditForm FormName="EditForm" Model="AppUser" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Edit User Form">
+        <DataAnnotationsValidator />
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <ProfileAvatar AvatarPath="@AppUser!.Avatar"/>
+                    <button type="button" class="button is-warning mt-5" aria-label="change-avatar" @onclick="() => ToggleIsActive()">Change Avatar</button>
+                </div>
+                <div class="media-content ml-3">
+                    <div class="field">
+                        <div class="control mt-2">
+                            <label for="name" class="label">Name</label>
+                            <InputText id="name" class="input" @bind-Value="AppUser!.FirstName" placeholder="First Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.FirstName)" />
+                            <InputText id="name" class="input" @bind-Value="AppUser!.LastName" placeholder="Last Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.LastName)" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control mt-2">
+                            <label for="display-name" class="label">Display Name</label>
+                            <InputText id="display-name" class="input" @bind-Value="AppUser!.DisplayName" placeholder="Display Name" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.DisplayName)" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control mt-2">
+                            <label for="email" class="label">Email</label>
+                            <InputText id="email" class="input" @bind-Value="AppUser!.Email" placeholder="Email" />
+                            <ValidationMessage class="help is-danger" For="@(() => AppUser!.Email)" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control mt-2">
+                            <label for="pronouns" class="label">Pronouns (Optional)</label>
+                            <div class="select">
+                                <InputSelect id="pronouns" @bind-Value="@AppUser.Pronouns" class="dropdown is-active">
+                                    @foreach (string pronoun in UserService.Pronouns)
+                                    {
+                                        <option>@pronoun</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage class="help is-danger" For="@(() => AppUser!.Pronouns)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <button type="submit" class="card-footer-item has-text-success">Save</button>
+            <button type="button" class="card-footer-item has-text-danger" @onclick="() => Cancel()">Cancel</button>
+        </footer>
+    </EditForm>
+
+    <div class="modal @IsActive">
+        <div class="modal-card">
+            <section class="modal-card-body">
+                @foreach (var avatar in UserService.Avatars)
+                {
+                    <button type="button" aria-label="choose-avatar" @onclick="() => SetAvatar(avatar)">
+                        <img class="image is-128x128 is-rounded" src="@avatar" alt="user-avatar" />
+                    </button>
+                }
+            </section>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @onclick="() => ToggleIsActive()"></button>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public AuthenticationState? AuthState { get; set; }
+
+    [Parameter]
+    public UserDTO? AppUser { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback OnUpdate { get; set; }
+
+    public string? ErrorMessage;
+
+    private string? IsActive = "";
+
+    protected async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (AppUser.Id != null)
+            {
+                var client = DirigibleApi.CreateClient("DirigibleApi");
+                var content = new StringContent(JsonSerializer.Serialize(AppUser), Encoding.UTF8, "application/json");
+                var result = await client.PutAsync($"Account/UpdateUserByAdmin/{AppUser.Id}", content);
+                if (result.IsSuccessStatusCode)
+                {
+                    await OnUpdate.InvokeAsync();
+                    StateHasChanged();
+                    
+                }
+                else
+                {
+                    ErrorMessage = "Could not update details";
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    protected void SetAvatar(string path)
+    {
+        AppUser!.Avatar = path;
+        ToggleIsActive();
+    }
+
+    protected void HandleInvalidSubmit()
+    {
+        ErrorMessage = "Cannot submit";
+    }
+
+    protected void ToggleIsActive()
+    {
+        IsActive = IsActive == "" ? "is-active" : "";
+    }
+
+    protected async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private void ResetError()
+    {
+        ErrorMessage = "";
+    }
+}
