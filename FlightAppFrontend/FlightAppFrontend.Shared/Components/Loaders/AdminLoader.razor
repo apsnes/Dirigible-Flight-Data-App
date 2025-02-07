@@ -23,7 +23,18 @@ else if (@User == null)
 else
 {
     <PageTitle>Dashboard</PageTitle>
-
+    <div class=" container mt-6">
+        <div class="columns">
+            <div class="column is-half">
+        <EditForm Model="User" OnValidSubmit="GetUser">
+            <label>Email of user to edit</label>
+            <InputText @bind-Value="email">Email</InputText>
+            <button type="submit" class="button is-success">Submit</button>
+        </EditForm>
+        </div>
+        </div>
+    </div>
+        
     <div class="container mt-6">
         @if (Login)
         {
@@ -37,14 +48,7 @@ else
         {
             <Title Text="Edit Details" />
         }
-        else if (UpdatingPassword)
-        {
-            <Title Text="Enter New Password" />
-        }
-        else if (PasswordUpdated)
-        {
-            <TitleSuccess Text="Password Updated" />
-        }
+    
         else if (UpdatingRoles)
         {
             <Title Text="Enter Role" />
@@ -64,21 +68,21 @@ else
                 {
                     <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
                 }
-                else if (UpdatingPassword)
-                {
-                    <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated" />
-                }
+            
                 else if (UpdatingRoles)
                 {
                     <UpdateRoles OnCancel="ToggleUpdatingRoles" AppUser="User" OnUpdate="SetRolesUpdated" />
                 }
                 else
                 {
-                    <AdminProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword" />
+                    
+                    <AdminProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnUpdateRoles ="ToggleUpdatingRoles" />
                 }
             </div>
         </div>
+        
     </div>
+    
 }
 
 
@@ -89,13 +93,12 @@ else
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     private AuthenticationState? _authState;
-    private bool isAdmin = false;
 
     private string email = "";
 
     private UserDTO User { get; set; } = new UserDTO();
 
-    private string? ErrorMessage;
+     private string? ErrorMessage;
     [SupplyParameterFromQuery(Name = "login")]
     public bool Login { get; set; }
 
@@ -103,12 +106,9 @@ else
 
     private bool Editing;
 
-    private bool UpdatingPassword;
-
-    private bool PasswordUpdated;
     private bool UpdatingRoles;
     private bool RolesUpdated;
-    private RoleModelDto roleModel = new RoleModelDto();
+    private RolesUpdateDto roleModel = new RolesUpdateDto();
 
 
     protected void ResetError()
@@ -129,47 +129,22 @@ else
             ErrorMessage = ex.Message;
         }
     }
-    public async Task UpdateRoles()
-    {
-        
-        var client = ClientFactory.CreateClient("DirigibleApi");
-        var response = await client.PostAsJsonAsync("Account/UpdateUserRoles", new RolesUpdateDto(){UserId = User.Id, Role = roleModel.Role});
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine("Success");
-        }
-        else
-        {
-            Console.WriteLine("Roles update failed");
-        }
-    }
     public void SetUpdated()
     {
         Updated = true;
         Editing = false;
     }
 
-    public void SetPasswordUpdated()
-    {
-        PasswordUpdated = true;
-        UpdatingPassword = false;
-    }
+  
 
     public void ToggleEditing()
     {
         Login = false;
-        UpdatingPassword = false;
         Editing = !Editing;
         if (Editing) Updated = false;
     }
 
-    public void ToggleUpdatingPassword()
-    {
-        Login = false;
-        Editing = false;
-        UpdatingPassword = !UpdatingPassword;
-        if (UpdatingPassword) PasswordUpdated = false;
-    }
+ 
     public void SetRolesUpdated()
     {
         RolesUpdated = true;
