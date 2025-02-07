@@ -23,6 +23,7 @@
 {
     [Parameter] public FlightResponse FlightResponse { get; set; }
     [Parameter] public EventCallback<NoteDto> OnNoteAdded { get; set; }
+    [Parameter] public UserDTO CurrentUser { get; set; }
     public NoteDto NoteDto { get; set; } = new();
     private bool isCardOpen = false;
 
@@ -32,22 +33,18 @@
     }
 
     public async Task HandleValidSubmit()
-    {       
-        var client = ClientFactory.CreateClient("DirigibleApi");
-        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
-        var currUser = userResponse.Value;
-
-        NoteDto.UserId = currUser!.Id;
+    {  
+        NoteDto.UserId = CurrentUser!.Id;
         NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
         NoteDto.FlightIata = FlightResponse.Flight.Iata;
         NoteDto.TimeStamp = DateTime.UtcNow;
-        NoteDto.User = currUser;
+        NoteDto.User = CurrentUser;
         NoteDto.Replies = new();
 
+        var client = ClientFactory.CreateClient("DirigibleApi");
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync("notes", content);
-        var result = response.Content;
 
         if (response.IsSuccessStatusCode)
         {

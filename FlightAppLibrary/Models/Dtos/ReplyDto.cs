@@ -10,6 +10,8 @@ namespace FlightAppLibrary.Models.Dtos
 {
     public class ReplyDto : IDisplayComment
     {
+        [JsonPropertyName("replyId")]
+        public int ReplyId { get; set; }
         [JsonPropertyName("userId")]
         public string UserId { get; set; }
         [JsonPropertyName("noteId")]

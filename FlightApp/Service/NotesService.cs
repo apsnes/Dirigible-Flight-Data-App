@@ -56,6 +56,7 @@ namespace FlightApp.Service
                 },
                 Replies = note.Replies.Select(r => new ReplyDto()
                 {
+                    ReplyId = r.ReplyId,
                     UserId = r.UserId,
                     NoteId = r.NoteId,
                     ReplyText = r.ReplyText,
@@ -104,6 +105,7 @@ namespace FlightApp.Service
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
+                        ReplyId = r.ReplyId,
                         UserId = r.UserId,
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,
@@ -154,6 +156,7 @@ namespace FlightApp.Service
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
+                        ReplyId = r.ReplyId,
                         UserId = r.UserId,
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,

@@ -49,5 +49,13 @@ namespace FlightApp.Controllers
             var result = _repliesService.PostReply(replyDto);
             return result == null ? BadRequest($"Unable to add reply") : Ok(result);
         }
+
+        //-----DELETE REQUESTS-----
+        [HttpDelete("{id}")]
+        public IActionResult DeleteReplyById(int id)
+        {
+            var result = _repliesService.DeleteReplyById(id);
+            return result == null ? BadRequest($"Unable to delete reply with id {id}") : Ok(result);
+        }
     }
 }

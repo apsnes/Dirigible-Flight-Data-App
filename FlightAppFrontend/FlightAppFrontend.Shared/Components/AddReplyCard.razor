@@ -22,18 +22,16 @@
 {
     [Parameter] public NoteDto Note { get; set; }
     [Parameter] public EventCallback<ReplyDto> OnReplyAdded { get; set; }
+    [Parameter] public UserDTO CurrentUser { get; set; }
     public ReplyDto ReplyDto { get; set; } = new();
 
     private async Task HandleValidSubmit()
     {
         var client = ClientFactory.CreateClient("DirigibleApi");
-        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
-        var currUser = userResponse.Value;
-
-        ReplyDto.UserId = currUser!.Id!;
+        ReplyDto.UserId = CurrentUser!.Id!;
         ReplyDto.NoteId = Note.NoteId;
         ReplyDto.TimeStamp = DateTime.UtcNow;
-        ReplyDto.User = currUser;
+        ReplyDto.User = CurrentUser;
 
         var json = JsonSerializer.Serialize(ReplyDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -41,6 +39,7 @@
 
         if (response.IsSuccessStatusCode)
         {
+            ReplyDto = await response.Content.ReadFromJsonAsync<ReplyDto>();
             await OnReplyAdded.InvokeAsync(ReplyDto);
             ReplyDto = new ReplyDto();
         }

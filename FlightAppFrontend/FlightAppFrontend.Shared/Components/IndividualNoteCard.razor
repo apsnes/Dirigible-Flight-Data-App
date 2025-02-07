@@ -12,6 +12,10 @@
             <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
             <span>@Note.NoteText</span>
         </div>
+        @if (Note.UserId == CurrentUser.Id)
+        {
+            <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
+        }
         <button class="card-header-icon" aria-label="more options">
             @if (@isCardOpen)
             {
@@ -30,22 +34,27 @@
         {
             <div class="media">
                 <div class="media-content ml-5">
-                    <div style="display: inline-block">
-                        @* User pfofile picture here? *@
-                        <p class=" is-size-6 ml-5"><strong>@reply.User!.DisplayName</strong></p>
-                    </div>
+                    <p class=" is-size-6 ml-5"><strong>@reply.User!.DisplayName</strong></p>
                     <p class="is-size-7 ml-5">@reply.TimeStamp.ToString()</p>
-                    <p class="is-size-6 ml-5">@reply.ReplyText</p>
+                    <p class="is-size-6 ml-5"><strong>@reply.ReplyText</strong></p>
+                    @if (reply.UserId == CurrentUser.Id)
+                    {
+                        <div class="media-right">
+                            <button class="button is-danger mr-5" @onclick="() => DeleteReply(reply)">Delete</button>
+                        </div>
+                    }
                 </div>
             </div>
         }
-        <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" />
+        <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" CurrentUser="CurrentUser"/>
     }
 </div>
 
 @code
 {
     [Parameter] public NoteDto Note { get; set; }
+    [Parameter] public UserDTO CurrentUser { get; set; }
+    [Parameter] public EventCallback<NoteDto> OnNoteDeleted { get; set; }
     private bool isCardOpen = false;
 
     private void ToggleCard()
@@ -57,5 +66,26 @@
     {
         if (ReplyDto.User.DisplayName == null) ReplyDto.User.DisplayName = ReplyDto.User.FirstName;
         Note.Replies!.Add(ReplyDto);
+    }
+
+    public async Task DeleteNote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var response = await client.DeleteAsync($"notes/{Note.NoteId}");
+        if (response.IsSuccessStatusCode)
+        {
+            isCardOpen = false;
+            await OnNoteDeleted.InvokeAsync(Note);
+        }
+    }
+
+    public async Task DeleteReply(ReplyDto replyDto)
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var response = await client.DeleteAsync($"replies/{replyDto.ReplyId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Note.Replies.Remove(replyDto);
+        }
     }
 }
