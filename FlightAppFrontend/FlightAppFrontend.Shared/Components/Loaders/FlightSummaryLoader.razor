@@ -16,24 +16,17 @@ else if(@FlightResponse == null)
 }
 else
 {
-    <FlightSummary FlightResponse="@FlightResponse" AircraftPhoto="@AircraftPhoto"/>
+    <FlightSummary FlightResponse="@FlightResponse" />
 }
 
 @code{
-    [Parameter]
-    public string? IATA { get; set; }
-
+    [Parameter] public string? IATA { get; set; }
     protected FlightResponse? FlightResponse { get; set; }
-
     protected string? ErrorMessage;
-
-    protected Photo? AircraftPhoto { get; set; }
-    protected string PhotoErrorMessage { get; set;}
 
     protected override async Task OnInitializedAsync()
     {
         await GetFlightResponse();
-        await GetPhoto();
     }
 
     protected async Task GetFlightResponse()
@@ -52,26 +45,5 @@ else
         {
             ErrorMessage = $"An error occured: {ex.Message}";
         }
-    }
-
-    protected async Task GetPhoto()
-    {
-        if (FlightResponse.Aircraft!= null && FlightResponse.Aircraft.Registration != null)
-        {
-            try
-            {
-                var client = ClientFactory.CreateClient("AircraftPhotos");
-
-                var photoResponse = await client.GetValueAsync<PhotosArray>($"{FlightResponse.Aircraft.Registration}");
-
-                AircraftPhoto = photoResponse.Value.Photos[0];
-                PhotoErrorMessage = photoResponse.ErrorMessage;
-            }
-            catch (Exception ex)
-            {
-                AircraftPhoto = null;
-            }
-        }
-        else AircraftPhoto = null;
     }
 }

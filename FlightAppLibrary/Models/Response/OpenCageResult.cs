@@ -6,5 +6,7 @@ namespace FlightAppLibrary.Models.Response
     {
         [JsonPropertyName("geometry")]
         public Dictionary<string, decimal> Geometry { get; set; }
+        [JsonPropertyName("formatted")]
+        public string Formatted { get; set; }
     }
 }

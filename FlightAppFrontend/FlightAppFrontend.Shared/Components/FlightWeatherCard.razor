@@ -18,7 +18,7 @@
     {
         <div class="card-content">
             <div class="media">
-                <div class="media-content">
+                <div class="media-content ml-5">
                     <p class="title is-4 mb-2">Departure Weather</p>
                     <p class="is-6">Airport Location: @WeatherDeparture.Location.Name, @WeatherDeparture.Location.Country</p>
                     <p class="is-6">Local Time: @WeatherDeparture.Location.Localtime</p>
@@ -60,12 +60,14 @@
                     <img src="@WeatherArrival.CurrentWeather.Condition.Icon" alt="Weather at arrival airport" />
                 </div>
             </div>
-            <EditForm Model="isMetric">
-                <InputRadioGroup @bind-Value="isMetric">
-                    <InputRadio Value="true" /> Metric
-                    <InputRadio Value="false" class="ml-4" /> Imperial
-                </InputRadioGroup>
-            </EditForm>
+            <div class="ml-5">
+                <EditForm Model="isMetric">
+                    <InputRadioGroup @bind-Value="isMetric">
+                        <InputRadio Value="true" /> Metric
+                        <InputRadio Value="false" class="ml-4" /> Imperial
+                    </InputRadioGroup>
+                </EditForm>
+            </div>
         </div>
     }
 </div>

@@ -1,0 +1,79 @@
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.AircraftPhoto
+@using FlightAppLibrary.Models.Response
+@using System.Web
+@inject IHttpClientFactory ClientFactory
+
+@if(photoFound || mapFound)
+{
+    <AircraftCard FlightResponse="@FlightResponse" MapUri="@MapUri" AircraftPhoto="@AircraftPhoto" CurrentLocationName ="@CurrentLocationName"/>
+}
+
+@code
+{
+    [Parameter] public FlightResponse? FlightResponse { get; set; }
+    private string ErrorMessage;
+    public string MapUri { get; set; } = "Resources/NoLocationFound.jpg";
+    private bool mapFound = false;
+    public Photo? AircraftPhoto { get; set; } = new Photo() { Id = "0", Link = "Resources/NoPhotoFound.jpg" };
+    private bool photoFound = false;
+    public string PhotoErrorMessage { get; set; }
+    public string CurrentLocationName { get; set; } = "Unknown";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPhoto();
+        await GetCurrentLocationName();
+        GetLocation();
+    }
+
+    private async Task GetPhoto()
+    {
+        if (FlightResponse!.Aircraft == null || FlightResponse.Aircraft.Registration == null) return;
+        using (var client = ClientFactory.CreateClient("AircraftPhotos"))
+        {
+            try
+            {
+                var photoResponse = await client.GetValueAsync<PhotosArray>($"{FlightResponse.Aircraft.Registration}");
+                AircraftPhoto = photoResponse.Value.Photos[0];
+                PhotoErrorMessage = photoResponse.ErrorMessage;
+                photoFound = true;
+            }
+            catch (Exception ex)
+            {
+                PhotoErrorMessage = ex.Message;
+            }
+        }
+    }
+
+    private void GetLocation()
+    {
+        if (FlightResponse!.Live == null) return;
+
+        using (var client = ClientFactory.CreateClient("MapData"))
+        {
+            var mapBuilder = new UriBuilder(client.BaseAddress!.ToString());
+            var mapQuery = HttpUtility.ParseQueryString(mapBuilder.Query);
+            mapQuery["center"] = $"lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude}";
+            mapBuilder.Query = mapQuery.ToString();
+            MapUri = mapBuilder.Uri.AbsoluteUri;
+            MapUri += $"&marker=lonlat:{FlightResponse.Live.Longitude},{FlightResponse.Live.Latitude};icontype:awesome;shadow:no;color:%23ffff00;icon:plane";
+        }
+    }
+
+    private async Task GetCurrentLocationName()
+    {
+        if (FlightResponse!.Live == null) return;
+
+        using (var client = ClientFactory.CreateClient("OpenCageBase"))
+        {
+            var builder = new UriBuilder(client.BaseAddress!.ToString());
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query["q"] = $"{FlightResponse.Live.Latitude},{FlightResponse.Live.Longitude}";
+            builder.Query = query.ToString();
+            var response = await client.GetValueAsync<OpenCageResponse>(builder.ToString());
+
+            CurrentLocationName = response.Value.Results.FirstOrDefault().Formatted;
+        }
+    }
+}

@@ -1,43 +1,55 @@
 ﻿@using FlightAppLibrary.Models.AircraftPhoto
 @using FlightAppLibrary.Models.Response
 
-@if(aircraftPhoto != null)
-{
-    <div class="card">
-        <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
-            <p class="card-header-title">Aircraft Photo</p>
-            <button class="card-header-icon" aria-label="more options">
-                @if (@isCardOpen)
-                {
-                    <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
-                }
-                else
-                {
-                    <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
-                }
-            </button>
-        </header>
-        @if (isCardOpen)
-        {
-            <div class="card mb-5 pb-4 mt-5">
-                <div class="card-image is-relative has-text-centered">
-                    <figure class="iamge is-4by3 in-line-block" id="aircraftPhoto" name="aircraftPhoto">
-                        <img src="@aircraftPhoto.ThumbnailLarge.Src" alt="photo of aircraft" />
-                    </figure>
+<div class="card">
+    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+        <p class="card-header-title">Aircraft Details</p>
+        <button class="card-header-icon" aria-label="more options">
+            @if (@isCardOpen)
+            {
+                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
+            }
+            else
+            {
+                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+            }
+        </button>
+    </header>
+    @if (isCardOpen)
+    {
+        <div class="card-content">
+            <div class="media">
+                <div class="media-content ml-5">
+                    <div>
+                        <figure class="is-4by3 in-line-block" name="aircraftPhoto">
+                            <img style="border-radius: 10px" width="400" height="300" src="@AircraftPhoto!.ThumbnailLarge.Src" alt="photo of aircraft" />
+                        </figure>
+                    </div>
+                    <div class="ml-1">
+                        <p class="is-6"><strong>Registration:</strong> @FlightResponse.Aircraft.Registration</p>
+                        <p class="is-6"><strong>Type:</strong> @FlightResponse!.Aircraft.Icao</p>
+                    </div>
                 </div>
-                <div class="card-content">
-                    <p class="title is-4">Aircraft details</p>
-                    <p class="is-6">Aircraft type: @FlightResponse.Aircraft.Icao</p>
-                    <p class="is-6">Registration: @FlightResponse.Aircraft.Registration</p>
+                <div class="media-content">
+                    <div>
+                        <figure class="is-4by3 in-line-block" name="aircraftLocation">
+                            <img style="border-radius: 10px" width="400" height="300" src="@MapUri" alt="A map with a pin showing the current location of the aircraft" />
+                        </figure>
+                    </div>
+                    <div class="ml-1">
+                        <p class="is-6"><strong>Current location:</strong> @CurrentLocationName</p>
+                    </div>
                 </div>
             </div>
-        }
-    </div>
-}
+        </div>
+    }
+</div>
 
 @code {
     [Parameter] public FlightResponse? FlightResponse { get; set; }
-    [Parameter] public Photo? aircraftPhoto { get; set; }
+    [Parameter] public Photo? AircraftPhoto { get; set; }
+    [Parameter] public string MapUri { get; set; }
+    [Parameter] public string CurrentLocationName { get; set; }
     private bool isCardOpen = false;
 
     private void ToggleCard()
