@@ -12,6 +12,7 @@ namespace FlightApp.Database
     {
         public DbSet<Note> Notes { get; set; }
         public DbSet<Reply> Replies { get; set; }
+        public DbSet<Vote> Votes { get; set; }
 
         public FlightAppDbContext(DbContextOptions<FlightAppDbContext> options) : base(options) { }
 
@@ -23,6 +24,18 @@ namespace FlightApp.Database
             builder.Entity<IdentityRole>().HasData(
             new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
             new IdentityRole { Id = "2", Name = "Customer", NormalizedName = "CUSTOMER" });
+
+            builder.Entity<Vote>()
+            .HasOne(e => e.Note)
+            .WithMany()
+            .HasForeignKey(e => e.NoteId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.Entity<Vote>()
+            .HasOne(e => e.Reply)
+            .WithMany()
+            .HasForeignKey(e => e.ReplyId)
+            .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

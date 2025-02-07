@@ -1,4 +1,5 @@
-﻿@using FlightAppFrontend.Shared.Extensions
+﻿@using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
 @using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using Microsoft.AspNetCore.Components.Authorization
@@ -8,16 +9,11 @@
     <div class="card-content">
         <div class="media">
             <div class="media-left">
-                <figure class="image is-128x128 is-square">
-                    <img class="image" src="_content/FlightAppFrontend.Shared/Images/Avatars/3.png" alt="user-avatar" />
-                </figure>
+                <ProfileAvatar AvatarPath="@AppUser!.Avatar"/>
             </div>
             <div class="media-content">
                 <p class="is-size-3 has-text-weight-bold"><strong>@($"{AppUser!.FirstName} {AppUser!.LastName}")</strong></p>
                 <p class="is-size-4">@AppUser!.DisplayName <small>@AppUser!.Pronouns</small></p>
-                <p class="is-size-4">@Password <small>@Password</small></p>
-                <p class="is-size-4">@ConfirmPassword <small>@ConfirmPassword</small></p>
-
             </div>
         </div>
     </div>
@@ -42,13 +38,6 @@
 
     [Parameter]
     public EventCallback OnChangePassword { get; set; }
-
-    [Parameter]
-    public string Password { get; set; }
-    [Parameter]
-    public string ConfirmPassword { get; set; }
-
-
 
     protected async Task Edit()
     {

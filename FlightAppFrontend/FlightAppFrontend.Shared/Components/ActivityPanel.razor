@@ -1,65 +1,85 @@
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models
 @using FlightAppLibrary.Models.Dtos
 @inject IHttpClientFactory ClientFactory
 
 <nav class="panel is-warning">
     <p class="panel-heading has-text-centered">Activity</p>
     <p class="panel-tabs">
+        <a class="has-text-white is-clickable @NotificationsActive" @onclick="()=>ActivateNotifications()">Notifications</a>
         <a class="has-text-white is-clickable @CommentsActive" @onclick="()=>ActivateComments()">Comments</a>
-        <a class="has-text-white is-clickable @MessagesActive" @onclick="()=>ActivateMessages()">Messages</a>
     </p>
     @if (!String.IsNullOrEmpty(CommentsActive))
     {
-        @if (Notes == null)
+        @if (Comments == null)
         {
             <Loading />
         }
         else
         {
-            foreach (var note in Notes!)
+            <div class="panel-block">
+                <nav class="pagination" role="navigation" aria-label="pagination">
+                    <button type="button" href="#" class="pagination-previous">Previous</button>
+                    <button type="button" href="#" class="pagination-next">Next page</button>
+                </nav>
+            </div>
+            
+            foreach (var comment in Comments!)
             {
                 <div class="box">
-                    <a class="panel-block" href="@($"/FlightSummary/{@note.FlightIata}")">
-                        <p><strong>@note.FlightIata</strong> @note.NoteText @note.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
+                    <a class="panel-block" href="@($"/FlightSummary/{comment.FlightIata}")">
+                        <p><strong>@comment.FlightIata</strong> @comment.Text @comment.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
                     </a>
                 </div>
             }
         }
     }
-    else if (!String.IsNullOrEmpty(MessagesActive))
+    else if (!String.IsNullOrEmpty(NotificationsActive))
     {
-        <a class="panel-block">
-            Message
-        </a>
-        <a class="panel-block">
-            Message
-        </a>
+        <div class="box">
+            <button tyoe="button" class="panel-block">
+                <p>Notification</p>
+            </button>
+        </div>
     }
 </nav>
 
 @code {
     private string CommentsActive = "";
-    private string MessagesActive = "";
+    private string NotificationsActive = "";
 
-    public List<NoteDto>? Notes { get; set; }
+    public List<DisplayComment>? Comments { get; set; }
 
     private async Task ActivateComments()
     {
-        MessagesActive = "";
+        NotificationsActive = "";
         CommentsActive = "is-active";
 
-        if(Notes is null)
+        if(Comments is null)
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<List<NoteDto>>("Notes");
-            Notes = response.Value!;
+            var notesResponse = await client.GetValueAsync<List<NoteDto>>("Notes/user");
+            var repliesResponse = await client.GetValueAsync<List<ReplyDto>>("Replies/user");
+
+            Comments = [];
+
+            if (notesResponse.Value is List<NoteDto> notes)
+            {
+                Comments.AddRange(notes.Select(n => n.ToDisplayComment()));
+            }
+            if (repliesResponse.Value is List<ReplyDto> replies)
+            {
+                Comments.AddRange(replies.Select(n => n.ToDisplayComment()));
+            }
+
+            Comments = Comments.OrderByDescending(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
         }
     }
 
-    private void ActivateMessages()
+    private void ActivateNotifications()
     {
         CommentsActive = "";
-        MessagesActive = "is-active";
+        NotificationsActive = "is-active";
     }
 }

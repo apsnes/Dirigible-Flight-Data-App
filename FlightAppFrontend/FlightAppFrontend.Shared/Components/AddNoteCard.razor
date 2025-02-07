@@ -6,24 +6,22 @@
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
 
-<div class="card-content">
-    <div class="media">
-        <div class="media-content">
-            <EditForm FormName="AddNote" Model="@NoteDto" OnValidSubmit="HandleValidSubmit">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <InputText class="input" @bind-Value="NoteDto.NoteText" placeholder="Comment text" />
-                    <div><MainButton Text="Add Comment" /></div>
-                </div>
-            </EditForm>
-        </div>
+<EditForm FormName="AddNote" Model="@CommentText" OnValidSubmit="HandleValidSubmit">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <DataAnnotationsValidator />
+        <InputText class="input" @bind-Value="CommentText.Text" placeholder="Comment text" />
+        <ValidationMessage class="help is-danger" For="@(() => CommentText.Text)" />
+        <div><MainButton Text="Add Comment" /></div>
     </div>
-</div>
+</EditForm>
 
 @code
 {
     [Parameter] public FlightResponse FlightResponse { get; set; }
     [Parameter] public EventCallback<NoteDto> OnNoteAdded { get; set; }
+    [Parameter] public UserDTO CurrentUser { get; set; }
     public NoteDto NoteDto { get; set; } = new();
+    public CommentTextDto CommentText { get; set; } = new();
     private bool isCardOpen = false;
 
     private void ToggleCard()
@@ -32,25 +30,25 @@
     }
 
     public async Task HandleValidSubmit()
-    {       
-        var client = ClientFactory.CreateClient("DirigibleApi");
-        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
-        var currUser = userResponse.Value;
-
-        NoteDto.UserId = currUser!.Id;
+    {
+        NoteDto.NoteText = CommentText.Text;
+        NoteDto.UserId = CurrentUser!.Id;
         NoteDto.ScheduledDeparture = FlightResponse.Departure.Scheduled;
         NoteDto.FlightIata = FlightResponse.Flight.Iata;
         NoteDto.TimeStamp = DateTime.UtcNow;
-        NoteDto.User = currUser;
+        NoteDto.User = CurrentUser;
         NoteDto.Replies = new();
 
+        var client = ClientFactory.CreateClient("DirigibleApi");
         var json = JsonSerializer.Serialize(NoteDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync("notes", content);
 
         if (response.IsSuccessStatusCode)
         {
+            NoteDto = await response.Content.ReadFromJsonAsync<NoteDto>();
             await OnNoteAdded.InvokeAsync(NoteDto);
+            NoteDto = new();
         }
     }
 }

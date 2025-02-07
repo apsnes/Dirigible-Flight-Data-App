@@ -18,10 +18,8 @@ else if (@User == null)
 }
 else
 {
-    <PageTitle>Dashboard</PageTitle>
-
     <div class="container mt-6">
-        <div class="columns">
+        <div class="columns is-7">
             <div class="column is-half">
                 @if (Login)
                 {
@@ -54,7 +52,7 @@ else
                 }
                 else if(UpdatingPassword)
                 {
-                    <UpdatePassword OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated"/>
+                    <UpdatePassword AppUser="User" OnCancel="ToggleUpdatingPassword" OnUpdate="SetPasswordUpdated"/>
                 }
                 else
                 {

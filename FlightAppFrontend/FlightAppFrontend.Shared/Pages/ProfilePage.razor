@@ -1,0 +1,11 @@
+@page "/profile/{UserId}"
+@using FlightAppFrontend.Shared.Components.Loaders
+
+<PageTitle>User Profile</PageTitle>
+
+<ProfileLoader UserId="@UserId"/>
+
+@code {
+    [Parameter]
+    public string? UserId { get; set; }
+}

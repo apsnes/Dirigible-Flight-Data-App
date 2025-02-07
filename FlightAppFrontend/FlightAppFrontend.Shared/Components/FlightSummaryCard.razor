@@ -1,7 +1,7 @@
 ﻿@using FlightAppLibrary.Models.Response
 
 <div class="card mt-5 pb-1">
-    <div class="card-content">
+    <div class="card-content ml-5">
         <div class="media">
             <div class="media-left">
                 <figure class="image is-96x96 is-square">
@@ -58,8 +58,9 @@
         return ((DateTime)dateTime).ToString("HH:MM - dd/MM/yyyy");
     }
 
-    protected string ParseDelayInformation(int? delay){
+    protected string ParseDelayInformation(int? delay)
+    {
         if (delay == null) return "None";
-        return ((int)delay).ToString();
+        return delay >= 60 ? $"{delay / 60} hour{(delay / 60 > 1 ? "s" : "")}, {delay % 60} minute{(delay % 60 != 1 ? "s" : "")}" : $"{delay} minute{(delay != 1 ? "s" : "")}";
     }
 }

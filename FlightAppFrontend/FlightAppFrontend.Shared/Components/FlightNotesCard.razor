@@ -1,5 +1,7 @@
-﻿@using FlightAppLibrary.Models.Dtos
+﻿@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Dtos
 @using FlightAppLibrary.Models.Response
+@inject IHttpClientFactory ClientFactory
 
 <div class="card">
     <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -19,12 +21,12 @@
     @if (IsCardOpen)
     {
         <div class="card-content">
-            <AddNoteCard FlightResponse="FlightResponse" OnNoteAdded="HandleNotesChanged" />
+            <AddNoteCard FlightResponse="FlightResponse" CurrentUser="CurrentUser" OnNoteAdded="HandleNotesChanged" />
             <div class="media">
                 <div class="media-content">
                     @foreach (var note in Notes)
                     {
-                        <IndividualNoteCard Note="note" />
+                        <IndividualNoteCard Note="note" CurrentUser="CurrentUser" OnNoteDeleted="HandleNoteDeleted"/>
                     }
                 </div>
             </div>
@@ -36,6 +38,7 @@
 {
     [Parameter] public List<NoteDto> Notes { get; set; }
     [Parameter] public FlightResponse FlightResponse { get; set; }
+    public UserDTO CurrentUser { get; set; }
     private bool IsCardOpen = false;
 
     private void ToggleCard()
@@ -43,9 +46,21 @@
         IsCardOpen = !IsCardOpen;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+        CurrentUser = userResponse.Value;
+    }
+
     private void HandleNotesChanged(NoteDto note)
     {
         if (note.User!.DisplayName == null) note.User.DisplayName = note.User.FirstName;
         Notes.Add(note);
+    }
+
+    private void HandleNoteDeleted(NoteDto note)
+    {
+        Notes.Remove(note);
     }
 }

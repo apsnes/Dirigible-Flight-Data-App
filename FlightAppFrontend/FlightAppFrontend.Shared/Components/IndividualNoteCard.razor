@@ -3,15 +3,26 @@
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
+@using FlightAppLibrary.Models.Enums
 @inject IHttpClientFactory ClientFactory
 
 <div class="card">
-    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+    <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
+        <figure class="image is-64x64 ml-2 mt-2 is-square">
+            <a href="@($"/profile/{Note.User!.Id}")">
+                <img src="@Note.User!.Avatar" alt="User Avatar" />
+            </a>
+        </figure>
+        
         <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
             <span class="has-text-weight-bold">@Note.User!.DisplayName</span>
             <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
             <span>@Note.NoteText</span>
         </div>
+        @if (Note.UserId == CurrentUser.Id)
+        {
+            <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
+        }
         <button class="card-header-icon" aria-label="more options">
             @if (@isCardOpen)
             {
@@ -28,24 +39,34 @@
     {
         @foreach (var reply in Note.Replies!)
         {
-            <div class="media">
-                <div class="media-content ml-5">
-                    <div style="display: inline-block">
-                        @* User pfofile picture here? *@
-                        <p class=" is-size-6 ml-5"><strong>@reply.User!.DisplayName</strong></p>
-                    </div>
-                    <p class="is-size-7 ml-5">@reply.TimeStamp.ToString()</p>
-                    <p class="is-size-6 ml-5">@reply.ReplyText</p>
+            <div class="media" style="position: relative;">
+                <div class="media-left ml-5">
+                    <figure class="image is-64x64 ml-2 mt-2 is-square">
+                        <img src="@Note.User!.Avatar" alt="User Avatar" />
+                    </figure>
                 </div>
+                <div class="media-content">
+                    <p class=" is-size-6"><strong>@reply.User!.DisplayName</strong></p>
+                    <p class="is-size-7">@reply.TimeStamp.ToString()</p>
+                    <p class="is-size-6"><strong>@reply.ReplyText</strong></p>
+                </div>
+                @if (reply.UserId == CurrentUser.Id)
+                {
+                    <div class="media-right">
+                        <button class="button is-danger" style="position: absolute; top: 0; right: 0; margin-right: 80px; margin-top: 25px;" @onclick="() => DeleteReply(reply)">Delete</button>
+                    </div>
+                }
             </div>
         }
-        <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" />
+        <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" CurrentUser="CurrentUser"/>
     }
 </div>
 
 @code
 {
     [Parameter] public NoteDto Note { get; set; }
+    [Parameter] public UserDTO CurrentUser { get; set; }
+    [Parameter] public EventCallback<NoteDto> OnNoteDeleted { get; set; }
     private bool isCardOpen = false;
 
     private void ToggleCard()
@@ -53,9 +74,74 @@
         isCardOpen = !isCardOpen;
     }
 
-    private void HandleReplyAdded(ReplyDto replyDto)
+    public void HandleReplyAdded(ReplyDto ReplyDto)
     {
-        if (replyDto.User.DisplayName == null) replyDto.User.DisplayName = replyDto.User.FirstName;
-        Note.Replies!.Add(replyDto);
+        if (ReplyDto.User.DisplayName == null) ReplyDto.User.DisplayName = ReplyDto.User.FirstName;
+        Note.Replies!.Add(ReplyDto);
+    }
+
+    public async Task DeleteNote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var response = await client.DeleteAsync($"notes/{Note.NoteId}");
+        if (response.IsSuccessStatusCode)
+        {
+            isCardOpen = false;
+            await OnNoteDeleted.InvokeAsync(Note);
+        }
+    }
+
+    public async Task DeleteReply(ReplyDto replyDto)
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+        var response = await client.DeleteAsync($"replies/{replyDto.ReplyId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Note.Replies.Remove(replyDto);
+        }
+    }
+
+    public async Task UpVote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+
+        var vote = new VoteDto()
+            {
+                Value = 1,
+                CommenterId = Note.UserId,
+                CommentId = Note.NoteId,
+                CommentType = CommentType.Note
+            };
+
+        var json = JsonSerializer.Serialize(vote);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("votes", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            
+        }
+    }
+
+    public async Task DownVote()
+    {
+        var client = ClientFactory.CreateClient("DirigibleApi");
+
+        var vote = new VoteDto()
+            {
+                Value = -1,
+                CommenterId = Note.UserId,
+                CommentId = Note.NoteId,
+                CommentType = CommentType.Note
+            };
+
+        var json = JsonSerializer.Serialize(vote);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("votes", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            
+        }
     }
 }

@@ -16,9 +16,7 @@
         <div class="card-content">
             <div class="media">
                 <div class="media-left">
-                    <figure class="image is-128x128 is-square">
-                        <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/1200px-Color_icon_blue.svg.png" alt="user-avatar" />
-                    </figure>
+                    <ProfileAvatar AvatarPath="@AppUser!.Avatar"/>
                     <button type="button" class="button is-warning mt-5" aria-label="change-avatar" @onclick="() => ToggleIsActive()">Change Avatar</button>
                 </div>
                 <div class="media-content ml-3">
@@ -76,7 +74,7 @@
             <section class="modal-card-body">
                 @foreach (var avatar in UserService.Avatars)
                 {
-                    <button type="button" aria-label="choose-avatar" @onclick="() => ToggleIsActive()">
+                    <button type="button" aria-label="choose-avatar" @onclick="() => SetAvatar(avatar)">
                         <img class="image is-128x128 is-rounded" src="@avatar" alt="user-avatar" />
                     </button>
                 }
@@ -128,6 +126,13 @@
             ErrorMessage = ex.Message;
         }
     }
+
+    protected void SetAvatar(string path)
+    {
+        AppUser!.Avatar = path;
+        ToggleIsActive();
+    }
+
     protected void HandleInvalidSubmit()
     {
         ErrorMessage = "Cannot submit";

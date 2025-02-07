@@ -90,6 +90,8 @@ builder.Services.AddScoped<INotesRepository, NotesRepository>();
 builder.Services.AddScoped<INotesService, NotesService>();
 builder.Services.AddScoped<IRepliesRepository, RepliesRepository>();
 builder.Services.AddScoped<IRepliesService, RepliesService>();
+builder.Services.AddScoped<IVotesService, VotesService>();
+builder.Services.AddScoped<IVotesRepository, VotesRepository>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -102,7 +104,6 @@ builder.Services.AddHealthChecks()
     .AddCheck<PlaneSpottersHealthCheck>("PlaneSpottersHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<MapDataHealthCheck>("MapDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<AirLineLogosHealthCheck>("AirLineLogosHealthCheck", failureStatus: HealthStatus.Unhealthy);
-
 
 builder.Services.AddRateLimiter(ops => ops
     .AddPolicy("token", httpContext =>
@@ -146,6 +147,7 @@ app.UseHealthChecks("/health", new HealthCheckOptions
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 });
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

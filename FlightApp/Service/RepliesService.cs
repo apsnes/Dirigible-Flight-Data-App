@@ -11,8 +11,9 @@ namespace FlightApp.Service
     {
         List<Reply> GetReplies();
         List<ReplyDto> GetRepliesByNoteId(int noteId);
-        Reply PostReply(ReplyDto replyDto);
+        ReplyDto PostReply(ReplyDto replyDto);
         List<ReplyDto> GetRepliesByUserId(string userId);
+        Reply DeleteReplyById(int id);
     }
 
     public class RepliesService : IRepliesService
@@ -36,6 +37,7 @@ namespace FlightApp.Service
 
             var res = replies.Select(r => new ReplyDto()
             {
+                ReplyId = r.ReplyId,
                 UserId = r.UserId,
                 NoteId = r.NoteId,
                 ReplyText = r.ReplyText,
@@ -56,10 +58,19 @@ namespace FlightApp.Service
 
             var res = replies.Select(r => new ReplyDto()
             {
+                ReplyId = r.ReplyId,
                 UserId = r.UserId,
                 NoteId = r.NoteId,
                 ReplyText = r.ReplyText,
                 TimeStamp = r.TimeStamp,
+                Note = new NoteDto()
+                {
+                    NoteId = r.NoteId,
+                    FlightIata = r.Note.FlightIata,
+                    UserId = r.Note.UserId,
+                    NoteText = r.Note.NoteText,
+                    TimeStamp = r.Note.TimeStamp,
+                },
                 User = new UserDTO()
                 {
                     Id = r.User!.Id,
@@ -70,8 +81,8 @@ namespace FlightApp.Service
 
             return res;
         }
-        //-------PostRequests----------
-        public Reply PostReply(ReplyDto replyDto)
+        //-------Post Requests----------
+        public ReplyDto PostReply(ReplyDto replyDto)
         {
             var reply = new Reply()
             {
@@ -80,8 +91,15 @@ namespace FlightApp.Service
                 ReplyText = replyDto.ReplyText,
                 TimeStamp = replyDto.TimeStamp
             };
-            //var reply = _mapper.Map<Reply>(replyDto);
-            return _repository.AddReply(reply);
+            var response = _repository.AddReply(reply);
+            if (response == null) return null;
+            replyDto.ReplyId = response.ReplyId;
+            return replyDto;
+        }
+        //-------Delete Requests----------
+        public Reply DeleteReplyById(int id)
+        {
+            return _repository.DeleteReplyById(id);
         }
     }
 }

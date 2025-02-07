@@ -16,7 +16,6 @@ using System.Text;
 
 namespace FlightApp.Service
 {
-
     public class AccountService : IAccountService
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -42,7 +41,6 @@ namespace FlightApp.Service
 
         public async Task<SignUpResponseDTO> Register(SignUpRequestDTO signUpRequestDTO)
         {
-
             var user = new ApplicationUser()
             {
                 UserName = signUpRequestDTO.Email,
@@ -115,12 +113,10 @@ namespace FlightApp.Service
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         DisplayName = user.DisplayName,
-                        Karma = user.Karma
-
+                        Karma = user.Karma,
+                        Avatar = user.Avatar
                     }
                 };
-
-
             }
             else
             {
@@ -130,16 +126,16 @@ namespace FlightApp.Service
                     ErrorMessage = "Invalid Authentication"
                 };
             }
-
-
         }
+
         private async Task<List<Claim>> GetClaims(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim("Id", user.Id)
+                new Claim("Id", user.Id),
+                //new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
             var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(user.Email));
             foreach (var role in roles)
@@ -160,7 +156,6 @@ namespace FlightApp.Service
             ApplicationUser? user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-
                 UserDTO userDTO = new UserDTO()
                 {
                     Id = user.Id,
@@ -171,21 +166,20 @@ namespace FlightApp.Service
                     LastName = user.LastName,
                     DisplayName = user.DisplayName,
                     Karma = user.Karma,
-
+                    Avatar = user.Avatar
                 };
                 //UserDTO userDTO = new UserDTO();
                 //userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
             }
             return null;
-
         }
+
         public async Task<UserDTO> GetUserDetailsByEmail(string email)
         {
             ApplicationUser? user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-
                 UserDTO userDTO = new UserDTO()
                 {
                     Id = user.Id,
@@ -196,25 +190,22 @@ namespace FlightApp.Service
                     LastName = user.LastName,
                     DisplayName = user.DisplayName,
                     Karma = user.Karma,
-
+                    Avatar= user.Avatar
                 };
                 //UserDTO userDTO = new UserDTO();
                 //userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
             }
             return null;
-
         }
+
         public async Task<ResponseItem> UpdateUser(string userId, UserDTO userDto)
         {
             try
             {
-
-
                 ApplicationUser? user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-
                     user.DisplayName = userDto.DisplayName;
                     user.FirstName = userDto.FirstName;
                     user.LastName = userDto.LastName;
@@ -222,6 +213,7 @@ namespace FlightApp.Service
                     user.PhoneNumber = userDto.PhoneNumber;
                     user.Karma = userDto.Karma;
                     user.Pronouns = userDto.Pronouns;
+                    user.Avatar = userDto.Avatar;
                     //user = _mapper.Map<ApplicationUser>(userDto);
 
                     await _userManager.UpdateAsync(user);
@@ -239,15 +231,12 @@ namespace FlightApp.Service
                     IsSuccess = false,
                     Message = ex.Message
                 };
-
             }
             return new ResponseItem()
             {
                 IsSuccess = false,
                 Message = "Something went wrong"
             };
-
-
         }
 
         public async Task<ResponseItem> ResetPassword(PasswordResetDto dto)
@@ -262,10 +251,8 @@ namespace FlightApp.Service
                 ApplicationUser? user = await _userManager.FindByEmailAsync(dto.Email);
                 if (user == null)
                 {
-
                     responseItem.Message = "User not found";
                     return responseItem;
-
                 }
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
@@ -274,20 +261,17 @@ namespace FlightApp.Service
                     responseItem.IsSuccess = true;
                     responseItem.Message = "Success";
                     return responseItem;
-
                 }
             }
             catch (Exception ex)
             {
-
                 responseItem.Message = ex.Message;
                 return responseItem;
-
             }
-
             responseItem.Message = "an error occurred";
             return responseItem;
         }
+
         public async Task<ResponseItem> UpdatePassword(string userId, PasswordUpdateDto dto)
         {
             ResponseItem responseItem = new ResponseItem()
@@ -300,10 +284,8 @@ namespace FlightApp.Service
                 ApplicationUser? user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
                 {
-
                     responseItem.Message = "User not found";
                     return responseItem;
-
                 }
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
@@ -312,50 +294,41 @@ namespace FlightApp.Service
                     responseItem.IsSuccess = true;
                     responseItem.Message = "Success";
                     return responseItem;
-
                 }
             }
             catch (Exception ex)
             {
-
                 responseItem.Message = ex.Message;
                 return responseItem;
-
             }
-
             responseItem.Message = "an error occurred";
             return responseItem;
         }
+
         public async Task<ResponseItem> AssignRoleToUser(string email, string role)
         {
             ResponseItem responseItem = new ResponseItem();
             if ( await _roleManager.RoleExistsAsync(role))
-            {
-              
+            {        
                 var user = await _userManager.FindByEmailAsync(email);
                 if (user == null)
                 {
                     responseItem.IsSuccess = false;
                     responseItem.Message = "User not found";
                     return responseItem;
-
                 }
-
                 if (!await _roleManager.RoleExistsAsync(role.ToString()))
                 {
                     responseItem.IsSuccess = false;
                     responseItem.Message = "Role not found";
                     return responseItem;
                 }
-
                 var result = await _userManager.AddToRoleAsync(user, role.ToString());
                 if (!result.Succeeded)
                 {
                     responseItem.IsSuccess = false;
                     responseItem.Message = "Something went wrong";
-
                 }
-
                 responseItem.IsSuccess = true;
                 responseItem.Message = "Success";
                 return responseItem;
@@ -363,17 +336,15 @@ namespace FlightApp.Service
             responseItem.IsSuccess = false; ;
             responseItem.Message = "No matching role";
             return responseItem;
-
         }
         public async Task<ResponseItem> UpdateUserRoles(string role, string userId)
         {
             ResponseItem responseItem = new ResponseItem();
             var user = await _userManager.FindByIdAsync(userId);
-
             var UserHasRole = await _userManager.IsInRoleAsync(user, role);
+            Console.WriteLine($"value is {UserHasRole}");
             if (!UserHasRole)
             {
-
                 var result = await AssignRoleToUser(user.Email, role);
                 if (result.IsSuccess)
                 {
@@ -407,12 +378,8 @@ namespace FlightApp.Service
                     responseItem.IsSuccess = false;
                     responseItem.Message = "something went wrong";
                 }
-            }
-
-           
+            }     
             return responseItem;
-        }
-
-       
+        }       
     }
 }

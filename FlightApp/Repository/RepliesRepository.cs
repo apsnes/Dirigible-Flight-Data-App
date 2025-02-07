@@ -10,6 +10,7 @@ namespace FlightApp.Repository
         List<Reply> GetReplies();
         List<Reply> GetRepliesByNoteId(int noteId);
         List<Reply> GetRepliesByUserId(string userId);
+        Reply DeleteReplyById(int id);
     }
 
     public class RepliesRepository : IRepliesRepository
@@ -49,7 +50,11 @@ namespace FlightApp.Repository
         {
             try
             {
-                return db.Replies.Include(r => r.User).Where(r => r.UserId == userId).ToList();
+                return db.Replies
+                    .Include(r => r.Note)
+                    .Include(r => r.User)
+                    .Where(r => r.UserId == userId)
+                    .ToList();
             }
             catch (Exception e)
             {
@@ -63,6 +68,23 @@ namespace FlightApp.Repository
             try
             {
                 db.Replies.Add(reply);
+                db.SaveChanges();
+                return reply;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
+        // -----DELETE REQUESTS-----
+        public Reply DeleteReplyById(int id)
+        {
+            try
+            {
+                var reply = db.Replies.Find(id);
+                db.Replies.Remove(reply);
                 db.SaveChanges();
                 return reply;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlightAppLibrary.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace FlightAppLibrary.Models.Dtos
 {
-    public class ReplyDto
+    public class ReplyDto : IDisplayComment
     {
+        [JsonPropertyName("replyId")]
+        public int ReplyId { get; set; }
         [JsonPropertyName("userId")]
         public string UserId { get; set; }
         [JsonPropertyName("noteId")]
@@ -20,5 +23,8 @@ namespace FlightAppLibrary.Models.Dtos
 
         [JsonPropertyName("user")]
         public UserDTO? User { get; set; }
+
+        [JsonPropertyName("note")]
+        public NoteDto? Note { get; set; }
     }
 }

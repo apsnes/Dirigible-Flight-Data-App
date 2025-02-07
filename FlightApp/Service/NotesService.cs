@@ -8,7 +8,7 @@ namespace FlightApp.Service
     public interface INotesService
     {
         List<Note> GetNotes();
-        Note AddNote(NoteDto noteDto);
+        NoteDto AddNote(NoteDto noteDto);
         List<NoteDto> GetNotesByIataAndDateTime(string flightIata, DateTime dateTimeScheduled);
         NoteDto GetNoteById(int id);
         List<NoteDto> GetNotesByUserId(string userId);
@@ -51,10 +51,12 @@ namespace FlightApp.Service
                     DisplayName = note.User.DisplayName ?? note.User.FirstName,
                     Email = note.User.Email!,
                     PhoneNumber = note.User.PhoneNumber,
-                    Karma = note.User.Karma
+                    Karma = note.User.Karma,
+                    Avatar = note.User.Avatar,
                 },
                 Replies = note.Replies.Select(r => new ReplyDto()
                 {
+                    ReplyId = r.ReplyId,
                     UserId = r.UserId,
                     NoteId = r.NoteId,
                     ReplyText = r.ReplyText,
@@ -68,7 +70,8 @@ namespace FlightApp.Service
                         DisplayName = r.User.DisplayName ?? r.User.FirstName,
                         Email = r.User.Email!,
                         PhoneNumber = r.User.PhoneNumber,
-                        Karma = r.User.Karma
+                        Karma = r.User.Karma,
+                        Avatar = r.User.Avatar,
                     }
                 }).ToList()
             };
@@ -97,10 +100,12 @@ namespace FlightApp.Service
                         DisplayName = n.User.DisplayName ?? n.User.FirstName,
                         Email = n.User.Email!,
                         PhoneNumber = n.User.PhoneNumber,
-                        Karma = n.User.Karma
+                        Karma = n.User.Karma,
+                        Avatar = n.User.Avatar
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
+                        ReplyId = r.ReplyId,
                         UserId = r.UserId,
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,
@@ -114,7 +119,8 @@ namespace FlightApp.Service
                             DisplayName = r.User.DisplayName ?? r.User.FirstName,
                             Email = r.User.Email!,
                             PhoneNumber = r.User.PhoneNumber,
-                            Karma = r.User.Karma
+                            Karma = r.User.Karma,
+                            Avatar = r.User.Avatar
                         }
                     }).ToList()
                 }).ToList();
@@ -145,10 +151,12 @@ namespace FlightApp.Service
                         DisplayName = n.User.DisplayName ?? n.User.FirstName,
                         Email = n.User.Email!,
                         PhoneNumber = n.User.PhoneNumber,
-                        Karma = n.User.Karma
+                        Karma = n.User.Karma,
+                        Avatar = n.User.Avatar
                     },
                     Replies = n.Replies.Select(r => new ReplyDto()
                     {
+                        ReplyId = r.ReplyId,
                         UserId = r.UserId,
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,
@@ -162,7 +170,8 @@ namespace FlightApp.Service
                             DisplayName = r.User.DisplayName ?? r.User.FirstName,
                             Email = r.User.Email!,
                             PhoneNumber = r.User.PhoneNumber,
-                            Karma = r.User.Karma
+                            Karma = r.User.Karma,
+                            Avatar = r.User.Avatar
                         }
                     }).ToList()
                 }).ToList();
@@ -172,7 +181,7 @@ namespace FlightApp.Service
         }
 
         //-------POST REQUESTS----------
-        public Note AddNote(NoteDto noteDto)
+        public NoteDto AddNote(NoteDto noteDto)
         {
             var note = new Note()
             {
@@ -184,7 +193,10 @@ namespace FlightApp.Service
                 Replies = new()
             };
 
-            return _notesRepository.AddNote(note);
+            var res = _notesRepository.AddNote(note);
+            if (res == null) return null;
+            noteDto.NoteId = res.NoteId;
+            return noteDto;
         }
 
         //-------DELETE REQUESTS----------
