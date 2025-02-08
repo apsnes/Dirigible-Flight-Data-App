@@ -24,5 +24,8 @@ namespace FlightAppLibrary.Models.Dtos
 
         [JsonPropertyName("replies")]
         public List<ReplyDto>? Replies { get; set; }
+
+        [JsonPropertyName("karma")]
+        public int Karma { get; set; }
     }
 }

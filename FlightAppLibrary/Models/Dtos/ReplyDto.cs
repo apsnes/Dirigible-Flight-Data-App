@@ -26,5 +26,8 @@ namespace FlightAppLibrary.Models.Dtos
 
         [JsonPropertyName("note")]
         public NoteDto? Note { get; set; }
+
+        [JsonPropertyName("karma")]
+        public int Karma { get; set; }
     }
 }

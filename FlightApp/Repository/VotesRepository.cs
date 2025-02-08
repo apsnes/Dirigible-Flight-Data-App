@@ -1,6 +1,7 @@
 ﻿using FlightApp.Database;
 using FlightApp.Entities;
 using FlightApp.Models;
+using FlightAppLibrary.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace FlightApp.Repository
@@ -25,12 +26,24 @@ namespace FlightApp.Repository
         {
             try
             {
-                if(_db.Votes.Any(v => v.NoteId == null && v.ReplyId == vote.ReplyId) || _db.Votes.Any(v => v.ReplyId == null && v.NoteId == vote.NoteId))
+                if(_db.Votes.Any(v => v.UserId == vote.UserId && v.ReplyId == vote.ReplyId) 
+                    || _db.Votes.Any(v => v.UserId == vote.UserId && v.NoteId == vote.NoteId))
                 {
                     return null;
                 }
 
                 _db.Votes.Add(vote);
+
+                if(vote.CommentType == CommentType.Note)
+                {
+                    var note = _db.Notes.FirstOrDefault(n => n.NoteId == vote.NoteId);
+                    note!.Karma += vote.Value;
+                }
+                else
+                {
+                    var reply = _db.Replies.FirstOrDefault(r => r.ReplyId == vote.ReplyId);
+                    reply!.Karma += vote.Value;
+                }
 
                 ApplicationUser? user = await _userManager.FindByIdAsync(commenterId);
                 if (user != null)
