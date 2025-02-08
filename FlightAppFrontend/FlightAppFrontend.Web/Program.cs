@@ -25,23 +25,22 @@ builder.Services.AddHttpClient("OpenCageBase", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("OpenCageBase")!));
 
 builder.Services.AddHttpClient("AircraftPhotos", client =>
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AircraftPhotos")!))
-    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AircraftPhotos")!));
+//.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
 builder.Services.AddHttpClient("MapData", client =>
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("MapData")!))
-    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("MapData")!));
+    //.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
 
-builder.Services.AddOptions();
-builder.Services.AddAuthorizationCore();
+
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddScoped<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
-builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddBlazoredLocalStorage();
 
 

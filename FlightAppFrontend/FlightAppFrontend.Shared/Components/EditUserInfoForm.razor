@@ -1,3 +1,4 @@
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppFrontend.Shared.Services
@@ -7,6 +8,7 @@
 @using System.Text
 @inject IHttpClientFactory DirigibleApi
 @inject NavigationManager NavigationManager
+@inject TokenStateService tokenStateService
 
 <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
@@ -109,6 +111,7 @@
         try
         {
             var client = DirigibleApi.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
             var content = new StringContent(JsonSerializer.Serialize(AppUser), Encoding.UTF8, "application/json");
             var result = await client.PutAsync("Account/UpdateUser", content);
             if (result.IsSuccessStatusCode)

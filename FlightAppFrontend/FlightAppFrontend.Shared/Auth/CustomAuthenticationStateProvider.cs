@@ -36,14 +36,11 @@ namespace FlightAppFrontend.Shared.Auth
                     var jwtToken = handler.ReadJwtToken(token);
                     if (jwtToken.ValidTo < DateTime.UtcNow)
                     {
-                        Console.WriteLine("Token has expired");
                         return _anonymous;
                     }
 
                     var claims = jwtToken.Claims.ToList();
-                    claims.ForEach(claim => Console.WriteLine($"Claim: {claim.Type} - {claim.Value}"));
-
-                    // Add additional claims if necessary
+                   
                     claims.Add(new Claim("Token", token));
 
                     identity = new ClaimsIdentity(claims, "jwtAuthType");

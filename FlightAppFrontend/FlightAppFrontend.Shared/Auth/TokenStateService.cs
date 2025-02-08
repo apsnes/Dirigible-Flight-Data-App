@@ -24,22 +24,19 @@ namespace FlightAppFrontend.Shared.Auth
 
         public async Task<string> GetTokenAsync()
         {
-            
-            if (!string.IsNullOrEmpty(_token))
+            try
             {
+                if (string.IsNullOrEmpty(_token))
+                {
+                    _token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "TokenKey");
+                }
                 return _token;
+            }
+            catch (Exception ex)
+            {
+                return "";
             }
 
-            if (_jsRuntime is IJSInProcessRuntime)
-            {
-                _token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "TokenKey");
-                return _token;
-            }
-            else
-            {
-                // Defer the call and return an empty token for now
-                return string.Empty;
-            }
         }
 
         public async Task SetTokenAsync(string token)

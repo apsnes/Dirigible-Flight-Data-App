@@ -16,13 +16,7 @@
 
         <main class="body">
 
-
-            <CascadingValue Value="this">
                 @Body
-            </CascadingValue>
-
-
-
 
         </main>
 
@@ -47,11 +41,7 @@
 
     [CascadingParameter]
     private AuthenticationState _authState { get; set; }
-    public string Token { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
+  
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
 
@@ -59,11 +49,10 @@
         
         if (firstRender){
 
-            Token = await tokenService.LoadTokenAsync();
-            Console.WriteLine("helllo");
+            var token = await tokenService.LoadTokenAsync();
             _authState = await authenticationStateTask;
 
-            if (Token != null)
+            if (token != null)
             {
                 if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
                 {
@@ -75,21 +64,5 @@
         }
 
     }
-    public async Task HandleChildComponentChange()
-    {
-        // var token = await tokenService.LoadTokenAsync();
-        // Console.WriteLine("helllo");
-        // _authState = await authenticationStateTask;
-
-        // if (token != null)
-        // {
-        //     if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
-        //     {
-
-        //         customProvider.NotifyAuthenticationStateChanged();
-
-        //     }
-        // }
-        // StateHasChanged();
-    }
+   
 }

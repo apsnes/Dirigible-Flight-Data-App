@@ -1,10 +1,12 @@
-﻿@using FlightAppFrontend.Shared.Components.Utility
+﻿@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
 @using FlightAppLibrary.Models.Enums
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
 
 <div class="card">
     <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -83,6 +85,7 @@
     public async Task DeleteNote()
     {
         var client = ClientFactory.CreateClient("DirigibleApi");
+        await tokenStateService.UpdateHeaders(client);
         var response = await client.DeleteAsync($"notes/{Note.NoteId}");
         if (response.IsSuccessStatusCode)
         {

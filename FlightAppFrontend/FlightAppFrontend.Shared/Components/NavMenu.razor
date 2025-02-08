@@ -99,7 +99,6 @@
     private async Task Logout()
     {
         await tokenStateService.SetTokenAsync(null);
-        //TokenService.SetTokenToNull();
         TokenService.RemoveTokenAsync();
         if (authenticationStateProvider is CustomAuthenticationStateProvider customProvider){
             customProvider.NotifyAuthenticationStateChanged();

@@ -1,8 +1,10 @@
-﻿@using FlightAppFrontend.Shared.Components.Utility
+﻿@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
 
 @if (Notes == null)
 {
@@ -21,6 +23,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         var client = ClientFactory.CreateClient("DirigibleApi");
+        await tokenStateService.UpdateHeaders(client);
         string url = $"Notes/flight?flight_iata={FlightResponse.Flight.Iata}&departure_time={FlightResponse.Departure.Scheduled.ToString()}";
         var response = await client.GetValueAsync<List<NoteDto>>(url);
         Notes = response.Value;

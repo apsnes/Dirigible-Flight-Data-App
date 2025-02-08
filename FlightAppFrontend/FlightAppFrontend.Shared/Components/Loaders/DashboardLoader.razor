@@ -52,7 +52,6 @@ else
 
                 @if (Editing)
                 {
-                   @*  <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/> *@
                     <EditUserInfoForm AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
                 }
                 else if(UpdatingPassword)
@@ -85,9 +84,6 @@ else
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationStateTask { get; set; }
- 
-    [CascadingParameter]
-    public MainLayout ParentLayout { get; set; }
 
     private string email = "";
 
@@ -99,7 +95,6 @@ else
     {
         if (firstRender)
         {
-            // await TriggerChange();
             try
             {
                 var client = ClientFactory.CreateClient("DirigibleApi");
@@ -149,10 +144,5 @@ else
     {
         ErrorMessage = "";
     }
-  
 
-    // private async Task TriggerChange()
-    // {
-    //     ParentLayout.HandleChildComponentChange();
-    // }
 }

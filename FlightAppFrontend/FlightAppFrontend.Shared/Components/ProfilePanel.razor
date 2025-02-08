@@ -1,8 +1,10 @@
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models
 @using FlightAppLibrary.Models.Dtos
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
 
 <nav class="panel is-warning">
     <p class="panel-heading has-text-centered">Comment History</p>
@@ -39,6 +41,7 @@
         if (Comments is null)
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
             var notesResponse = await client.GetValueAsync<List<NoteDto>>($"Notes/user/{User!.Id}");
             var repliesResponse = await client.GetValueAsync<List<ReplyDto>>($"Replies/user/{User!.Id}");
 
