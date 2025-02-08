@@ -88,8 +88,8 @@
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-    [Parameter]
-    public AuthenticationState? AuthState { get; set; }
+    // [CascadingParameter]
+    // public AuthenticationState? AuthState { get; set; }
 
     [Parameter]
     public UserDTO? AppUser { get; set; }

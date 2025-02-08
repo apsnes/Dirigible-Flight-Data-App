@@ -52,7 +52,8 @@ else
 
                 @if (Editing)
                 {
-                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/>
+                   @*  <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/> *@
+                    <EditUserInfoForm AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
                 }
                 else if(UpdatingPassword)
                 {
@@ -60,7 +61,7 @@ else
                 }
                 else
                 {
-                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/>
+                    <DashboardProfileCard AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/>
                 }
             </div>
             <div class="column">
@@ -84,8 +85,7 @@ else
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationStateTask { get; set; }
-    [CascadingParameter]
-    private AuthenticationState _authState { get; set; }
+ 
     [CascadingParameter]
     public MainLayout ParentLayout { get; set; }
 
@@ -106,6 +106,7 @@ else
                 await tokenStateService.UpdateHeaders(client);
                 var response = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
                 User = response.Value!;
+                StateHasChanged();
 
             }
             catch (Exception ex)
