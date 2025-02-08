@@ -15,8 +15,7 @@ namespace FlightAppFrontend.Shared.Auth
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly TokenStateService _tokenStateService;
-    
-        
+        private AuthenticationState _anonymous => new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
         public CustomAuthenticationStateProvider(TokenStateService tokenStateService)
         {
@@ -25,7 +24,7 @@ namespace FlightAppFrontend.Shared.Auth
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = _tokenStateService.GetToken();
+            var token = await _tokenStateService.GetTokenAsync();
             var identity = new ClaimsIdentity();
 
             if (!string.IsNullOrEmpty(token))
@@ -35,7 +34,14 @@ namespace FlightAppFrontend.Shared.Auth
                 if (handler.CanReadToken(token))
                 {
                     var jwtToken = handler.ReadJwtToken(token);
+                    if (jwtToken.ValidTo < DateTime.UtcNow)
+                    {
+                        Console.WriteLine("Token has expired");
+                        return _anonymous;
+                    }
+
                     var claims = jwtToken.Claims.ToList();
+                    claims.ForEach(claim => Console.WriteLine($"Claim: {claim.Type} - {claim.Value}"));
 
                     // Add additional claims if necessary
                     claims.Add(new Claim("Token", token));
@@ -49,8 +55,7 @@ namespace FlightAppFrontend.Shared.Auth
             }
 
             var user = new ClaimsPrincipal(identity);
-            return await Task.FromResult(new AuthenticationState(user));
-
+            return new AuthenticationState(user);
         }
 
         public void NotifyAuthenticationStateChanged()
@@ -59,6 +64,5 @@ namespace FlightAppFrontend.Shared.Auth
             NotifyAuthenticationStateChanged(authState);
         }
     }
-
 
 }

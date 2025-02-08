@@ -123,7 +123,7 @@ else
                 await JsInteropService.SetItem("jwtToken", token);
                 if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
                 {
-                    tokenStateService.SetToken(token);
+                    await tokenStateService.SetTokenAsync(token);
                     customProvider.NotifyAuthenticationStateChanged();
                 }
                 NavigationManager.NavigateTo("/dashboard?login=true");

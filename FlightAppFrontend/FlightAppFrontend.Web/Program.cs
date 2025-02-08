@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using FlightAppFrontend.Shared.Auth;
 using FlightAppFrontend.Shared.Services;
 using FlightAppFrontend.Web.Components;
@@ -32,13 +33,17 @@ builder.Services.AddHttpClient("MapData", client =>
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
 
-
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddScoped<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddBlazoredLocalStorage();
+
 
 // Add device-specific services used by the FlightAppFrontend.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();

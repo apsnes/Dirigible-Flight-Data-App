@@ -96,11 +96,11 @@
     {
         IsActive = IsActive is "" ? "is-active" : "";
     }
-    private void Logout()
+    private async Task Logout()
     {
-        tokenStateService.SetToken(null);
+        await tokenStateService.SetTokenAsync(null);
         //TokenService.SetTokenToNull();
-        TokenService.RemoveToken();
+        TokenService.RemoveTokenAsync();
         if (authenticationStateProvider is CustomAuthenticationStateProvider customProvider){
             customProvider.NotifyAuthenticationStateChanged();
         }

@@ -3,13 +3,13 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
-<AuthorizeView>
-    <Authorized>
+@* <AuthorizeView>
+    <Authorized> *@
         <PageTitle>Dashboard</PageTitle>
-        <DashboardLoader />
-    </Authorized>
-    <NotAuthorized>
+        <DashboardLoader  />
+@*     </Authorized>
+    <NotAuthorized> *@
         <PageTitle>Unauthorized</PageTitle>
         <p>You are not authorized to view this page.</p>
-    </NotAuthorized>
-</AuthorizeView>
+@*     </NotAuthorized>
+</AuthorizeView> *@

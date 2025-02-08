@@ -13,7 +13,7 @@ namespace FlightAppFrontend.Shared.Auth
     {
         private readonly IJsInteropService _jsInteropService;
         private readonly TokenStateService _tokenStateService;
-        
+        private string _token = null;
 
         public TokenService(IJsInteropService jsInteropService, TokenStateService tokenStateService)
         {
@@ -23,31 +23,46 @@ namespace FlightAppFrontend.Shared.Auth
 
         public async Task<string> LoadTokenAsync()
         {
-            var token = await GetTokenFromLocalStorageAsync();
-            _tokenStateService.SetToken( token );
-            return token;
+            if (_token == null)
+            {
+                _token = await GetTokenFromLocalStorageAsync();
+                await _tokenStateService.SetTokenAsync(_token);
+            }
+            return _token;
         }
 
-        public string GetToken()
+        public async Task<string> GetTokenAsync()
         {
-            return _tokenStateService.GetToken();
+            if (_token == null)
+            {
+                return await _tokenStateService.GetTokenAsync();
+            }
+            return _token;
         }
+
         private async Task<string> GetTokenFromLocalStorageAsync()
         {
-            return await _jsInteropService.GetItem("jwtToken");
-          
-           
+            if (_token == null)
+            {
+                var token = await _jsInteropService.GetItem("jwtToken");
+                return token;
+            }
+            return _token;
         }
-        public async void SetTokenToNull()
+
+        public async Task SetTokenToNullAsync()
         {
             await _jsInteropService.SetItem("jwtToken", null);
-
+            _token = null;
         }
-        public async void RemoveToken() {
+
+        public async Task RemoveTokenAsync()
+        {
             await _jsInteropService.RemoveItem("jwtToken");
-        
+            _token = null;
         }
     }
+
 
 
 }
