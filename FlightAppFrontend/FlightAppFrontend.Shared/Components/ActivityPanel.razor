@@ -42,15 +42,18 @@
                 </nav>
             </div>
 
-            for(int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize) - 1; i++)
+            if(Comments.Count > 0)
             {
-                <div class="box">
-                    <a class="panel-block" href="@($"/FlightSummary/{Comments[i].FlightIata}")">
-                        <p><strong>@Comments[i].FlightIata</strong> @Comments[i].Text @Comments[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
-                    </a>
-                </div>
+                for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize) - 1; i++)
+                {
+                    <div class="box">
+                        <a class="panel-block" href="@($"/FlightSummary/{Comments[i].FlightIata}")">
+                            <p><strong>@Comments[i].FlightIata</strong> @Comments[i].Text @Comments[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
+                        </a>
+                    </div>
 
-                if (i >= Comments.Count - 1) break;
+                    if (i >= Comments.Count - 1) break;
+                }
             }
         }
     }

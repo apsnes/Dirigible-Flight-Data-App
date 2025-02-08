@@ -11,19 +11,44 @@
     {
         <Loading />
     }
-    else if(Comments.Count == 0)
-    {
-        <h1>Nothing to see here...</h1>
-    }
     else
     {
-        foreach (var comment in Comments!)
+        <div class="panel-block is-block">
+            <nav class="pagination level" role="navigation" aria-label="pagination">
+                @if (pageNumber != 1)
+                {
+                    <div class="level-left">
+                        <button type="button" class="pagination-previous level-item" @onclick="() => pageNumber -= 1">Previous</button>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="level-left">
+                        <span class="level-item" />
+                    </div>
+                }
+                @if ((pageNumber * pageSize < Comments.Count))
+                {
+                    <div class="level-right">
+                        <button type="button" class="pagination-next level-item" @onclick="() => pageNumber += 1">Next</button>
+                    </div>
+                }
+            </nav>
+        </div>
+
+        if(Comments.Count > 0)
         {
-            <div class="box">
-                <a class="panel-block" href="@($"/FlightSummary/{comment.FlightIata}")">
-                    <p><strong>@comment.FlightIata</strong> @comment.Text @comment.TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
-                </a>
-            </div>
+            for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize) - 1; i++)
+            {
+                <div class="box">
+                    <a class="panel-block" href="@($"/FlightSummary/{Comments[i].FlightIata}")">
+                        <p><strong>@Comments[i].FlightIata</strong> @Comments[i].Text @Comments[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</p>
+                    </a>
+                </div>
+
+                if (i >= Comments.Count - 1) break;
+            }
         }
     }
 </nav>
@@ -33,6 +58,10 @@
     public UserDTO? User { get; set; }
 
     public List<DisplayComment>? Comments { get; set; }
+
+    private int pageNumber = 1;
+
+    private int pageSize = 5;
 
     protected override async Task OnInitializedAsync()
     {
