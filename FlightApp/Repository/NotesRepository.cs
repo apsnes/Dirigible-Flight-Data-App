@@ -71,7 +71,9 @@ namespace FlightApp.Repository
             {
                 var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled)
                     .Include(n => n.User)
-                    .Include(n => n.Replies)
+                    .Include(n => n.Votes)
+                    .Include(n => n.Replies)!
+                    .ThenInclude(r => r.Votes)
                     .ToList();
                
                 return res;

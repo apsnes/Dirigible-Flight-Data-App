@@ -29,5 +29,8 @@ namespace FlightAppLibrary.Models.Dtos
 
         [JsonPropertyName("karma")]
         public int Karma { get; set; }
+
+        [JsonPropertyName("votes")]
+        public List<VoteReturnDto>? Votes { get; set; }
     }
 }

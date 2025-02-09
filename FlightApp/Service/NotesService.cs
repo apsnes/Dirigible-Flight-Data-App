@@ -147,6 +147,7 @@ namespace FlightApp.Service
                     NoteText = n.NoteText,
                     TimeStamp = n.TimeStamp,
                     Karma = n.Karma,
+                    Votes = n.Votes!.Select(v => new VoteReturnDto() { UserId = v.UserId, Value = v.Value }).ToList(),
                     User = new UserDTO()
                     {
                         Id = n.User!.Id,
@@ -167,6 +168,7 @@ namespace FlightApp.Service
                         ReplyText = r.ReplyText,
                         TimeStamp = r.TimeStamp,
                         Karma = r.Karma,
+                        Votes = r.Votes!.Select(v => new VoteReturnDto() { UserId = v.UserId, Value = v.Value }).ToList(),
                         User = new UserDTO()
                         {
                             Id = r.User!.Id,
