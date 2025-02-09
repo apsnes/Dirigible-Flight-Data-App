@@ -27,7 +27,7 @@
     private string? UpvoteColour;
     private string? DownvoteColour;
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         if(Comment!.Votes is List<VoteReturnDto> votes)
         {
@@ -35,8 +35,8 @@
 
             if(previousVote is VoteReturnDto)
             {
-                if (previousVote.Value > 0) UpvoteColour = "has-text-warning";
-                if (previousVote.Value < 0) DownvoteColour = "has-text-warning";
+                if (previousVote.Value > 0) { UpvoteColour = "has-text-warning"; DownvoteColour = ""; };
+                if (previousVote.Value < 0) { DownvoteColour = "has-text-warning"; UpvoteColour = ""; };
             }
         }
     }
