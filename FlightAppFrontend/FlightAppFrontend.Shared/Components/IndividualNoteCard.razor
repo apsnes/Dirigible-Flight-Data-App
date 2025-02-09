@@ -8,21 +8,28 @@
 
 <div class="card">
     <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
-        <figure class="image is-64x64 ml-2 mt-2 is-square">
-            <a href="@($"/profile/{Note.User!.Id}")">
-                <img src="@Note.User!.Avatar" alt="User Avatar" />
-            </a>
-        </figure>
+        <div class="media-left mr-0">
+            <figure class="image is-64x64 ml-2 mt-2 is-square">
+                <a href="@($"/profile/{Note.User!.Id}")">
+                    <img src="@Note.User!.Avatar" alt="User Avatar" />
+                </a>
+            </figure>
+
+            
+
+        </div>
         
         <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
             <span class="has-text-weight-bold">@Note.User!.DisplayName</span>
             <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
             <span>@Note.NoteText</span>
         </div>
+
         @if (Note.UserId == CurrentUser.Id)
         {
             <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
         }
+
         <button class="card-header-icon" aria-label="more options">
             @if (@isCardOpen)
             {
@@ -34,7 +41,7 @@
             }
         </button>
     </header>
-
+    <VoteFooter Comment="Note" />
     @if (isCardOpen)
     {
         @foreach (var reply in Note.Replies!)
@@ -98,50 +105,6 @@
         if (response.IsSuccessStatusCode)
         {
             Note.Replies.Remove(replyDto);
-        }
-    }
-
-    public async Task UpVote()
-    {
-        var client = ClientFactory.CreateClient("DirigibleApi");
-
-        var vote = new VoteDto()
-            {
-                Value = 1,
-                CommenterId = Note.UserId,
-                CommentId = Note.NoteId,
-                CommentType = CommentType.Note
-            };
-
-        var json = JsonSerializer.Serialize(vote);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("votes", content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            
-        }
-    }
-
-    public async Task DownVote()
-    {
-        var client = ClientFactory.CreateClient("DirigibleApi");
-
-        var vote = new VoteDto()
-            {
-                Value = -1,
-                CommenterId = Note.UserId,
-                CommentId = Note.NoteId,
-                CommentType = CommentType.Note
-            };
-
-        var json = JsonSerializer.Serialize(vote);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("votes", content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            
         }
     }
 }

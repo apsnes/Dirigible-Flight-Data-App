@@ -26,13 +26,22 @@ namespace FlightApp.Repository
         {
             try
             {
-                if(_db.Votes.Any(v => v.UserId == vote.UserId && v.ReplyId == vote.ReplyId) 
-                    || _db.Votes.Any(v => v.UserId == vote.UserId && v.NoteId == vote.NoteId))
+                var sameVote = _db.Votes.FirstOrDefault(
+                    v => v.UserId == vote.UserId && v.ReplyId == vote.ReplyId && v.NoteId == null || 
+                    v.UserId == vote.UserId && v.NoteId == vote.NoteId && v.ReplyId == null);
+
+                if(sameVote != null && sameVote.Value == vote.Value)
                 {
                     return null;
                 }
-
-                _db.Votes.Add(vote);
+                else if(sameVote != null && sameVote.Value != vote.Value)
+                {
+                    sameVote.Value += vote.Value;
+                }
+                else
+                {
+                    _db.Votes.Add(vote);
+                }
 
                 if(vote.CommentType == CommentType.Note)
                 {

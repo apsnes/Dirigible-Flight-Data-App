@@ -1,0 +1,68 @@
+@inject IHttpClientFactory ClientFactory
+@using FlightAppLibrary.Models.Dtos
+@using FlightAppLibrary.Models.Enums
+@using FlightAppLibrary.Models.Interfaces
+@using System.Text.Json
+@using System.Text
+
+<span class="level-right">
+    <span class="m-0 pr-3 pb-3 flex-shrink-0">
+        <span class="icon is-clickable" @onclick="() => Vote(VoteType.Upvote)">
+            <button class="fa-solid fa-arrow-up @UpvoteColour"/>
+        </span>
+        <span>@Comment!.Karma</span>
+        <span class="icon is-clickable" @onclick="() => Vote(VoteType.Downvote)">
+            <button class="fa-solid fa-arrow-down @DownvoteColour"/>
+        </span>
+    </span>
+</span>
+
+@code{
+    [Parameter]
+    public IVotable? Comment { get; set; }
+
+    private string? UpvoteColour;
+    private string? DownvoteColour;
+
+    public async Task Vote(VoteType voteType)
+    {
+        try
+        {
+            int value = voteType == VoteType.Upvote ? 1 : -1;
+            int commentId = Comment is NoteDto noteDto ? noteDto.NoteId : ((ReplyDto)Comment!).ReplyId;
+            CommentType commentType = Comment is NoteDto ? CommentType.Note : CommentType.Reply;
+
+            var vote = new VoteDto()
+                {
+                    Value = value,
+                    CommenterId = Comment!.UserId,
+                    CommentId = commentId,
+                    CommentType = commentType
+                };
+
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var json = JsonSerializer.Serialize(vote);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("votes", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (voteType == VoteType.Upvote)
+                {
+                    UpvoteColour = "has-text-success";
+                    Comment.Karma += 1;
+                }
+                else if (voteType == VoteType.Downvote)
+                {
+                    DownvoteColour = "has-text-danger";
+                    Comment.Karma -= 1;
+                }
+                StateHasChanged();
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace FlightAppLibrary.Models.Dtos
 {
-    public class NoteDto : IDisplayComment
+    public class NoteDto : IDisplayComment, IVotable
     {
         [JsonPropertyName("noteId")]
         public int NoteId { get; set; }
