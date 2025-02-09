@@ -7,12 +7,12 @@
 
 <span class="level-right">
     <span class="m-0 pr-3 pb-3 flex-shrink-0">
-        <span class="icon is-clickable" @onclick="() => Vote(VoteType.Upvote)">
-            <button class="fa-solid fa-arrow-up @UpvoteColour"/>
+        <span class="icon is-clickable @UpvoteColour" @onclick="() => Vote(VoteType.Upvote)">
+            <button class="fa-solid fa-arrow-up"/>
         </span>
         <span>@Comment!.Karma</span>
-        <span class="icon is-clickable" @onclick="() => Vote(VoteType.Downvote)">
-            <button class="fa-solid fa-arrow-down @DownvoteColour"/>
+        <span class="icon is-clickable @DownvoteColour" @onclick="() => Vote(VoteType.Downvote)">
+            <button class="fa-solid fa-arrow-down"/>
         </span>
     </span>
 </span>
@@ -49,15 +49,17 @@
             {
                 if (voteType == VoteType.Upvote)
                 {
-                    UpvoteColour = "has-text-success";
-                    Comment.Karma += 1;
+                    DownvoteColour = "";
+                    UpvoteColour = "has-text-warning";
+                    
                 }
                 else if (voteType == VoteType.Downvote)
                 {
-                    DownvoteColour = "has-text-danger";
-                    Comment.Karma -= 1;
+                    UpvoteColour = "";
+                    DownvoteColour = "has-text-warning";
                 }
-                StateHasChanged();
+                Comment.Karma += int.Parse(response.Content.ReadAsStringAsync().Result);
+                await InvokeAsync(StateHasChanged);
             }
         }
         catch(Exception ex)

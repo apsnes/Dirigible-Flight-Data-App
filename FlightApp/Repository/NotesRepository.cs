@@ -102,6 +102,8 @@ namespace FlightApp.Repository
         {
             try
             {
+                db.Votes.RemoveRange(db.Votes.Where(v => v.NoteId == id));
+
                 Note note = db.Notes.Where(n => n.NoteId == id).FirstOrDefault();
                 db.Notes.Remove(note);
                 db.SaveChanges();

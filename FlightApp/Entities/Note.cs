@@ -22,5 +22,6 @@ namespace FlightApp.Entities
 
         public List<Reply>? Replies { get; set; }
         public int Karma { get; set; } = 0;
+        public List<Vote>? Votes { get; set; }
     }
 }

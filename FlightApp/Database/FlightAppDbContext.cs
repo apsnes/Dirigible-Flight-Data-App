@@ -26,14 +26,14 @@ namespace FlightApp.Database
             new IdentityRole { Id = "2", Name = "Customer", NormalizedName = "CUSTOMER" });
 
             builder.Entity<Vote>()
-            .HasOne(e => e.Note)
-            .WithMany()
+            .HasOne<Note>(e => e.Note)
+            .WithMany(n => n.Votes)
             .HasForeignKey(e => e.NoteId)
             .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Vote>()
-            .HasOne(e => e.Reply)
-            .WithMany()
+            .HasOne<Reply>(e => e.Reply)
+            .WithMany(r => r.Votes)
             .HasForeignKey(e => e.ReplyId)
             .OnDelete(DeleteBehavior.ClientCascade);
         }

@@ -14,9 +14,6 @@
                     <img src="@Note.User!.Avatar" alt="User Avatar" />
                 </a>
             </figure>
-
-            
-
         </div>
         
         <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
@@ -46,7 +43,7 @@
     {
         @foreach (var reply in Note.Replies!)
         {
-            <div class="media" style="position: relative;">
+            <div class="media mb-0 pb-0" style="position: relative;">
                 <div class="media-left ml-5">
                     <figure class="image is-64x64 ml-2 mt-2 is-square">
                         <img src="@Note.User!.Avatar" alt="User Avatar" />
@@ -64,6 +61,7 @@
                     </div>
                 }
             </div>
+            <VoteFooter Comment="reply" />
         }
         <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" CurrentUser="CurrentUser"/>
     }
