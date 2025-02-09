@@ -28,7 +28,7 @@ namespace FlightAppFrontend.Shared.Auth
             {
                 if (string.IsNullOrEmpty(_token))
                 {
-                    _token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "TokenKey");
+                    _token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "jwtToken");
                 }
                 return _token;
             }
@@ -42,7 +42,7 @@ namespace FlightAppFrontend.Shared.Auth
         public async Task SetTokenAsync(string token)
         {
             _token = token;
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "TokenKey", token);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "jwtToken", token);
         }
 
         public void ClearToken()
