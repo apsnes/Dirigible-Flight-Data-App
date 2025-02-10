@@ -11,6 +11,7 @@
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
 @inject IJsInteropService JsInteropService
+@inject TokenStateService tokenStateService
 
 @if (ErrorMessage != null)
 {
@@ -121,6 +122,7 @@ else
         {
 
             var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
             var response = await client.GetValueAsync<UserDTO>($"Account/GetUserDetailsByEmail?email={email}");
             User = response.Value!;
             emailEntered = true;

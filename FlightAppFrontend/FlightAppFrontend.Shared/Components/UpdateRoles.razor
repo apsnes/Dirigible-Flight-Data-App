@@ -1,10 +1,12 @@
-﻿@using FlightAppFrontend.Shared.Components.Utility
+﻿@using FlightAppFrontend.Shared.Auth
+@using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
 @inject IHttpClientFactory DirigibleApi
 @inject IJsInteropService JsInteropService
+@inject TokenStateService tokenStateService
 
 <div class="card mb-5 pb-4">
     <EditForm FormName="RolesForm" Model="roleModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" aria-label="Roles Form">
@@ -52,6 +54,7 @@
     private async void HandleValidSubmit()
     {
         var client = DirigibleApi.CreateClient("DirigibleApi");
+        await tokenStateService.UpdateHeaders(client);
         var response = await client.PostAsJsonAsync("Account/UpdateUserRoles", new RolesUpdateDto() { UserId = AppUser.Id, Role = roleModel.Role });
         if (response.IsSuccessStatusCode)
         {

@@ -1,9 +1,14 @@
+
+﻿@using FlightAppFrontend.Shared.Auth
+
 ﻿@using FlightAppFrontend.Shared.Components.Utility
+
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
 @using FlightAppLibrary.Models.Enums
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
 
 <div class="card">
     <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
@@ -53,6 +58,7 @@
     protected override async Task OnInitializedAsync()
     {
         var client = ClientFactory.CreateClient("DirigibleApi");
+        await tokenStateService.UpdateHeaders(client);
         var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
         CurrentUser = userResponse.Value;
     }

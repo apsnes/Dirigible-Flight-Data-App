@@ -1,9 +1,12 @@
 ﻿@page "/health"
 
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppFrontend.Shared.Layout
+
 
 <PageTitle>Health</PageTitle>
 
@@ -59,6 +62,7 @@
         try
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
 
             var response = await client.GetFromJsonAsync<HealthCheckResponseDto>("/health");
 

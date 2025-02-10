@@ -2,11 +2,15 @@
 @using FlightAppFrontend.Shared.Components
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Layout
 @using FlightAppLibrary.Models.Dtos
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
+@inject TokenService tokenService
+@inject TokenStateService tokenStateService
+@inject AuthenticationStateProvider customAuthenticationStateProvider
 
 @if (ErrorMessage != null)
 {
@@ -48,7 +52,7 @@ else
 
                 @if (Editing)
                 {
-                    <EditUserInfoForm AuthState="@_authState" AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated"/>
+                    <EditUserInfoForm AppUser="User" OnCancel="ToggleEditing" OnUpdate="SetUpdated" />
                 }
                 else if(UpdatingPassword)
                 {
@@ -56,7 +60,7 @@ else
                 }
                 else
                 {
-                    <DashboardProfileCard AuthState="_authState" AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/>
+                    <DashboardProfileCard AppUser="User" OnEdit="ToggleEditing" OnChangePassword="ToggleUpdatingPassword"/> 
                 }
             </div>
             <div class="column">
@@ -79,9 +83,7 @@ else
     private bool PasswordUpdated;
 
     [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
-
-    private AuthenticationState? _authState;
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
 
     private string email = "";
 
@@ -89,18 +91,25 @@ else
 
     private string? ErrorMessage;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        try
+        if (firstRender)
         {
-            var client = ClientFactory.CreateClient("DirigibleApi");
-            var response = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
-            User = response.Value!;
+            try
+            {
+                var client = ClientFactory.CreateClient("DirigibleApi");
+                await tokenStateService.UpdateHeaders(client);
+                var response = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+                User = response.Value!;
+                StateHasChanged();
+
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+            }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
+        
     }
 
     public void SetUpdated()
@@ -135,4 +144,5 @@ else
     {
         ErrorMessage = "";
     }
+
 }
