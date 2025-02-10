@@ -26,7 +26,7 @@
                 <AutoCompleteField Dictionary="AirportDictionary" Name="Arrival Airport" OnSetValue="SetArrival"/>
 
                 <div class="field">
-                    <label for="date" class="label">Date</label>
+                    <label for="date" class="label has-text-light">Date</label>
                     <div class="control mt-2">
                         <InputDate id="date" class="input is-warning" @bind-Value="SearchModel!.Date"/>
                         <ValidationMessage class="help is-danger" For="@(() => SearchModel.Date)" />
