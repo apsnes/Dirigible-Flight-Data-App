@@ -1,13 +1,14 @@
 ﻿using FlightApp.Database;
 using FlightApp.Entities;
 using FlightApp.Models;
+using FlightAppLibrary.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace FlightApp.Repository
 {
     public interface IVotesRepository
     {
-        public Task<Vote?> AddVote(Vote vote, string commenterId);
+        public Task<int> AddVote(Vote vote, string commenterId);
     }
 
     public class VotesRepository : IVotesRepository
@@ -21,30 +22,54 @@ namespace FlightApp.Repository
             _userManager = userManager;
         }
 
-        public async Task<Vote?> AddVote(Vote vote, string commenterId)
+        public async Task<int> AddVote(Vote vote, string commenterId)
         {
             try
             {
-                if(_db.Votes.Any(v => v.NoteId == null && v.ReplyId == vote.ReplyId) || _db.Votes.Any(v => v.ReplyId == null && v.NoteId == vote.NoteId))
+                int value = vote.Value;
+
+                var sameVote = _db.Votes.FirstOrDefault(
+                    v => v.UserId == vote.UserId && v.ReplyId == vote.ReplyId && v.NoteId == null || 
+                    v.UserId == vote.UserId && v.NoteId == vote.NoteId && v.ReplyId == null);
+
+                if(sameVote != null && sameVote.Value == vote.Value)
                 {
-                    return null;
+                    return 0;
+                }
+                else if(sameVote != null && sameVote.Value != vote.Value)
+                {
+                    value = vote.Value * 2;
+                    sameVote.Value = vote.Value;
+                }
+                else
+                {
+                    _db.Votes.Add(vote);
                 }
 
-                _db.Votes.Add(vote);
+                if(vote.CommentType == CommentType.Note)
+                {
+                    var note = _db.Notes.FirstOrDefault(n => n.NoteId == vote.NoteId);
+                    note!.Karma += value;
+                }
+                else
+                {
+                    var reply = _db.Replies.FirstOrDefault(r => r.ReplyId == vote.ReplyId);
+                    reply!.Karma += value;
+                }
 
                 ApplicationUser? user = await _userManager.FindByIdAsync(commenterId);
                 if (user != null)
                 {
-                    user.Karma += vote.Value;
+                    user.Karma += value;
                 }
 
                 _db.SaveChanges();
-                return vote;
+                return value;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return 0;
             }
         }
     }

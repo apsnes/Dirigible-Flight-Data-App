@@ -20,5 +20,7 @@ namespace FlightApp.Entities
 
         public string ReplyText { get; set; }
         public DateTime TimeStamp { get; set; }
+        public int Karma { get; set; } = 0;
+        public List<Vote>? Votes { get; set; }
     }
 }

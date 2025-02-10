@@ -42,6 +42,7 @@ namespace FlightApp.Service
                 NoteId = r.NoteId,
                 ReplyText = r.ReplyText,
                 TimeStamp = r.TimeStamp,
+                Karma = r.Karma,
                 User = new UserDTO()
                 {
                     Id = r.User!.Id,
@@ -63,6 +64,7 @@ namespace FlightApp.Service
                 NoteId = r.NoteId,
                 ReplyText = r.ReplyText,
                 TimeStamp = r.TimeStamp,
+                Karma = r.Karma,
                 Note = new NoteDto()
                 {
                     NoteId = r.NoteId,
@@ -70,6 +72,7 @@ namespace FlightApp.Service
                     UserId = r.Note.UserId,
                     NoteText = r.Note.NoteText,
                     TimeStamp = r.Note.TimeStamp,
+                    Karma = r.Note.Karma
                 },
                 User = new UserDTO()
                 {

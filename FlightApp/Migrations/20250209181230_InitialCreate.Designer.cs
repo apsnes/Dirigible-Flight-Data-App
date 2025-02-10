@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightApp.Migrations
 {
     [DbContext(typeof(FlightAppDbContext))]
-    [Migration("20250207113536_InitialCreate")]
+    [Migration("20250209181230_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,6 +36,9 @@ namespace FlightApp.Migrations
                     b.Property<string>("FlightIata")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Karma")
+                        .HasColumnType("int");
 
                     b.Property<string>("NoteText")
                         .IsRequired()
@@ -66,6 +69,9 @@ namespace FlightApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReplyId"));
 
+                    b.Property<int>("Karma")
+                        .HasColumnType("int");
+
                     b.Property<int>("NoteId")
                         .HasColumnType("int");
 
@@ -86,6 +92,40 @@ namespace FlightApp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Replies");
+                });
+
+            modelBuilder.Entity("FlightApp.Entities.Vote", b =>
+                {
+                    b.Property<int>("VoteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoteId"));
+
+                    b.Property<int>("CommentType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NoteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReplyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("VoteId");
+
+                    b.HasIndex("NoteId");
+
+                    b.HasIndex("ReplyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>
@@ -349,6 +389,29 @@ namespace FlightApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FlightApp.Entities.Vote", b =>
+                {
+                    b.HasOne("FlightApp.Entities.Note", "Note")
+                        .WithMany("Votes")
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.HasOne("FlightApp.Entities.Reply", "Reply")
+                        .WithMany("Votes")
+                        .HasForeignKey("ReplyId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.HasOne("FlightApp.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Note");
+
+                    b.Navigation("Reply");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -403,6 +466,13 @@ namespace FlightApp.Migrations
             modelBuilder.Entity("FlightApp.Entities.Note", b =>
                 {
                     b.Navigation("Replies");
+
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("FlightApp.Entities.Reply", b =>
+                {
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>

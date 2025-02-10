@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FlightAppLibrary.Models.Dtos
 {
-    public class ReplyDto : IDisplayComment
+    public class ReplyDto : IDisplayComment, IVotable
     {
         [JsonPropertyName("replyId")]
         public int ReplyId { get; set; }
@@ -26,5 +26,11 @@ namespace FlightAppLibrary.Models.Dtos
 
         [JsonPropertyName("note")]
         public NoteDto? Note { get; set; }
+
+        [JsonPropertyName("karma")]
+        public int Karma { get; set; }
+
+        [JsonPropertyName("votes")]
+        public List<VoteReturnDto>? Votes { get; set; }
     }
 }

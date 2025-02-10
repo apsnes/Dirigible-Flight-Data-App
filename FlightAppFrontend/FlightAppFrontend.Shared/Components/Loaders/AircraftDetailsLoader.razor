@@ -35,9 +35,13 @@
             try
             {
                 var photoResponse = await client.GetValueAsync<PhotosArray>($"{FlightResponse.Aircraft.Registration}");
-                AircraftPhoto = photoResponse.Value.Photos[0];
-                PhotoErrorMessage = photoResponse.ErrorMessage;
-                photoFound = true;
+
+                if(photoResponse.Value != null)
+                {
+                    AircraftPhoto = photoResponse.Value.Photos[0];
+                    PhotoErrorMessage = photoResponse.ErrorMessage;
+                    photoFound = true;
+                }
             }
             catch (Exception ex)
             {

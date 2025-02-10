@@ -34,6 +34,9 @@ namespace FlightApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Karma")
+                        .HasColumnType("int");
+
                     b.Property<string>("NoteText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -62,6 +65,9 @@ namespace FlightApp.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReplyId"));
+
+                    b.Property<int>("Karma")
+                        .HasColumnType("int");
 
                     b.Property<int>("NoteId")
                         .HasColumnType("int");
@@ -383,12 +389,12 @@ namespace FlightApp.Migrations
             modelBuilder.Entity("FlightApp.Entities.Vote", b =>
                 {
                     b.HasOne("FlightApp.Entities.Note", "Note")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("NoteId")
                         .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("FlightApp.Entities.Reply", "Reply")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("ReplyId")
                         .OnDelete(DeleteBehavior.ClientCascade);
 
@@ -457,6 +463,13 @@ namespace FlightApp.Migrations
             modelBuilder.Entity("FlightApp.Entities.Note", b =>
                 {
                     b.Navigation("Replies");
+
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("FlightApp.Entities.Reply", b =>
+                {
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("FlightApp.Models.ApplicationUser", b =>
