@@ -71,7 +71,9 @@ namespace FlightApp.Repository
             {
                 var res = db.Notes.Where(n => n.FlightIata == flightIata && n.ScheduledDeparture == dateTimeScheduled)
                     .Include(n => n.User)
-                    .Include(n => n.Replies)
+                    .Include(n => n.Votes)
+                    .Include(n => n.Replies)!
+                    .ThenInclude(r => r.Votes)
                     .ToList();
                
                 return res;
@@ -102,6 +104,8 @@ namespace FlightApp.Repository
         {
             try
             {
+                db.Votes.RemoveRange(db.Votes.Where(v => v.NoteId == id));
+
                 Note note = db.Notes.Where(n => n.NoteId == id).FirstOrDefault();
                 db.Notes.Remove(note);
                 db.SaveChanges();

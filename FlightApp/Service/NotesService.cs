@@ -42,6 +42,7 @@ namespace FlightApp.Service
                 UserId = note.UserId,
                 NoteText = note.NoteText,
                 TimeStamp = note.TimeStamp,
+                Karma = note.Karma,
                 User = new UserDTO()
                 {
                     Id = note.User!.Id,
@@ -61,6 +62,7 @@ namespace FlightApp.Service
                     NoteId = r.NoteId,
                     ReplyText = r.ReplyText,
                     TimeStamp = r.TimeStamp,
+                    Karma = r.Karma,
                     User = new UserDTO()
                     {
                         Id = r.User!.Id,
@@ -91,6 +93,7 @@ namespace FlightApp.Service
                     UserId = n.UserId,
                     NoteText = n.NoteText,
                     TimeStamp = n.TimeStamp,
+                    Karma = n.Karma,
                     User = new UserDTO()
                     {
                         Id = n.User!.Id,
@@ -110,6 +113,7 @@ namespace FlightApp.Service
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,
                         TimeStamp = r.TimeStamp,
+                        Karma = r.Karma,
                         User = new UserDTO()
                         {
                             Id = r.User!.Id,
@@ -142,6 +146,8 @@ namespace FlightApp.Service
                     UserId = n.UserId,
                     NoteText = n.NoteText,
                     TimeStamp = n.TimeStamp,
+                    Karma = n.Karma,
+                    Votes = n.Votes!.Select(v => new VoteReturnDto() { UserId = v.UserId, Value = v.Value }).ToList(),
                     User = new UserDTO()
                     {
                         Id = n.User!.Id,
@@ -161,6 +167,8 @@ namespace FlightApp.Service
                         NoteId = r.NoteId,
                         ReplyText = r.ReplyText,
                         TimeStamp = r.TimeStamp,
+                        Karma = r.Karma,
+                        Votes = r.Votes!.Select(v => new VoteReturnDto() { UserId = v.UserId, Value = v.Value }).ToList(),
                         User = new UserDTO()
                         {
                             Id = r.User!.Id,

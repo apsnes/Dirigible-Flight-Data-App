@@ -23,7 +23,7 @@ namespace FlightAppTests.ControllerTests
         public void PostVote_InvalidUser_Returns_BadRequest()
         {
             //Arrange
-            Vote? response = null;
+            int response = 0;
             _votesService.Setup(x => x.AddVote(It.IsAny<VoteDto>(), "Id")).Returns(response);
 
             //Act

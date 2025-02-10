@@ -1,0 +1,87 @@
+@inject IHttpClientFactory ClientFactory
+@using FlightAppLibrary.Models.Dtos
+@using FlightAppLibrary.Models.Enums
+@using FlightAppLibrary.Models.Interfaces
+@using System.Text.Json
+@using System.Text
+
+<span class="level-right">
+    <span class="m-0 pr-3 pb-3 flex-shrink-0">
+        <span class="icon is-clickable @UpvoteColour" @onclick="() => Vote(VoteType.Upvote)">
+            <button class="fa-solid fa-arrow-up"/>
+        </span>
+        <span>@Comment!.Karma</span>
+        <span class="icon is-clickable @DownvoteColour" @onclick="() => Vote(VoteType.Downvote)">
+            <button class="fa-solid fa-arrow-down"/>
+        </span>
+    </span>
+</span>
+
+@code{
+    [Parameter]
+    public IVotable? Comment { get; set; }
+
+    [Parameter]
+    public string? UserId { get; set; }
+
+    private string? UpvoteColour;
+    private string? DownvoteColour;
+
+    protected override void OnParametersSet()
+    {
+        if(Comment!.Votes is List<VoteReturnDto> votes)
+        {
+            var previousVote = votes.FirstOrDefault(v => v.UserId == UserId);
+
+            if(previousVote is VoteReturnDto)
+            {
+                if (previousVote.Value > 0) { UpvoteColour = "has-text-warning"; DownvoteColour = ""; };
+                if (previousVote.Value < 0) { DownvoteColour = "has-text-warning"; UpvoteColour = ""; };
+            }
+        }
+    }
+
+    public async Task Vote(VoteType voteType)
+    {
+        try
+        {
+            int value = voteType == VoteType.Upvote ? 1 : -1;
+            int commentId = Comment is NoteDto noteDto ? noteDto.NoteId : ((ReplyDto)Comment!).ReplyId;
+            CommentType commentType = Comment is NoteDto ? CommentType.Note : CommentType.Reply;
+
+            var vote = new VoteDto()
+                {
+                    Value = value,
+                    CommenterId = Comment!.UserId,
+                    CommentId = commentId,
+                    CommentType = commentType
+                };
+
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            var json = JsonSerializer.Serialize(vote);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("votes", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (voteType == VoteType.Upvote)
+                {
+                    DownvoteColour = "";
+                    UpvoteColour = "has-text-warning";
+                    
+                }
+                else if (voteType == VoteType.Downvote)
+                {
+                    UpvoteColour = "";
+                    DownvoteColour = "has-text-warning";
+                }
+                Comment.Karma += int.Parse(response.Content.ReadAsStringAsync().Result);
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

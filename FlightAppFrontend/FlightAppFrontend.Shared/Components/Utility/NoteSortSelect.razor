@@ -1,0 +1,39 @@
+@using FlightAppLibrary.Models.Enums
+
+<div class="field mb-4">
+    <div class="control">
+        <div class="select">
+            <select id="sort" @bind="SortType">
+                <option value="@SortType.None">Sort By:</option>
+                <option value="@SortType.Newest">Newest</option>
+                <option value="@SortType.Oldest">Oldest</option>
+                <option value="@SortType.Rating">Rating</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public EventCallback<SortType> OnSelectSort { get; set; }
+
+    private SortType _sortType;
+    private SortType SortType
+    {
+        get
+        {
+            return _sortType;
+        }
+        set
+        {
+            _sortType = value;
+            Sort();
+        }
+    }
+
+    private void Sort()
+    {
+        OnSelectSort.InvokeAsync(_sortType);
+    }
+}
+

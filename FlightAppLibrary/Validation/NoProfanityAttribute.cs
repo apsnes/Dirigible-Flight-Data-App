@@ -16,6 +16,7 @@ namespace FlightAppLibrary.Validation
             if (value is string)
             {
                 string commentText = (string)value;
+                commentText = commentText.ToLower();
                 List<string> perscribed = File.ReadAllLines("../../FlightApp/Resources/enHash.txt").ToList();
 
                 string commentHash = "";

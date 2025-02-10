@@ -1,12 +1,17 @@
+
 ﻿@using FlightAppFrontend.Shared.Auth
+
+﻿@using FlightAppFrontend.Shared.Components.Utility
+
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
+@using FlightAppLibrary.Models.Enums
 @using FlightAppLibrary.Models.Response
 @inject IHttpClientFactory ClientFactory
 @inject TokenStateService tokenStateService
 
 <div class="card">
-    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
+    <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
         <p class="card-header-title">Flight Comments</p>
         <button class="card-header-icon" aria-label="more options">
             @if (IsCardOpen)
@@ -22,7 +27,9 @@
 
     @if (IsCardOpen)
     {
-        <div class="card-content">
+
+        <div class="card-content pt-0">
+            <NoteSortSelect OnSelectSort="SortNotes"/>
             <AddNoteCard FlightResponse="FlightResponse" CurrentUser="CurrentUser" OnNoteAdded="HandleNotesChanged" />
             <div class="media">
                 <div class="media-content">
@@ -65,5 +72,24 @@
     private void HandleNoteDeleted(NoteDto note)
     {
         Notes.Remove(note);
+    }
+
+    public async void SortNotes(SortType sortType)
+    {
+        if(sortType == SortType.Newest)
+        {
+            Notes = Notes.OrderByDescending(n => n.TimeStamp).ToList();
+            await InvokeAsync(StateHasChanged);
+        }
+        else if(sortType == SortType.Oldest)
+        {
+            Notes = Notes.OrderBy(n => n.TimeStamp).ToList();
+            await InvokeAsync(StateHasChanged);
+        }
+        else if(sortType == SortType.Rating)
+        {
+            Notes = Notes.OrderByDescending(n => n.Karma).ToList();
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }
