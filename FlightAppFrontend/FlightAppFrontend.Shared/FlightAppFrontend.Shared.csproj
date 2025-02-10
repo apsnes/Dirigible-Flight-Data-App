@@ -7,7 +7,8 @@
     <UserSecretsId>f66e045c-865a-4af9-8c76-fa818654782b</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
+
+	<ItemGroup>
     <None Remove="Resources\NoLocationFound.jpg" />
     <None Remove="Resources\NoPhotoFound.jpg" />
   </ItemGroup>

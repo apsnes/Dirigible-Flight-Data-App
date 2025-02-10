@@ -1,31 +1,30 @@
-﻿@using FlightAppFrontend.Shared.Auth
-@using Microsoft.AspNetCore.Components.Authorization
-@inject TokenService tokenService
-@inject AuthenticationStateProvider customAuthenticationStateProvider
+﻿@* @using FlightAppFrontend.Shared.Auth
+@using Microsoft.AspNetCore.Components.Authorization *@
+@* @inject TokenService tokenService
+@inject AuthenticationStateProvider customAuthenticationStateProvider *@
 <!DOCTYPE html>
 <html lang="en" class="has-background-link-dark">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Our flight api project" />
     <base href="/" />
-    <link rel="stylesheet" href="_content/FlightAppFrontend.Shared/bulma.min.css" />
+    @* <link rel="stylesheet" href="_content/FlightAppFrontend.Shared/bulma.min.css" /> *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <link rel="stylesheet" href="_content/FlightAppFrontend.Shared/app.css" />
     <link rel="stylesheet" href="_content/BlazorPro.Spinkit/spinkit.min.css" />
     <link rel="stylesheet" href="FlightAppFrontend.Web.styles.css" />
     <link rel="icon" type="image/png" href="_content/FlightAppFrontend.Shared/favicon.png" />
-
-    <script defer src="https://use.fontawesome.com/releases/v6.7.2/js/all.js"></script>
-
-    <script src="_content/FlightAppFrontend.Shared/scripts/LocalStorage.js"></script>
-    <script src="_content/FlightAppFrontend.Shared/scripts/alerts.js"></script>
-
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
     <Routes @rendermode="InteractiveServer" />
     <script src="_framework/blazor.web.js"></script>
+    <script defer src="_content/FlightAppFrontend.Shared/scripts/LocalStorage.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.7.2/js/all.js"></script>
+    <script defer src="_content/FlightAppFrontend.Shared/scripts/alerts.js"></script>
 </body>
 
 </html>

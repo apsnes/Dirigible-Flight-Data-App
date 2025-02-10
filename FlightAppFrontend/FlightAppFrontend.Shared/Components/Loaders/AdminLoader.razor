@@ -28,8 +28,8 @@ else
         <div class="columns">
             <div class="column is-half">
         <EditForm Model="email" OnValidSubmit="GetUser">
-            <label>Email of user to edit</label>
-            <InputText @bind-Value="email">Email</InputText>
+            <label for="email">Email of user to edit</label>
+            <InputText id="email" @bind-Value="email">Email</InputText>
             <button type="submit" class="button is-success">Submit</button>
         </EditForm>
         </div>
