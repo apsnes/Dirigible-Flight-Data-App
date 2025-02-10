@@ -21,6 +21,14 @@
         {
             <Loading />
         }
+        else if(Comments.Count == 0)
+        {
+            <div class="box">
+                <a class="panel-block">
+                    <p>More of a lurker, aren't we?</p>
+                </a>
+            </div>
+        }
         else
         {
             <div class="panel-block is-block">
@@ -48,7 +56,7 @@
 
             if(Comments.Count > 0)
             {
-                for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize) - 1; i++)
+                for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize); i++)
                 {
                     <div class="box">
                         <a class="panel-block" href="@($"/FlightSummary/{Comments[i].FlightIata}")">
@@ -66,6 +74,14 @@
         @if (Notifications == null)
         {
             <Loading />
+        }
+        else if (Notifications!.Count == 0)
+        {
+            <div class="box">
+                <a class="panel-block">
+                    <p>Time to book some flights, I guess.</p>
+                </a>
+            </div>
         }
         else
         {
@@ -94,7 +110,7 @@
 
             if (Notifications!.Count > 0)
             {
-                for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize) - 1; i++)
+                for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize); i++)
                 {
                     <div class="box">
                         <div>
@@ -117,6 +133,10 @@
                                 <div>From User: @Notifications[i].SenderId</div>
                                 <br />
                                 <div>@Notifications[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</div>
+                            }
+                            @if (Notifications[i].NotificationType == NotificationType.LevelUp || Notifications[i].NotificationType == NotificationType.VoteMilestone)
+                            {
+                                <span><strong>Congrats! </strong>@Notifications[i].Content @Notifications[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</span>
                             }
                         </div>
                         <button type="button" class="button is-danger mt-3" @onclick="() => DeleteNotification(Notifications[i])">Delete</button>
@@ -146,7 +166,6 @@
 
     private string? ErrorMessage;
 
-
     private async Task ActivateNotifications()
     {
         pageNumber = 1;
@@ -155,9 +174,9 @@
 
         if (Notifications is null)
         {
-            var client = ClientFactory.CreateClient("DirigibleApi");
-            await tokenStateService.UpdateHeaders(client);
-            var reportsResponse = await client.GetValueAsync<List<NotificationDto>>("Notifications/Reports");
+            var reportsClient = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(reportsClient);
+            var reportsResponse = await reportsClient.GetValueAsync<List<NotificationDto>>("Notifications/Reports");
 
             Notifications = [];
 
@@ -166,7 +185,16 @@
                 Notifications.AddRange(reports);
             }
 
-            Notifications = Notifications!.OrderByDescending(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
+            var notificationsClient = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(notificationsClient);
+            var notificationsResponse = await notificationsClient.GetValueAsync<List<NotificationDto>>("Notifications");
+
+            if (notificationsResponse.Value is List<NotificationDto> notifications)
+            {
+                Notifications.AddRange(notifications);
+            }
+
+            Notifications = Notifications!.OrderBy(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
         }
     }
 
@@ -213,6 +241,7 @@
             else
             {
                 Notifications!.Remove(notification);
+                if (Notifications.Count % pageNumber == 0 && pageNumber != 1) pageNumber -= 1;
                 await OnUpdate.InvokeAsync();
             }
         }

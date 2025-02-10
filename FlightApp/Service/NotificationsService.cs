@@ -9,7 +9,7 @@ namespace FlightApp.Service
         public NotificationDto AddNotification(NotificationDto notificationDto);
         public List<NotificationDto>? FetchReports();
         public bool DeleteNotificationById(int id);
-
+        public List<NotificationDto>? FetchUserNotifications(string userId);
     }
 
     public class NotificationsService : INotificationsService
@@ -42,6 +42,26 @@ namespace FlightApp.Service
             var reports = _notificationsRepository.FetchReports();
 
             if(reports != null)
+            {
+                return reports.Select(r => new NotificationDto
+                {
+                    NotificationId = r.NotificationId,
+                    NotificationType = r.NotificationType,
+                    TargetId = r.TargetId,
+                    SenderId = r.SenderId,
+                    Content = r.Content,
+                    TimeStamp = r.TimeStamp,
+                    IsRead = r.IsRead,
+                }).ToList();
+            }
+            return [];
+        }
+
+        public List<NotificationDto>? FetchUserNotifications(string userId)
+        {
+            var reports = _notificationsRepository.FetchUserNotifications(userId);
+
+            if (reports != null)
             {
                 return reports.Select(r => new NotificationDto
                 {

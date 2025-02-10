@@ -1,5 +1,6 @@
 ﻿using FlightApp.Database;
 using FlightApp.Entities;
+using FlightAppLibrary.Models.Dtos;
 using FlightAppLibrary.Models.Enums;
 
 namespace FlightApp.Repository
@@ -9,6 +10,7 @@ namespace FlightApp.Repository
         public Notification? AddNotification(Notification vote);
         List<Notification>? FetchReports();
         public bool DeleteNotificationById(int id);
+        public List<Notification>? FetchUserNotifications(string userId);
     }
 
     public class NotificationsRepository : INotificationsRepository
@@ -40,6 +42,22 @@ namespace FlightApp.Repository
             {
                 return _db.Notifications
                     .Where(n => n.NotificationType == NotificationType.Report || n.NotificationType == NotificationType.Issue)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public List<Notification>? FetchUserNotifications(string userId)
+        {
+            try
+            {
+                return _db.Notifications
+                    .Where(n => n.TargetId == userId)
+                    .Where(n => n.NotificationType == NotificationType.VoteMilestone || n.NotificationType == NotificationType.LevelUp)
                     .ToList();
             }
             catch (Exception ex)

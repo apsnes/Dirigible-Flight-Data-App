@@ -39,6 +39,16 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest($"Unable to find reports") : Ok(result);
         }
 
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetUserNotifications()
+        {
+            var userId = User.FindFirst("Id");
+            string userIdValue = userId!.Value;
+            var result = _notificationsService.FetchUserNotifications(userIdValue);
+            return result == null ? BadRequest($"Unable to find notifications") : Ok(result);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public IActionResult DeleteNotificationById(int id)
