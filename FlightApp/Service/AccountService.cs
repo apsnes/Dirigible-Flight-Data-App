@@ -87,7 +87,7 @@ namespace FlightApp.Service
                         ErrorMessage = "Invalid Authentication"
                     };
                 }
-                //everything is valid and we need to login the user
+              
                 var signinCredentials = GetSigningCredentials();
                 var claims = await GetClaims(user);
 
@@ -103,7 +103,6 @@ namespace FlightApp.Service
                 {
                     IsAuthSuccessful = true,
                     Token = token,
-                    //UserDTO = _mapper.Map<UserDTO>(user)
                     UserDTO = new UserDTO
                     {
                         Id = user.Id,
@@ -135,7 +134,6 @@ namespace FlightApp.Service
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim("Id", user.Id),
-                //new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
             var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(user.Email));
             foreach (var role in roles)
@@ -168,8 +166,6 @@ namespace FlightApp.Service
                     Karma = user.Karma,
                     Avatar = user.Avatar
                 };
-                //UserDTO userDTO = new UserDTO();
-                //userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
             }
             return null;
@@ -192,8 +188,6 @@ namespace FlightApp.Service
                     Karma = user.Karma,
                     Avatar= user.Avatar
                 };
-                //UserDTO userDTO = new UserDTO();
-                //userDTO = _mapper.Map<UserDTO>(user);
                 return userDTO;
             }
             return null;
