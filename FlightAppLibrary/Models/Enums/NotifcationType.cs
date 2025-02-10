@@ -5,6 +5,7 @@ namespace FlightAppLibrary.Models.Enums
     {
         Default,
         Report,
+        Issue,
         VoteMilestone,
         LevelUp,
     }

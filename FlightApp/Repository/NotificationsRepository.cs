@@ -39,7 +39,7 @@ namespace FlightApp.Repository
             try
             {
                 return _db.Notifications
-                    .Where(n => n.NotificationType == NotificationType.Report)
+                    .Where(n => n.NotificationType == NotificationType.Report || n.NotificationType == NotificationType.Issue)
                     .ToList();
             }
             catch (Exception ex)

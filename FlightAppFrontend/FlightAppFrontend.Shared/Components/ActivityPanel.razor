@@ -30,7 +30,6 @@
                         <div class="level-left">
                             <button type="button" class="pagination-previous level-item" @onclick="() => pageNumber -= 1">Previous</button>
                         </div>
-
                     }
                     else
                     {
@@ -101,12 +100,21 @@
                         <div>
                             @if(Notifications[i].NotificationType == NotificationType.Report)
                             {
-                                <span><strong>  Report: </strong>@Notifications[i].Content</span>
+                                <span><strong>Report: </strong>@Notifications[i].Content</span>
                                 <br />
                                 <br />
                                 <div>From User: @Notifications[i].SenderId</div>
                                 <br />
                                 <div>Against User: @Notifications[i].TargetId</div>
+                                <br />
+                                <div>@Notifications[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</div>
+                            }
+                            @if (Notifications[i].NotificationType == NotificationType.Issue)
+                            {
+                                <span><strong>Issue: </strong>@Notifications[i].Content</span>
+                                <br />
+                                <br />
+                                <div>From User: @Notifications[i].SenderId</div>
                                 <br />
                                 <div>@Notifications[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</div>
                             }
