@@ -11,41 +11,70 @@
 <SuccessMessage Message="@SuccessMessage" OnDeleteNotification="ResetSuccessMessage"/>
 <ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
-<div class="card mb-5 pb-4">
-    <div class="card-content">
-        <div class="media">
-            <div class="media-left">
-                <ProfileAvatar AvatarPath="@User!.Avatar" />
-            </div>
-            <div class="media-content">
-                <p class="is-size-3 has-text-weight-bold"><strong>@($"{User!.FirstName} {User!.LastName}")</strong></p>
-                <p class="is-size-4">@User!.DisplayName <small>@User!.Pronouns</small></p>
+@if(CurrentUser != null)
+{
+    <div class="card mb-5 pb-4">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <ProfileAvatar AvatarPath="@User!.Avatar" />
+                </div>
+                <div class="media-content">
+                    <p class="is-size-3 has-text-weight-bold"><strong>@($"{User!.FirstName} {User!.LastName}")</strong></p>
+                    <p class="is-size-4">@User!.DisplayName <small>@User!.Pronouns</small></p>
 
+                </div>
             </div>
         </div>
+        @if (CurrentUser!.Id != User.Id)
+        {
+            <footer class="card-footer">
+                <button type="button" class="card-footer-item has-text-danger" @onclick="() => ToggleIsActive()">Report User</button>
+            </footer>
+        }
     </div>
-    <footer class="card-footer">
-        <button type="button" class="card-footer-item has-text-danger" @onclick="() => ToggleIsActive()">Report User</button>
-    </footer>
-</div>
 
-<div class="modal @IsActive">
-    <div class="modal-card">
-        <section class="modal-card-body">
-            <ReportForm OnSubmit="ReportUser" OnCancel="ToggleIsActive"/>
-        </section>
+    <div class="modal @IsActive">
+        <div class="modal-card">
+            <section class="modal-card-body">
+                <ReportForm OnSubmit="ReportUser" OnCancel="ToggleIsActive" />
+            </section>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @onclick="() => ToggleIsActive()"></button>
     </div>
-    <button class="modal-close is-large" aria-label="close" @onclick="() => ToggleIsActive()"></button>
-</div>
+}
+
 
 @code{
     [Parameter]
     public UserDTO? User { get; set; }
 
+    private UserDTO? CurrentUser;
+
     private string? ErrorMessage;
     private string? SuccessMessage;
 
     private string IsActive = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            await TokenStateService.UpdateHeaders(client);
+            var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+
+            if (userResponse.Value is UserDTO currentUser)
+            {
+                CurrentUser = currentUser;
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
 
     protected async Task ReportUser(string reportContent)
     {
@@ -53,27 +82,23 @@
 
         try
         {
-            var client = ClientFactory.CreateClient("DirigibleApi");
-            await TokenStateService.UpdateHeaders(client);
-            var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
-
-            if(userResponse.Value != null)
+            if(CurrentUser != null)
             {
                 NotificationDto notificationDto = new()
                     {
                         NotificationType = NotificationType.Report,
                         TargetId = User!.Id!,
-                        SenderId = userResponse.Value!.Id!,
+                        SenderId = CurrentUser.Id!,
                         Content = reportContent,
                         TimeStamp = DateTime.UtcNow,
                         IsRead = false
                     };
 
-                var notificationClient = ClientFactory.CreateClient("DirigibleApi");
-                await TokenStateService.UpdateHeaders(notificationClient);
+                var client = ClientFactory.CreateClient("DirigibleApi");
+                await TokenStateService.UpdateHeaders(client);
                 var json = JsonSerializer.Serialize(notificationDto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await notificationClient.PostAsync("Notifications", content);
+                var response = await client.PostAsync("Notifications", content);
 
                 if (response.IsSuccessStatusCode)
                 {
