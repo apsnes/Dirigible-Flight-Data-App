@@ -45,11 +45,11 @@
 
     protected void HandleValidSubmit()
     {
-        if (String.IsNullOrEmpty(SearchModel.FlightIATA) &&
-                String.IsNullOrEmpty(SearchModel.DepartureIATA) &&
-                    String.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Please enter a flight number or departure/arrival airport"; return; }
+        if (string.IsNullOrEmpty(SearchModel.FlightIATA) &&
+                string.IsNullOrEmpty(SearchModel.DepartureIATA) &&
+                    string.IsNullOrEmpty(SearchModel.ArrivalIATA)) { ErrorMessage = "Please enter a flight number or departure/arrival airport"; return; }
 
-        if(String.IsNullOrEmpty(SearchModel.FlightIATA) && SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
+        if (string.IsNullOrEmpty(SearchModel.FlightIATA) && SearchModel.DepartureIATA == SearchModel.ArrivalIATA) { ErrorMessage = "Departure and arrival airports cannot be the same"; return; }
 
         NavigationManager.NavigateTo($"/results?{CreateQueryString()}");
     }
@@ -58,12 +58,12 @@
     {
         HashSet<string> parameters = [];
 
-        if (!String.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"flight_iata={SearchModel!.FlightIATA}");
-        if (!String.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departures={SearchModel!.DepartureIATA}");
-        if (!String.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
-        parameters.Add($"date={SearchModel!.Date.ToString("dd_MM_yyyy")}");
+        if (!string.IsNullOrEmpty(SearchModel.FlightIATA)) parameters.Add($"flight_iata={SearchModel!.FlightIATA}");
+        if (!string.IsNullOrEmpty(SearchModel.DepartureIATA)) parameters.Add($"departures={SearchModel!.DepartureIATA}");
+        if (!string.IsNullOrEmpty(SearchModel.ArrivalIATA)) parameters.Add($"arrivals={SearchModel!.ArrivalIATA}");
+        parameters.Add($"date={SearchModel!.Date.ToString("dd/MM/yyyy")}");
 
-        return String.Join("&", parameters);
+        return string.Join("&", parameters);
     }
 
     private void SetDeparture(string? key)

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Caching.Memory;
+using System.Globalization;
 using System.Linq;
 
 namespace FlightApp.Controllers
@@ -89,14 +90,12 @@ namespace FlightApp.Controllers
             [FromQuery] int page_number,
             [FromQuery] int page_size)
         {
-            List<FlightResponse> result;      
-
-            
+            List<FlightResponse> result;
+           
             string queryKey = QueryHash.CreateKey(arrivals, departures, flight_iata, date, page_number, page_size);
 
             if (!_cache.TryGetValue(queryKey, out result))
             {
-
                 if (!string.IsNullOrEmpty(flight_iata))
                 {
                     var flightByIata = _flightApiService.GetFlightByIata(flight_iata);
@@ -120,15 +119,14 @@ namespace FlightApp.Controllers
 
                 _cache.Set(queryKey, result, cacheEntryOptions);
             }
-
-            
-
+           
             if (result != null && result!.Count > 0)
             {
-                result = result!
-                .Where(r => !string.IsNullOrEmpty(r.Flight.Iata))
-                .Where(r => ((DateTime)r.Departure.Scheduled!).ToString("dd_MM_yyyy") == date)
-                .ToList();
+                var searchDate = DateTime.ParseExact(date!, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                result = result .Where(r => !string.IsNullOrEmpty(r.Flight.Iata))
+                                .Where(r => r.Departure.Scheduled!.Value.Date == searchDate.Date)
+                                .ToList();
 
                 if (page_number > 0 && page_size > 0)
                 {
