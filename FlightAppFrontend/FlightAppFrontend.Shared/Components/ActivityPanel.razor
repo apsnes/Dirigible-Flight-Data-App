@@ -3,8 +3,11 @@
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models
 @using FlightAppLibrary.Models.Dtos
+@using FlightAppLibrary.Models.Enums
 @inject IHttpClientFactory ClientFactory
 @inject TokenStateService tokenStateService
+
+<ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
 <nav class="panel is-warning">
     <p class="panel-heading has-text-centered">Activity</p>
@@ -27,7 +30,7 @@
                         <div class="level-left">
                             <button type="button" class="pagination-previous level-item" @onclick="() => pageNumber -= 1">Previous</button>
                         </div>
-                        
+
                     }
                     else
                     {
@@ -61,26 +64,108 @@
     }
     else if (!String.IsNullOrEmpty(NotificationsActive))
     {
-        <div class="box">
-            <button tyoe="button" class="panel-block">
-                <p>Notification</p>
-            </button>
-        </div>
+        @if (Notifications == null)
+        {
+            <Loading />
+        }
+        else
+        {
+            <div class="panel-block is-block">
+                <nav class="pagination level" role="navigation" aria-label="pagination">
+                    @if (pageNumber != 1)
+                    {
+                        <div class="level-left">
+                            <button type="button" class="pagination-previous level-item" @onclick="() => pageNumber -= 1">Previous</button>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="level-left">
+                            <span class="level-item" />
+                        </div>
+                    }
+                    @if ((pageNumber * pageSize < Notifications.Count))
+                    {
+                        <div class="level-right">
+                            <button type="button" class="pagination-next level-item" @onclick="() => pageNumber += 1">Next</button>
+                        </div>
+                    }
+                </nav>
+            </div>
+
+            if (Notifications!.Count > 0)
+            {
+                for (int i = ((pageNumber - 1) * pageSize); i < (pageNumber * pageSize) - 1; i++)
+                {
+                    <div class="box">
+                        <div>
+                            @if(Notifications[i].NotificationType == NotificationType.Report)
+                            {
+                                <span><strong>  Report: </strong>@Notifications[i].Content</span>
+                                <br />
+                                <br />
+                                <div>From User: @Notifications[i].SenderId</div>
+                                <br />
+                                <div>Against User: @Notifications[i].TargetId</div>
+                                <br />
+                                <div>@Notifications[i].TimeStamp.ToString("HH:mm dd/MM/yyyy")</div>
+                            }
+                        </div>
+                        <button type="button" class="button is-danger mt-3" @onclick="() => DeleteNotification(Notifications[i])">Delete</button>
+                    </div>
+
+                    if (i >= Notifications.Count - 1) break;
+                }
+            }
+        }
     }
 </nav>
 
 @code {
+    [Parameter]
+    public EventCallback OnUpdate { get; set; }
+
     private string CommentsActive = "";
     private string NotificationsActive = "";
 
     public List<DisplayComment>? Comments { get; set; }
 
+    public List<NotificationDto>? Notifications { get; set; }
+
     private int pageNumber = 1;
 
     private int pageSize = 5;
 
+    private string? ErrorMessage;
+
+
+    private async Task ActivateNotifications()
+    {
+        pageNumber = 1;
+        CommentsActive = "";
+        NotificationsActive = "is-active";
+
+        if (Notifications is null)
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
+            var reportsResponse = await client.GetValueAsync<List<NotificationDto>>("Notifications/Reports");
+
+            Notifications = [];
+
+            if (reportsResponse.Value is List<NotificationDto> reports)
+            {
+                Notifications.AddRange(reports);
+            }
+
+            Notifications = Notifications!.OrderByDescending(c => c.TimeStamp.Date).ThenByDescending(c => c.TimeStamp.TimeOfDay).ToList();
+        }
+    }
+
     private async Task ActivateComments()
     {
+        pageNumber = 1;
         NotificationsActive = "";
         CommentsActive = "is-active";
 
@@ -106,9 +191,32 @@
         }
     }
 
-    private void ActivateNotifications()
+    private async void DeleteNotification(NotificationDto notification)
     {
-        CommentsActive = "";
-        NotificationsActive = "is-active";
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
+            var response = await client.DeleteAsync($"Notifications/{notification.NotificationId}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ErrorMessage = "Could not delete notification";
+            }
+            else
+            {
+                Notifications!.Remove(notification);
+                await OnUpdate.InvokeAsync();
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    private void ResetError()
+    {
+        ErrorMessage = "";
     }
 }

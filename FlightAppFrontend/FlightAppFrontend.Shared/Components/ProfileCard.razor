@@ -1,5 +1,15 @@
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
+@using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
+@using System.Text.Json
+@using System.Text
+@using FlightAppLibrary.Models.Enums
+@inject IHttpClientFactory ClientFactory
+@inject TokenStateService TokenStateService
+
+<SuccessMessage Message="@SuccessMessage" OnDeleteNotification="ResetSuccessMessage"/>
+<ErrorMessage Message="@ErrorMessage" OnDeleteNotification="ResetError"/>
 
 <div class="card mb-5 pb-4">
     <div class="card-content">
@@ -15,16 +25,88 @@
         </div>
     </div>
     <footer class="card-footer">
-        <button type="button" class="card-footer-item has-text-danger" @onclick="() => ReportUser()">Report User</button>
+        <button type="button" class="card-footer-item has-text-danger" @onclick="() => ToggleIsActive()">Report User</button>
     </footer>
+</div>
+
+<div class="modal @IsActive">
+    <div class="modal-card">
+        <section class="modal-card-body">
+            <ReportForm OnSubmit="ReportUser" OnCancel="ToggleIsActive"/>
+        </section>
+    </div>
+    <button class="modal-close is-large" aria-label="close" @onclick="() => ToggleIsActive()"></button>
 </div>
 
 @code{
     [Parameter]
     public UserDTO? User { get; set; }
 
-    protected void ReportUser()
-    {
+    private string? ErrorMessage;
+    private string? SuccessMessage;
 
+    private string IsActive = "";
+
+    protected async Task ReportUser(string reportContent)
+    {
+        ToggleIsActive();
+
+        try
+        {
+            var client = ClientFactory.CreateClient("DirigibleApi");
+            await TokenStateService.UpdateHeaders(client);
+            var userResponse = await client.GetValueAsync<UserDTO>("Account/GetUserDetails");
+
+            if(userResponse.Value != null)
+            {
+                NotificationDto notificationDto = new()
+                    {
+                        NotificationType = NotificationType.Report,
+                        TargetId = User!.Id!,
+                        SenderId = userResponse.Value!.Id!,
+                        Content = reportContent,
+                        TimeStamp = DateTime.UtcNow,
+                        IsRead = false
+                    };
+
+                var notificationClient = ClientFactory.CreateClient("DirigibleApi");
+                await TokenStateService.UpdateHeaders(notificationClient);
+                var json = JsonSerializer.Serialize(notificationDto);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await notificationClient.PostAsync("Notifications", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    SuccessMessage = "Submitted report successfully";
+                }
+                else
+                {
+                    ErrorMessage = "Could not submit report";
+                }
+            }
+            else
+            {
+                ErrorMessage = "Could not validate user information";
+            }
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    protected void ToggleIsActive()
+    {
+        IsActive = IsActive == "" ? "is-active" : "";
+    }
+
+    private void ResetError()
+    {
+        ErrorMessage = "";
+    }
+
+    private void ResetSuccessMessage()
+    {
+        SuccessMessage = "";
     }
 }
