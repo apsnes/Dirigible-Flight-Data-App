@@ -8,7 +8,7 @@ namespace FlightApp.Service
 {
     public interface IVotesService
     {
-        Vote? AddVote(VoteDto voteDto, string userId);
+        int AddVote(VoteDto voteDto, string userId);
     }
 
     public class VotesService : IVotesService
@@ -20,7 +20,7 @@ namespace FlightApp.Service
             _votesRepository = votesRepository;
         }
 
-        public Vote? AddVote(VoteDto voteDto, string userId)
+        public int AddVote(VoteDto voteDto, string userId)
         {
             int? noteId = null;
             int? replyId = null;

@@ -10,7 +10,7 @@
 @inject IJsInteropService JsInteropService
 @inject AuthenticationStateProvider customAuthenticationStateProvider
 @inject TokenStateService tokenStateService
-@inject NavigationManager NavigationManager;
+@inject NavigationManager NavigationManager
 
 @if(Loading)
 {
@@ -57,14 +57,6 @@ else
                 </div>
             </div>
         </div>
-        <AuthorizeView>
-            <Authorized>
-                <p class="has-text-light">@($"You are logged in {name}!")</p>
-            </Authorized>
-            <NotAuthorized>
-                <p class="has-text-light">You are not logged in.</p>
-            </NotAuthorized>
-        </AuthorizeView>
     </div>
 }
 
@@ -80,12 +72,6 @@ else
     private string? ErrorMessage;
     private bool Loading;
 
-    private AuthenticationState _authState;
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
@@ -94,8 +80,7 @@ else
             var authState = await authenticationStateTask;
             if (authState != null && authState.User.Identity.IsAuthenticated)
             {
-                //name = authState.User.Identity.Name;
-                //name = authState.User.Claims.FirstOrDefault(c => c.Type == "FirstName")?.Value;
+                name = authState.User.Claims.FirstOrDefault(c => c.Type == "FirstName")?.Value;
 
 
 
@@ -113,6 +98,7 @@ else
     {
         Loading = true;
         var client = DirigibleApi.CreateClient("DirigibleApi");
+        await tokenStateService.UpdateHeaders(client);
         var content = new StringContent(JsonSerializer.Serialize(LoginModel), Encoding.UTF8, "application/json");
         var result = await client.PostAsync("Account/SignIn", content);
         if(result.IsSuccessStatusCode){
@@ -123,7 +109,7 @@ else
                 await JsInteropService.SetItem("jwtToken", token);
                 if (customAuthenticationStateProvider is CustomAuthenticationStateProvider customProvider)
                 {
-                    tokenStateService.SetToken(token);
+                    await tokenStateService.SetTokenAsync(token);
                     customProvider.NotifyAuthenticationStateChanged();
                 }
                 NavigationManager.NavigateTo("/dashboard?login=true");

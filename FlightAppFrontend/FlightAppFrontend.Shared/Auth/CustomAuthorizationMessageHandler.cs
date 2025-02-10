@@ -19,7 +19,7 @@ namespace FlightAppFrontend.Shared.Auth
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var token =  _tokenService.GetToken();
+            var token = await _tokenService.GetTokenAsync();
 
             if (!string.IsNullOrEmpty(token))
             {

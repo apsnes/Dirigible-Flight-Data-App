@@ -9,7 +9,7 @@
     <div class="card-content">
         <div class="media">
             <div class="media-left">
-                <ProfileAvatar AvatarPath="@AppUser!.Avatar"/>
+                 <ProfileAvatar AvatarPath="@AppUser!.Avatar"/>
             </div>
             <div class="media-content">
                 <p class="is-size-3 has-text-weight-bold"><strong>@($"{AppUser!.FirstName} {AppUser!.LastName}")</strong></p>
@@ -24,11 +24,11 @@
 </div>
 
 @code{
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+    // [CascadingParameter]
+    // private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-    [Parameter]
-    public AuthenticationState? AuthState { get; set; }
+    // [Parameter]
+    // public AuthenticationState? AuthState { get; set; }
 
     [Parameter]
     public UserDTO? AppUser { get; set; }

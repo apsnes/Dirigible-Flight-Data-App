@@ -1,8 +1,10 @@
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
 @using FlightAppLibrary.Models.Dtos
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
 
 @if (ErrorMessage != null)
 {
@@ -30,6 +32,7 @@ else
         try
         {
             var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
             var response = await client.GetValueAsync<UserDTO>($"Account/GetUserDetailsByUserId/{UserId}");
             User = response.Value!;
         }

@@ -1,4 +1,5 @@
 ﻿@using System.ComponentModel.DataAnnotations
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
@@ -8,6 +9,7 @@
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory DirigibleApi
 @inject IJsInteropService JsInteropService
+@inject TokenStateService tokenStateService
 
 @if (Loading)
 {
@@ -90,6 +92,7 @@ else
     {
         Loading = true;
         var client = DirigibleApi.CreateClient("DirigibleApi");
+        await tokenStateService.UpdateHeaders(client);
         var content = new StringContent(JsonSerializer.Serialize(RegistrationModel), Encoding.UTF8, "application/json");
         var result = await client.PostAsync("Account/SignUp", content);
         if (result.IsSuccessStatusCode)

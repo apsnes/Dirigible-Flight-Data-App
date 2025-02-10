@@ -83,6 +83,8 @@ namespace FlightApp.Repository
         {
             try
             {
+                db.Votes.RemoveRange(db.Votes.Where(v => v.ReplyId == id));
+
                 var reply = db.Replies.Find(id);
                 db.Replies.Remove(reply);
                 db.SaveChanges();

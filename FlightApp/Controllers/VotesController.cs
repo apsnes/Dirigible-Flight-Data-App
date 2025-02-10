@@ -25,7 +25,7 @@ namespace FlightApp.Controllers
                 var userId = User.FindFirst("Id");
                 string userIdValue = userId!.Value;
                 var result = _votesService.AddVote(voteDto, userIdValue);
-                return result == null ? BadRequest($"Unable to vote") : Ok(result);
+                return result == 0 ? BadRequest($"Unable to process vote") : Ok(result);
             }
             return BadRequest($"User info may not be correct");
         }

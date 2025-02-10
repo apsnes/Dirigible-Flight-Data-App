@@ -174,7 +174,8 @@ namespace FlightApp.Migrations
                     ScheduledDeparture = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NoteText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Karma = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -196,7 +197,8 @@ namespace FlightApp.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     NoteId = table.Column<int>(type: "int", nullable: false),
                     ReplyText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Karma = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -212,6 +214,38 @@ namespace FlightApp.Migrations
                         principalTable: "Notes",
                         principalColumn: "NoteId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Votes",
+                columns: table => new
+                {
+                    VoteId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    NoteId = table.Column<int>(type: "int", nullable: true),
+                    ReplyId = table.Column<int>(type: "int", nullable: true),
+                    CommentType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Votes", x => x.VoteId);
+                    table.ForeignKey(
+                        name: "FK_Votes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Votes_Notes_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Notes",
+                        principalColumn: "NoteId");
+                    table.ForeignKey(
+                        name: "FK_Votes_Replies_ReplyId",
+                        column: x => x.ReplyId,
+                        principalTable: "Replies",
+                        principalColumn: "ReplyId");
                 });
 
             migrationBuilder.InsertData(
@@ -276,6 +310,21 @@ namespace FlightApp.Migrations
                 name: "IX_Replies_UserId",
                 table: "Replies",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_NoteId",
+                table: "Votes",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_ReplyId",
+                table: "Votes",
+                column: "ReplyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_UserId",
+                table: "Votes",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -297,10 +346,13 @@ namespace FlightApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Replies");
+                name: "Votes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Replies");
 
             migrationBuilder.DropTable(
                 name: "Notes");

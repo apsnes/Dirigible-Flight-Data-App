@@ -67,7 +67,7 @@ namespace FlightApp.Controllers
             return result == null ? BadRequest($"Unable to delete note {id}") : Ok(result);
         }
 
-        [HttpGet("/user/{userId}")]
+        [HttpGet("user/{userId}")]
         [Authorize]
         public IActionResult GetNotesByUserId(string userId)
         {
