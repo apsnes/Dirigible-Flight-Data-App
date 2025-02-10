@@ -9,11 +9,11 @@
 
 <span class="level-right">
     <span class="m-0 pr-3 pb-3 flex-shrink-0">
-        <span class="icon is-clickable @UpvoteColour" @onclick="() => Vote(VoteType.Upvote)">
+        <span class="icon is-clickable @UpvoteColour" @onclick:stopPropagation @onclick="() => Vote(VoteType.Upvote)">
             <button class="fa-solid fa-arrow-up"/>
         </span>
         <span>@Comment!.Karma</span>
-        <span class="icon is-clickable @DownvoteColour" @onclick="() => Vote(VoteType.Downvote)">
+        <span class="icon is-clickable @DownvoteColour" @onclick:stopPropagation @onclick="() => Vote(VoteType.Downvote)">
             <button class="fa-solid fa-arrow-down"/>
         </span>
     </span>
