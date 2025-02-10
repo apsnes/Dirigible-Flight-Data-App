@@ -36,7 +36,6 @@ namespace FlightAppFrontend.Shared.Auth
             {
                 return "";
             }
-
         }
 
         public async Task SetTokenAsync(string token)
@@ -61,7 +60,4 @@ namespace FlightAppFrontend.Shared.Auth
             }
         }
     }
-
-
-
 }

@@ -23,7 +23,6 @@ namespace FlightApp.Controllers
         }
 
         [HttpGet("{iata}")]
-        //[Authorize(Roles = "Customer")]
         public IActionResult GetFlightByIata(string iata)
         {
             string queryKey = iata;

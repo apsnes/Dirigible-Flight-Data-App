@@ -11,13 +11,11 @@ namespace FlightAppFrontend.Shared.Auth
 {
     public class TokenService
     {
-
         private readonly TokenStateService _tokenStateService;
         private string _token = null;
 
         public TokenService(TokenStateService tokenStateService)
         {
-  
             _tokenStateService = tokenStateService;
         }
 
@@ -46,7 +44,4 @@ namespace FlightAppFrontend.Shared.Auth
             _token = null;
         }
     }
-
-
-
 }

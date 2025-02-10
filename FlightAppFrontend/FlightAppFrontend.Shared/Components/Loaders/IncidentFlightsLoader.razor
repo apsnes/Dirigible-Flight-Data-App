@@ -1,0 +1,30 @@
+﻿@using System.Text.Json
+@using FlightAppFrontend.Shared.Extensions
+@using FlightAppLibrary.Models.Response
+@inject IHttpClientFactory ClientFactory
+
+<FlightsSummary FlightResponses="@FlightResponses" />
+
+@code
+{
+    public List<FlightResponse>? FlightResponses { get; set; }
+    protected string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // var client = ClientFactory.CreateClient("DirigibleApi");
+            // var response = await client.GetValueAsync<List<FlightResponse>>($"FlightApi/incident");
+            // FlightResponses = response.Value;
+            // ErrorMessage = response.ErrorMessage;
+
+            var response = JsonSerializer.Deserialize<FlightResponseWrapper>(File.ReadAllText("..\\..\\FlightApp\\test_flight_json.json")).Data;
+            FlightResponses = response.ToList();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occured: {ex.Message}";
+        }
+    }
+}
