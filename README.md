@@ -18,7 +18,7 @@ The app consumes six external APIs to fetch flight, weather, photo, airline, map
 
 The search endpoint of our backend is Rate-Limited and uses In-Memory Caching to reduce database calls and improve response times. Search queries support pagination, multiple filtering options, and the frontend UI includes autocomplete fields for departure and arrival airports.
 
-Login and registration forms are validated on the frontend to ensure emails and passwords are in the correct format, and comments are validated with a rude-word filter to keep everything wholesome. Various other custom validation is used accross the app the improve user experience.
+Login and registration forms are validated on the frontend to ensure emails and passwords are in the correct format, and comments are validated with a rude-word filter to keep everything wholesome. Various other custom validation is used accross the app to improve the user experience.
 
 ## Upcoming Features
 * Homepage Carousel
