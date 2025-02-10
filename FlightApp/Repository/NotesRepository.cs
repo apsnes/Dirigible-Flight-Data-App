@@ -73,6 +73,8 @@ namespace FlightApp.Repository
                     .Include(n => n.User)
                     .Include(n => n.Votes)
                     .Include(n => n.Replies)!
+                    .ThenInclude(n => n.User)
+                    .Include(n => n.Replies)!
                     .ThenInclude(r => r.Votes)
                     .ToList();
                

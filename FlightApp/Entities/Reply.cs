@@ -14,7 +14,7 @@ namespace FlightApp.Entities
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
 
-        [ForeignKey("NoteId")]
+        [ForeignKey("Note")]
         public int NoteId { get; set; }
         public Note Note { get; set; }
 
