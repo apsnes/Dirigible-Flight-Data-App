@@ -15,8 +15,8 @@ builder.Services.AddRazorComponents()
 
 
 builder.Services.AddHttpClient("DirigibleApi", client =>
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!))
-    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("DirigibleApi")!));
+
 
 builder.Services.AddHttpClient("WeatherApp", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("WeatherApp")!));
@@ -26,18 +26,17 @@ builder.Services.AddHttpClient("OpenCageBase", client =>
 
 builder.Services.AddHttpClient("AircraftPhotos", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AircraftPhotos")!));
-//.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
 
 builder.Services.AddHttpClient("MapData", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("MapData")!));
-    //.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
 
 
 
 builder.Services.AddScoped<IJsInteropService, JsInteropService>();
 builder.Services.AddScoped<TokenStateService>();
 builder.Services.AddScoped<TokenService>();
-builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 

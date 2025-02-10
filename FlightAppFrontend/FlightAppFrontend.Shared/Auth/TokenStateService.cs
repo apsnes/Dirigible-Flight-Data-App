@@ -45,9 +45,10 @@ namespace FlightAppFrontend.Shared.Auth
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "jwtToken", token);
         }
 
-        public void ClearToken()
+        public async Task RemoveTokenAsync()
         {
-            _token = string.Empty;
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "jwtToken");
+            _token = null;
         }
         public async Task UpdateHeaders(HttpClient httpClient)
         {
@@ -56,7 +57,7 @@ namespace FlightAppFrontend.Shared.Auth
             if (!string.IsNullOrEmpty(token))
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                Console.WriteLine($"Authorization header updated: Bearer {token}");
+             
             }
         }
     }
