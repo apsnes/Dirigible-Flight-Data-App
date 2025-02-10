@@ -1,4 +1,6 @@
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppLibrary.Models.Dtos
 @using FlightAppLibrary.Models.Enums
 @using FlightAppLibrary.Models.Interfaces
@@ -58,6 +60,7 @@
                 };
 
             var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
             var json = JsonSerializer.Serialize(vote);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync("votes", content);
