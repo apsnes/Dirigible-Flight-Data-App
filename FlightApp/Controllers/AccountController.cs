@@ -58,7 +58,6 @@ namespace FlightApp.Controllers
             try
             {
                 var userId = User.FindFirst("Id");
-                //var userId = User.FindFirst(ClaimTypes.NameIdentifier);
                 string userIdValue = userId.Value;
                 UserDTO? user = await _accountService.GetUserDetails(userIdValue);
                 if (user == null) return NotFound();
@@ -124,7 +123,7 @@ namespace FlightApp.Controllers
         [HttpPut]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordResetDto model)
         {
-            //check email is valid
+            
             if (!ModelState.IsValid || model.Password!=model.ConfirmPassword)
             {
                 return BadRequest(ModelState);
