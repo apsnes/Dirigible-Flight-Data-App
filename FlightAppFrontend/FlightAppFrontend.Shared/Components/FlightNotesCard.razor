@@ -11,7 +11,7 @@
 @inject TokenStateService tokenStateService
 
 <div class="card">
-    <header class="card-header is-clickable mt-5" @onclick="ToggleCard" style="cursor: pointer">
+    <header class="card-header is-clickable pb-4 mt-5" @onclick="ToggleCard" style="cursor: pointer">
         <p class="card-header-title">Flight Comments</p>
         <button class="card-header-icon" aria-label="more options">
             @if (IsCardOpen)
@@ -28,7 +28,7 @@
     @if (IsCardOpen)
     {
 
-        <div class="card-content pt-0">
+        <div class="card-content pt-4">
             <NoteSortSelect OnSelectSort="SortNotes"/>
             <AddNoteCard FlightResponse="FlightResponse" CurrentUser="CurrentUser" OnNoteAdded="HandleNotesChanged" />
             <div class="media">

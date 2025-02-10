@@ -23,24 +23,30 @@
             <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
             <span>@Note.NoteText</span>
         </div>
+        <div class="media-right is-flex is-flex-direction-column is-align-items-end ml-auto">
+            <div class="is-flex is-align-items-center">
+                @if (Note.UserId == CurrentUser.Id)
+                {
+                    <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
+                }
 
-        @if (Note.UserId == CurrentUser.Id)
-        {
-            <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
-        }
-
-        <button class="card-header-icon" aria-label="more options">
-            @if (@isCardOpen)
-            {
-                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
-            }
-            else
-            {
-                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
-            }
-        </button>
+                <button class="card-header-icon" aria-label="more options">
+                    @if (@isCardOpen)
+                    {
+                        <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
+                    }
+                    else
+                    {
+                        <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+                    }
+                </button>
+            </div>
+            <div style="margin-right: 70px;">
+                <VoteFooter Comment="Note" UserId="@CurrentUser.Id" />
+            </div>
+        </div>
     </header>
-    <VoteFooter Comment="Note" UserId="@CurrentUser.Id" />
+    
     @if (isCardOpen)
     {
         @foreach (var reply in Note.Replies!)
@@ -48,7 +54,7 @@
             <div class="media mb-0 pb-0" style="position: relative;">
                 <div class="media-left ml-5">
                     <figure class="image is-64x64 ml-2 mt-2 is-square">
-                        <img src="@Note.User!.Avatar" alt="User Avatar" />
+                        <img src="@reply.User!.Avatar" alt="User Avatar" />
                     </figure>
                 </div>
                 <div class="media-content">
@@ -63,7 +69,9 @@
                     </div>
                 }
             </div>
-            <VoteFooter Comment="reply" UserId="@CurrentUser.Id"/>
+            <div style="margin-right: 70px;">
+                <VoteFooter Comment="reply" UserId="@CurrentUser.Id"/>
+            </div>
         }
         <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" CurrentUser="CurrentUser"/>
     }
