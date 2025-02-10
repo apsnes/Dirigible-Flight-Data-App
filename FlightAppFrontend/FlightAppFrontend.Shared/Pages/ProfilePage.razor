@@ -1,9 +1,17 @@
 @page "/profile/{UserId}"
 @using FlightAppFrontend.Shared.Components.Loaders
-
+@using Microsoft.AspNetCore.Components.Authorization
+<AuthorizeView>
+    <Authorized>
 <PageTitle>User Profile</PageTitle>
 
 <ProfileLoader UserId="@UserId"/>
+</Authorized>
+<NotAuthorized>
+        <PageTitle>Unauthorized</PageTitle>
+        <p>You are not authorized to view this page.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter]
