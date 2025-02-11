@@ -1,9 +1,18 @@
 @page "/FlightSummary/{IATA}"
 @using FlightAppFrontend.Shared.Components.Loaders
+@using Microsoft.AspNetCore.Components.Authorization
+<AuthorizeView>
+    <Authorized>
 
 <PageTitle>Flight @IATA</PageTitle>
 
 <FlightSummaryLoader IATA="@IATA"/>
+        </Authorized>
+        <NotAuthorized>
+            <PageTitle>Unauthorized</PageTitle>
+            <p>You are not authorized to view this page.</p>
+        </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter]

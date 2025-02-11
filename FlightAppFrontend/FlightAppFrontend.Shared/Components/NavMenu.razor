@@ -28,6 +28,10 @@
                 Search
             </a>
 
+            <a class="navbar-item" href="/incident">
+                Incidents
+            </a>
+
             <a class="navbar-item" href="/health">
                 Health
             </a>
@@ -36,23 +40,16 @@
                 <a class="navbar-link">
                     More
                 </a>
-
                 <div class="navbar-dropdown">
                     <a class="navbar-item" href="/about">
                         About
-                    </a>
-                    <a class="navbar-item is-selected">
-                        Jobs
-                    </a>
-                    <a class="navbar-item">
-                        Contact
                     </a>
                     <a class="navbar-item" href="/admin">
                         Admin
                     </a>
                     <hr class="navbar-divider">
-                    <a class="navbar-item">
-                        Report an issue
+                    <a class="navbar-item" href="/report-issue">
+                        Report an Issue
                     </a>
                 </div>
             </div>
@@ -61,7 +58,6 @@
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-
                     <AuthorizeView>
                         <NotAuthorized>
                             <a class="button is-link is-dark" href="/registration">
@@ -75,9 +71,6 @@
                             <button class="button" @onclick="Logout">Logout</button>
                         </Authorized>
                     </AuthorizeView>
-
-
-
                 </div>
             </div>
         </div>

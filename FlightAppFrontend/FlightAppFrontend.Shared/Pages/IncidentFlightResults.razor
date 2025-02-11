@@ -1,19 +1,22 @@
-@page "/profile/{UserId}"
+﻿@page "/incident"
 @using FlightAppFrontend.Shared.Components.Loaders
 @using Microsoft.AspNetCore.Components.Authorization
-<AuthorizeView>
-    <Authorized>
-<PageTitle>User Profile</PageTitle>
 
-<ProfileLoader UserId="@UserId"/>
-</Authorized>
-<NotAuthorized>
+<AuthorizeView>
+
+    <Authorized>
+        <PageTitle>Incident Flights</PageTitle>
+        <h3 class="mt-2 mb-0">All currently airborne flights declaring an incident.</h3>
+        <IncidentFlightsLoader />
+    </Authorized>
+
+    <NotAuthorized>
         <PageTitle>Unauthorized</PageTitle>
         <p>You are not authorized to view this page.</p>
     </NotAuthorized>
-</AuthorizeView>
 
-@code {
-    [Parameter]
-    public string? UserId { get; set; }
+</AuthorizeView>
+@code
+{
+
 }

@@ -1,6 +1,7 @@
 ﻿@using FlightAppFrontend.Shared.Auth
 @using FlightAppFrontend.Shared.Components.Utility
 @using FlightAppFrontend.Shared.Extensions
+@using FlightAppFrontend.Shared.Services
 @using FlightAppLibrary.Models.Dtos
 @using System.Text.Json
 @using System.Text
@@ -19,28 +20,34 @@
         </div>
         
         <div class="card-header-title is-size-6 is-flex is-flex-direction-column is-align-items-flex-start">
-            <span class="has-text-weight-bold">@Note.User!.DisplayName</span>
-            <span class="is-size-7 has-text-weight-normal">@Note.TimeStamp.ToString()</span>
-            <span>@Note.NoteText</span>
+            <p class="is-size-6"><strong>@Note.User!.DisplayName</strong> <small class="has-text-weight-normal"><em>@UserService.UserRank(Note.User.Karma)</em></small></p>
+            <p class="is-size-7">@Note.TimeStamp.ToString()</p>
+            <p class="is-size-6"><strong>@Note.NoteText</strong></p>
         </div>
+        <div class="media-right is-flex is-flex-direction-column is-align-items-end ml-auto">
+            <div class="is-flex is-align-items-center">
+                @if (Note.UserId == CurrentUser.Id)
+                {
+                    <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
+                }
 
-        @if (Note.UserId == CurrentUser.Id)
-        {
-            <button class="button is-danger m-5" @onclick="DeleteNote">Delete</button>
-        }
-
-        <button class="card-header-icon" aria-label="more options">
-            @if (@isCardOpen)
-            {
-                <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
-            }
-            else
-            {
-                <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
-            }
-        </button>
+                <button class="card-header-icon" aria-label="more options">
+                    @if (@isCardOpen)
+                    {
+                        <span class="icon"><i class="fas fa-angle-up" aria-hidden="true"></i></span>
+                    }
+                    else
+                    {
+                        <span class="icon"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+                    }
+                </button>
+            </div>
+            <div style="margin-right: 70px;">
+                <VoteFooter Comment="Note" UserId="@CurrentUser.Id" />
+            </div>
+        </div>
     </header>
-    <VoteFooter Comment="Note" UserId="@CurrentUser.Id" />
+    
     @if (isCardOpen)
     {
         @foreach (var reply in Note.Replies!)
@@ -48,12 +55,12 @@
             <div class="media mb-0 pb-0" style="position: relative;">
                 <div class="media-left ml-5">
                     <figure class="image is-64x64 ml-2 mt-2 is-square">
-                        <img src="@Note.User!.Avatar" alt="User Avatar" />
+                        <img src="@reply.User!.Avatar" alt="User Avatar" />
                     </figure>
                 </div>
                 <div class="media-content">
-                    <p class=" is-size-6"><strong>@reply.User!.DisplayName</strong></p>
-                    <p class="is-size-7">@reply.TimeStamp.ToString()</p>
+                    <p class="is-size-6"><strong>@reply.User!.DisplayName</strong> <small><em>@UserService.UserRank(reply.User.Karma)</em></small></p>
+                    <p class="is-size-7"><strong>@reply.TimeStamp.ToString()</strong></p>
                     <p class="is-size-6"><strong>@reply.ReplyText</strong></p>
                 </div>
                 @if (reply.UserId == CurrentUser.Id)
@@ -63,7 +70,9 @@
                     </div>
                 }
             </div>
-            <VoteFooter Comment="reply" UserId="@CurrentUser.Id"/>
+            <div style="margin-right: 70px;">
+                <VoteFooter Comment="reply" UserId="@CurrentUser.Id"/>
+            </div>
         }
         <AddReplyCard Note="Note" OnReplyAdded="HandleReplyAdded" CurrentUser="CurrentUser"/>
     }

@@ -1,4 +1,6 @@
 @inject IHttpClientFactory ClientFactory
+@inject TokenStateService tokenStateService
+@using FlightAppFrontend.Shared.Auth
 @using FlightAppLibrary.Models.Dtos
 @using FlightAppLibrary.Models.Enums
 @using FlightAppLibrary.Models.Interfaces
@@ -7,11 +9,11 @@
 
 <span class="level-right">
     <span class="m-0 pr-3 pb-3 flex-shrink-0">
-        <span class="icon is-clickable @UpvoteColour" @onclick="() => Vote(VoteType.Upvote)">
+        <span class="icon is-clickable @UpvoteColour" @onclick:stopPropagation @onclick="() => Vote(VoteType.Upvote)">
             <button class="fa-solid fa-arrow-up"/>
         </span>
         <span>@Comment!.Karma</span>
-        <span class="icon is-clickable @DownvoteColour" @onclick="() => Vote(VoteType.Downvote)">
+        <span class="icon is-clickable @DownvoteColour" @onclick:stopPropagation @onclick="() => Vote(VoteType.Downvote)">
             <button class="fa-solid fa-arrow-down"/>
         </span>
     </span>
@@ -58,6 +60,7 @@
                 };
 
             var client = ClientFactory.CreateClient("DirigibleApi");
+            await tokenStateService.UpdateHeaders(client);
             var json = JsonSerializer.Serialize(vote);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync("votes", content);

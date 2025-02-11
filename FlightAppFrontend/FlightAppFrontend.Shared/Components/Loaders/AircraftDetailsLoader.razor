@@ -13,9 +13,9 @@
 {
     [Parameter] public FlightResponse? FlightResponse { get; set; }
     private string ErrorMessage;
-    public string MapUri { get; set; } = "Resources/NoLocationFound.jpg";
+    public string MapUri { get; set; } = "nolocationfound.jpg";
     private bool mapFound = false;
-    public Photo? AircraftPhoto { get; set; } = new Photo() { Id = "0", Link = "Resources/NoPhotoFound.jpg" };
+    public Photo? AircraftPhoto { get; set; } = new Photo() { Id = "0", Link = "nophotofound.jpg" };
     private bool photoFound = false;
     public string PhotoErrorMessage { get; set; }
     public string CurrentLocationName { get; set; } = "Unknown";

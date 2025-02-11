@@ -6,8 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>efc029a2-56a8-409e-80ea-011f24eeef7e</UserSecretsId>
   </PropertyGroup>
+	
 
-  <ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -6,20 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f66e045c-865a-4af9-8c76-fa818654782b</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\NoLocationFound.jpg" />
-    <None Remove="Resources\NoPhotoFound.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Resources\NoLocationFound.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\NoPhotoFound.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />

@@ -50,7 +50,6 @@ namespace FlightAppFrontend.Shared.Auth
                     Console.WriteLine("Invalid token format");
                 }
             }
-
             var user = new ClaimsPrincipal(identity);
             return new AuthenticationState(user);
         }
@@ -61,5 +60,4 @@ namespace FlightAppFrontend.Shared.Auth
             NotifyAuthenticationStateChanged(authState);
         }
     }
-
 }
