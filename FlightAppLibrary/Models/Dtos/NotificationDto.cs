@@ -21,7 +21,7 @@ namespace FlightAppLibrary.Models.Dtos
 
         [JsonPropertyName("content")]
         [Required]
-        [MinLength(5, ErrorMessage = "Must be at least five characters")]
+        [MinLength(10, ErrorMessage = "Must be at least ten characters")]
         public string Content { get; set; }
 
         [JsonPropertyName("timeStamp")]
