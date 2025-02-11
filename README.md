@@ -23,3 +23,5 @@ Login and registration forms are validated on the frontend to ensure emails and 
 ## Upcoming Features
 * Homepage Carousel
 * Backend Logging
+* Livechat
+* Passenger Verfication
