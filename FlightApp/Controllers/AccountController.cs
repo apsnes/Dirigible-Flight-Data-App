@@ -146,7 +146,7 @@ namespace FlightApp.Controllers
                 return BadRequest(ModelState);
             }
             string? userId = User.FindFirst("Id").Value;
-            if (userId!=null)
+            if (userId != null)
             {
                 var result = await _accountService.UpdatePassword(userId, model);
                 if (result.IsSuccess)

@@ -73,6 +73,7 @@ namespace FlightApp.Service
                 IsRegistrationSuccessful = true
             };
         }
+
         public async Task<SignInResponseDTO> SignIn(SignInRequestDTO signInRequestDTO)
         {
             var result = await _signInManager.PasswordSignInAsync(signInRequestDTO.UserName, signInRequestDTO.Password, false, false);
@@ -142,6 +143,7 @@ namespace FlightApp.Service
             }
             return claims;
         }
+
         private SigningCredentials GetSigningCredentials()
         {
             var key = Encoding.UTF8.GetBytes(_authSettings.SecretKey);
@@ -331,6 +333,7 @@ namespace FlightApp.Service
             responseItem.Message = "No matching role";
             return responseItem;
         }
+
         public async Task<ResponseItem> UpdateUserRoles(string role, string userId)
         {
             ResponseItem responseItem = new ResponseItem();

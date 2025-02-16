@@ -14,9 +14,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,25 +45,25 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 
-builder.Services.AddHttpClient("FlightApi", client =>
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("FlightApi")!));
+builder.Services.AddHttpClient("FlightApi", client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("FlightApi")!));
 
-builder.Services.AddDbContext<FlightAppDbContext>(options=>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<FlightAppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddDefaultTokenProviders()
-    .AddEntityFrameworkStores<FlightAppDbContext>();
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<FlightAppDbContext>();
+
 var apiAuthSettingsSection = builder.Configuration.GetSection("ApiAuthenticationSettings");
 builder.Services.Configure<ApiAuthenticationSettings>(apiAuthSettingsSection);
 
 var apiSettings = apiAuthSettingsSection.Get<ApiAuthenticationSettings>();
 var key = Encoding.ASCII.GetBytes(apiSettings.SecretKey);
 
-builder.Services.AddAuthentication(opt =>
+builder.Services.AddAuthentication(options =>
 {
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
     x.RequireHttpsMetadata = false;
@@ -83,7 +81,6 @@ builder.Services.AddAuthentication(opt =>
 });
 
 builder.Services.AddDbContext<FlightAppDbContext>();
-
 builder.Services.AddScoped<IFlightApiRepository, FlightApiRepository>();
 builder.Services.AddScoped<IFlightService, FlightApiService>();
 builder.Services.AddScoped<INotesRepository, NotesRepository>();
@@ -94,10 +91,9 @@ builder.Services.AddScoped<IVotesService, VotesService>();
 builder.Services.AddScoped<IVotesRepository, VotesRepository>();
 builder.Services.AddScoped<INotificationsService, NotificationsService>();
 builder.Services.AddScoped<INotificationsRepository, NotificationsRepository>();
-
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddScoped<IAccountService, AccountService>();
-
+builder.Services.AddMemoryCache();
 builder.Services.AddHealthChecks()
     .AddCheck<AviationApiHealthCheck>("AviationApiHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<FlightAppDBHealthCheck>("FlightAppDBHealthCheck", failureStatus: HealthStatus.Unhealthy)
@@ -107,8 +103,8 @@ builder.Services.AddHealthChecks()
     .AddCheck<MapDataHealthCheck>("MapDataHealthCheck", failureStatus: HealthStatus.Unhealthy)
     .AddCheck<AirLineLogosHealthCheck>("AirLineLogosHealthCheck", failureStatus: HealthStatus.Unhealthy);
 
-builder.Services.AddRateLimiter(ops => ops
-    .AddPolicy("token", httpContext =>
+builder.Services.AddRateLimiter(options =>
+    options.AddPolicy("token", httpContext =>
     RateLimitPartition.GetTokenBucketLimiter(httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
     partition => new TokenBucketRateLimiterOptions
     {
@@ -119,8 +115,6 @@ builder.Services.AddRateLimiter(ops => ops
         TokensPerPeriod = 7,
         AutoReplenishment = true
     })));
-
-builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
