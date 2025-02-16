@@ -21,5 +21,7 @@ The search endpoint of our backend is Rate-Limited and uses In-Memory Caching to
 Login and registration forms are validated on the frontend to ensure emails and passwords are in the correct format, and comments are validated with a rude-word filter to keep everything wholesome. Various other custom validation is used accross the app to improve the user experience.
 
 ## Upcoming Features
+* Live Chatroom
+* More admin abilities such as banning
 * Homepage Carousel
 * Backend Logging
